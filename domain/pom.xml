@@ -11,6 +11,7 @@
   </parent>
 
   <artifactId>holy-wars-domain</artifactId>
+  <url>https://github.com/gstn-caruso/holy-wars</url>
 
   <dependencies>
     <dependency>

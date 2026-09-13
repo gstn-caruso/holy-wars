@@ -11,6 +11,7 @@
   </parent>
 
   <artifactId>holy-wars-game</artifactId>
+  <url>https://github.com/gstn-caruso/holy-wars</url>
 
   <properties>
     <gdx.version>1.14.2</gdx.version>
