@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      # setup-java cache keys by pom hash with no fallback: as release rewrites the version in all three poms,
+      # each release would start with an empty repository and re-download everything. With restore-keys,
+      # the new version starts from the previous one and only downloads what changed.
+      - name: Cache the Maven repository
+        uses: actions/cache@v6
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-${{ runner.os }}-
+
+      - name: Build and test
+        run: mvn -B verify
