@@ -119,6 +119,21 @@ class ConstructionControllerTest {
         assertThat(mismatchedBody).contains("Ese edificio no va en esa parcela");
     }
 
+    @Test
+    void buildingInARivalsTownIsForbidden() throws Exception {
+        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+        clock.set(FOUNDED_AT);
+        worldRepository.save(world);
+        playerRepository.save(Player.ai(new PlayerId(2), "Rival", 500, FOUNDED_AT));
+        Town town = Town.founded(
+                new TownId(1), "Troya", new PlayerId(2), new PlotLocation(world.islands().get(0).id(), 1),
+                world.islands().get(0).resource(), FOUNDED_AT);
+        townRepository.save(town);
+
+        mockMvc.perform(post("/towns/1/slots/2/build").param("type", "ACADEMY"))
+                .andExpect(status().isForbidden());
+    }
+
     private void foundEspartaAt(Instant foundedAt) {
         World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
         clock.set(foundedAt);
