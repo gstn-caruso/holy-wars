@@ -117,4 +117,16 @@ class BuildingSlotTest {
         assertThat(built.hashCode()).isEqualTo(sameBuilt.hashCode());
         assertThat(vacant).isNotEqualTo(built);
     }
+
+    @Test
+    void startingConstructionOnAFreeSlotOfTheRightKindAddsTheConstruction() {
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
+        Instant startedAt = Instant.parse("2026-01-01T00:00:00Z");
+
+        BuildingSlot underConstruction = slot.startingConstruction(BuildingType.WAREHOUSE, 2, startedAt);
+
+        assertThat(underConstruction.construction())
+                .contains(Construction.startingAt(BuildingType.WAREHOUSE, startedAt));
+        assertThat(underConstruction.building()).isEmpty();
+    }
 }

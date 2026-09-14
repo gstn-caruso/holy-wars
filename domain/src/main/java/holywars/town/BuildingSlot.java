@@ -1,5 +1,6 @@
 package holywars.town;
 
+import java.time.Instant;
 import java.util.Optional;
 
 public record BuildingSlot(int position, BuildingSlotKind kind, int requiredTownHallLevel,
@@ -50,5 +51,17 @@ public record BuildingSlot(int position, BuildingSlotKind kind, int requiredTown
             return BuildingSlotState.OCCUPIED;
         }
         return townHallLevel >= requiredTownHallLevel ? BuildingSlotState.FREE : BuildingSlotState.LOCKED;
+    }
+
+    public BuildingSlot startingConstruction(BuildingType type, int townHallLevel, Instant startedAt) {
+        BuildingSlotState currentState = state(townHallLevel);
+        if (currentState != BuildingSlotState.FREE) {
+            throw new SlotNotFreeException(position, currentState);
+        }
+        if (type.kind() != kind) {
+            throw new MismatchedBuildingTypeException(kind, type);
+        }
+        return new BuildingSlot(position, kind, requiredTownHallLevel, Optional.empty(),
+                Optional.of(Construction.startingAt(type, startedAt)));
     }
 }
