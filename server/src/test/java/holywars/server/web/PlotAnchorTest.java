@@ -19,4 +19,10 @@ class PlotAnchorTest {
         assertThatThrownBy(() -> PlotAnchor.parse("928,537"))
                 .isInstanceOf(InvalidPlotAnchorException.class);
     }
+
+    @Test
+    void rejectsATextRepresentationWithANonNumericValue() {
+        assertThatThrownBy(() -> PlotAnchor.parse("928,abc,172"))
+                .isInstanceOf(InvalidPlotAnchorException.class);
+    }
 }
