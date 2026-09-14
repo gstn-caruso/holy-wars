@@ -2,7 +2,7 @@ package holywars.server.web;
 
 import holywars.world.LuxuryResource;
 
-public enum LuxuryResourceView {
+enum LuxuryResourceView {
     WINE("Vino", "resource-wine.svg"),
     MARBLE("Mármol", "resource-marble.svg"),
     CRYSTAL("Cristal", "resource-crystal.svg"),
