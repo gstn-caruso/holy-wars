@@ -1,14 +1,10 @@
 package holywars.server.web;
 
-import holywars.player.PlayerId;
-import holywars.player.PlayerRepository;
-import holywars.town.Town;
-import holywars.town.TownRepository;
+import holywars.server.game.IslandOccupancy;
 import holywars.world.Island;
 import holywars.world.IslandId;
 import holywars.world.World;
 import holywars.world.WorldRepository;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -22,13 +18,11 @@ import org.springframework.web.server.ResponseStatusException;
 class IslandController {
 
     private final WorldRepository worldRepository;
-    private final TownRepository townRepository;
-    private final PlayerRepository playerRepository;
+    private final IslandOccupancy islandOccupancy;
 
-    IslandController(WorldRepository worldRepository, TownRepository townRepository, PlayerRepository playerRepository) {
+    IslandController(WorldRepository worldRepository, IslandOccupancy islandOccupancy) {
         this.worldRepository = worldRepository;
-        this.townRepository = townRepository;
-        this.playerRepository = playerRepository;
+        this.islandOccupancy = islandOccupancy;
     }
 
     @GetMapping("/islands/{id}")
@@ -44,21 +38,15 @@ class IslandController {
     }
 
     private List<PlotView> plotViews(Island island) {
-        List<Town> towns = townRepository.findByIsland(island.id());
-        Map<Integer, Town> townsByPlot = new HashMap<>();
-        towns.forEach(town -> townsByPlot.put(town.location().plotNumber(), town));
-
-        Map<PlayerId, String> ownerNames = new HashMap<>();
-        towns.forEach(town -> ownerNames.computeIfAbsent(town.ownerId(),
-                ownerId -> playerRepository.find(ownerId).map(owner -> owner.name()).orElse("")));
-
+        Map<Integer, IslandOccupancy.Occupant> occupancy = islandOccupancy.of(island.id());
         return island.plots().stream()
-                .map(plot -> {
-                    Town town = townsByPlot.get(plot.number());
-                    return town == null
-                            ? PlotView.free(plot.number())
-                            : PlotView.occupiedBy(plot.number(), town.id().value(), town.name(), ownerNames.get(town.ownerId()));
-                })
+                .map(plot -> plotViewFor(plot.number(), occupancy.get(plot.number())))
                 .toList();
+    }
+
+    private PlotView plotViewFor(int plotNumber, IslandOccupancy.Occupant occupant) {
+        return occupant == null
+                ? PlotView.free(plotNumber)
+                : PlotView.occupiedBy(plotNumber, occupant.townId().value(), occupant.townName(), occupant.ownerName());
     }
 }
