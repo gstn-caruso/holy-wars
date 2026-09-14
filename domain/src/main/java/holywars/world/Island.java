@@ -4,6 +4,8 @@ import java.util.List;
 
 public final class Island {
 
+    private static final int REQUIRED_PLOT_COUNT = 16;
+
     private final IslandId id;
     private final Coordinate coordinate;
     private final String name;
@@ -12,6 +14,9 @@ public final class Island {
 
     public Island(IslandId id, Coordinate coordinate, String name, LuxuryResource luxuryResource,
             List<IslandPlot> plots) {
+        if (plots.size() != REQUIRED_PLOT_COUNT) {
+            throw new InvalidIslandPlotCountException(plots.size());
+        }
         this.id = id;
         this.coordinate = coordinate;
         this.name = name;
