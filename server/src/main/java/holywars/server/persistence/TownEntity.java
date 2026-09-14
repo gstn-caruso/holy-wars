@@ -1,14 +1,21 @@
 package holywars.server.persistence;
 
 import holywars.world.LuxuryResource;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "town")
@@ -42,6 +49,11 @@ class TownEntity {
     @Convert(converter = InstantAsEpochMillisConverter.class)
     @Column(name = "resources_updated_at", nullable = false)
     private Instant resourcesUpdatedAt;
+
+    @OneToMany(mappedBy = "town", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("position")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<BuildingSlotEntity> slots = new ArrayList<>();
 
     protected TownEntity() {
     }
@@ -94,5 +106,14 @@ class TownEntity {
 
     Instant getResourcesUpdatedAt() {
         return resourcesUpdatedAt;
+    }
+
+    List<BuildingSlotEntity> getSlots() {
+        return slots;
+    }
+
+    void addSlot(BuildingSlotEntity slot) {
+        slot.assignTo(this);
+        slots.add(slot);
     }
 }

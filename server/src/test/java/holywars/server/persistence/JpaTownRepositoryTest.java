@@ -3,15 +3,22 @@ package holywars.server.persistence;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import holywars.player.PlayerId;
+import holywars.town.Building;
+import holywars.town.BuildingSlot;
+import holywars.town.BuildingSlots;
+import holywars.town.BuildingType;
 import holywars.town.PlotLocation;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
+import holywars.town.TownResources;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import jakarta.persistence.EntityManager;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,6 +53,20 @@ class JpaTownRepositoryTest {
     void savedTownWithAdvancedResourcesIsFoundBackEqualToTheOriginal() {
         Town town = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), LuxuryResource.WINE, FOUNDED_AT)
                 .advancedTo(FOUNDED_AT.plus(Duration.ofHours(1)));
+
+        townRepository.save(town);
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThat(townRepository.find(new TownId(1))).contains(town);
+    }
+
+    @Test
+    void savedTownWithABuildingInALandSlotIsFoundBackWithThatBuilding() {
+        List<BuildingSlot> slots = withBuildingAt(BuildingSlots.standard(1), 5, new Building(BuildingType.ACADEMY, 2));
+        Town town = new Town(
+                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), slots,
+                TownResources.initial(LuxuryResource.WINE, FOUNDED_AT));
 
         townRepository.save(town);
         entityManager.flush();
@@ -107,5 +128,13 @@ class JpaTownRepositoryTest {
         entityManager.clear();
 
         assertThat(townRepository.findByOwner(new PlayerId(1))).containsExactly(lowerId, higherId);
+    }
+
+    private static List<BuildingSlot> withBuildingAt(List<BuildingSlot> slots, int position, Building building) {
+        return slots.stream()
+                .map(slot -> slot.position() == position
+                        ? new BuildingSlot(slot.position(), slot.kind(), slot.requiredTownHallLevel(), Optional.of(building))
+                        : slot)
+                .toList();
     }
 }
