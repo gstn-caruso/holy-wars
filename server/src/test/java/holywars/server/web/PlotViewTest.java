@@ -15,4 +15,15 @@ class PlotViewTest {
         assertThat(plot.townName()).isNull();
         assertThat(plot.ownerName()).isNull();
     }
+
+    @Test
+    void occupiedPlotCarriesTownOwnerAndLink() {
+        PlotView plot = PlotView.occupied(1, "Atenas", "Jugador", 42L);
+
+        assertThat(plot.number()).isEqualTo(1);
+        assertThat(plot.occupied()).isTrue();
+        assertThat(plot.townName()).isEqualTo("Atenas");
+        assertThat(plot.ownerName()).isEqualTo("Jugador");
+        assertThat(plot.townId()).isEqualTo(42L);
+    }
 }
