@@ -26,6 +26,6 @@ class JpaWorldRepository implements WorldRepository {
     @Override
     @Transactional
     public void save(World world) {
-        springDataWorldRepository.save(WorldEntityMapper.toEntity(world));
+        springDataWorldRepository.save(WorldEntityMapper.toEntity(world, WORLD_ID));
     }
 }

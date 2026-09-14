@@ -10,13 +10,11 @@ import java.util.List;
 
 final class WorldEntityMapper {
 
-    private static final Integer WORLD_ID = 1;
-
     private WorldEntityMapper() {
     }
 
-    static WorldEntity toEntity(World world) {
-        WorldEntity entity = new WorldEntity(WORLD_ID, world.grid().width(), world.grid().height());
+    static WorldEntity toEntity(World world, Integer id) {
+        WorldEntity entity = new WorldEntity(id, world.grid().width(), world.grid().height());
         world.islands().forEach(island -> entity.addIsland(toEntity(island)));
         return entity;
     }
