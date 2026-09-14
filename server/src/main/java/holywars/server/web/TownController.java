@@ -4,6 +4,7 @@ import holywars.player.PlayerRepository;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
+import holywars.world.Island;
 import holywars.world.WorldRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,9 @@ class TownController {
     String town(@PathVariable("id") long id, Model model) {
         Town town = townRepository.find(new TownId(id))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        String ownerName = playerRepository.find().orElseThrow().name();
+        Island island = worldRepository.find().orElseThrow().island(town.islandId());
+        model.addAttribute("town", TownView.of(town, ownerName, island.name()));
         return "town";
     }
 }
