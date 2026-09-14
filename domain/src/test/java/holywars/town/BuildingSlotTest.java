@@ -169,4 +169,13 @@ class BuildingSlotTest {
 
         assertThat(advanced).isEqualTo(slot);
     }
+
+    @Test
+    void advancedToDoesNotTouchASlotWithoutAConstruction() {
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
+
+        BuildingSlot advanced = slot.advancedTo(Instant.parse("2026-01-01T00:00:00Z"));
+
+        assertThat(advanced).isEqualTo(slot);
+    }
 }
