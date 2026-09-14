@@ -52,6 +52,17 @@ class TownScenePropertiesTest {
     }
 
     @Test
+    void missingEveryPositionFailsWithIncompleteTownSceneLayout() {
+        Map<String, String> noPlots = Map.of(
+                "holywars.town-scene.width", "1200",
+                "holywars.town-scene.height", "720");
+
+        assertThatThrownBy(() -> bind(noPlots))
+                .isInstanceOf(BindException.class)
+                .hasRootCauseInstanceOf(IncompleteTownSceneLayoutException.class);
+    }
+
+    @Test
     void plotsIsImmutableToCallers() {
         TownSceneProperties layout = bind(STANDARD_LAYOUT);
 
