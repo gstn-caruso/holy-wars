@@ -3,6 +3,7 @@ package holywars.server.web;
 import holywars.town.Building;
 import holywars.town.BuildingSlot;
 import holywars.town.BuildingType;
+import holywars.town.Construction;
 import holywars.town.SlotKind;
 import holywars.town.Town;
 import java.util.Comparator;
@@ -54,6 +55,12 @@ class TownSceneAssembler {
             case OCCUPIED -> {
                 Building building = slot.building().orElseThrow();
                 yield new PlotSpriteView(spriteFileFor(building.type()), labelFor(building), x, y, anchor.width(), height);
+            }
+            case UNDER_CONSTRUCTION -> {
+                Construction construction = slot.construction().orElseThrow();
+                yield new PlotSpriteView(
+                        "plot-under-construction.svg", "En obra: " + BUILDING_NAMES.get(construction.type()),
+                        x, y, anchor.width(), height);
             }
             case FREE -> new PlotSpriteView("plot-free.svg", "Parcela libre", x, y, anchor.width(), height);
             case LOCKED -> new PlotSpriteView(
