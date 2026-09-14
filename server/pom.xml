@@ -71,7 +71,7 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>${spring-boot.version}</version>
         <configuration>
-          <workingDirectory>${maven.multiModuleProjectDirectory}</workingDirectory>
+          <workingDirectory>${project.basedir}/..</workingDirectory>
         </configuration>
         <executions>
           <execution>
