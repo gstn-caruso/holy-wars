@@ -35,7 +35,8 @@ public record Town(
     }
 
     public Town advancedTo(Instant now) {
-        return new Town(id, name, ownerId, location, slots, resources.advancedTo(now));
+        List<BuildingSlot> advancedSlots = slots.stream().map(slot -> slot.advancedTo(now)).toList();
+        return new Town(id, name, ownerId, location, advancedSlots, resources.advancedTo(now));
     }
 
     public Town startingConstruction(int position, BuildingType type, Instant now) {

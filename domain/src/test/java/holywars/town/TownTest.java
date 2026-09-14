@@ -116,6 +116,19 @@ class TownTest {
     }
 
     @Test
+    void advancingATownCompletesDueConstructionsAndProducesResourcesAtOnce() {
+        Town town = Town.founded(id, "Atenas", ownerId, location, LuxuryResource.WINE, foundedAt);
+        Town underConstruction = town.startingConstruction(2, BuildingType.CARPENTER, foundedAt);
+
+        Town advanced = underConstruction.advancedTo(foundedAt.plus(Duration.ofHours(1)));
+
+        assertThat(advanced.slots().get(1).state(1)).isEqualTo(SlotState.OCCUPIED);
+        assertThat(advanced.slots().get(1).building()).contains(new Building(BuildingType.CARPENTER, 1));
+        assertThat(advanced.resources().wood()).isEqualTo(490);
+        assertThat(advanced.resources().luxuryAmount()).isEqualTo(110);
+    }
+
+    @Test
     void townRejectsASlotListThatIsNotTheFourteenPositions() {
         List<BuildingSlot> thirteenSlots = BuildingSlots.standard(1).subList(0, 13);
         assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, thirteenSlots, resources))
