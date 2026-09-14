@@ -12,6 +12,8 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -37,6 +39,23 @@ class TownClockworkTest {
         clockwork.scheduleFinish(town);
 
         assertThat(scheduler.lastScheduledDelayMillis()).isEqualTo(BuildingType.WAREHOUSE.buildTime().toMillis());
+    }
+
+    @Test
+    void firingTheScheduledFinishTaskEmitsTownAndResourcesToAllSinksOfThatTown() {
+        FakeScheduledExecutorService scheduler = new FakeScheduledExecutorService();
+        TownClockwork clockwork = new TownClockwork(scheduler, CLOCK);
+        TownId townId = new TownId(1);
+        List<String> receivedByFirst = new ArrayList<>();
+        List<String> receivedBySecond = new ArrayList<>();
+        clockwork.subscribeSink(townId, receivedByFirst::add);
+        clockwork.subscribeSink(townId, receivedBySecond::add);
+
+        clockwork.scheduleFinish(aTownWithAWarehouseFinishingIn(townId, Duration.ofMinutes(6)));
+        scheduler.runNextOneShotTask();
+
+        assertThat(receivedByFirst).containsExactly("town", "resources");
+        assertThat(receivedBySecond).containsExactly("town", "resources");
     }
 
     private static Town aTownWithAWarehouseFinishingIn(TownId townId, Duration remaining) {
