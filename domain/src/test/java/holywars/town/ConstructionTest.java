@@ -23,4 +23,11 @@ class ConstructionTest {
 
         assertThat(construction.isFinishedBy(construction.finishesAt())).isTrue();
     }
+
+    @Test
+    void isFinishedByIsFalseAnInstantBeforeFinishesAt() {
+        Construction construction = Construction.startingAt(BuildingType.WAREHOUSE, STARTED_AT);
+
+        assertThat(construction.isFinishedBy(construction.finishesAt().minusMillis(1))).isFalse();
+    }
 }
