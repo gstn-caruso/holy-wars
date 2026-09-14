@@ -11,6 +11,13 @@ class PlotAnchorConverter implements Converter<String, PlotAnchor> {
     @Override
     public PlotAnchor convert(String raw) {
         String[] parts = raw.split(",");
-        return new PlotAnchor(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+        if (parts.length != 3) {
+            throw new InvalidPlotAnchorException(raw);
+        }
+        try {
+            return new PlotAnchor(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+        } catch (NumberFormatException e) {
+            throw new InvalidPlotAnchorException(raw);
+        }
     }
 }
