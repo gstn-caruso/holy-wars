@@ -51,6 +51,6 @@ final class WorldEntityMapper {
     }
 
     private static CityPlot toDomain(CityPlotEntity entity) {
-        return new CityPlot(entity.getNumber(), entity.isFree());
+        return CityPlot.free(entity.getNumber());
     }
 }

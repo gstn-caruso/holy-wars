@@ -1,6 +1,9 @@
 package holywars.world;
 
-public record CityPlot(int number, boolean isFree) {
+import holywars.town.TownId;
+import java.util.Optional;
+
+public record CityPlot(int number, Optional<TownId> town) {
 
     public static final int HIGHEST_NUMBER = 16;
 
@@ -11,6 +14,17 @@ public record CityPlot(int number, boolean isFree) {
     }
 
     public static CityPlot free(int number) {
-        return new CityPlot(number, true);
+        return new CityPlot(number, Optional.empty());
+    }
+
+    public boolean isFree() {
+        return town.isEmpty();
+    }
+
+    public CityPlot foundedBy(TownId townId) {
+        if (!isFree()) {
+            throw new PlotAlreadyOccupiedException(number);
+        }
+        return new CityPlot(number, Optional.of(townId));
     }
 }
