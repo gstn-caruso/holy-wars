@@ -10,7 +10,8 @@
 <div class="shell-top-bar" th:fragment="topBar()">
     <span class="brand">Holy Wars</span>
 </div>
-<div class="resource-bar" id="resource-bar" th:fragment="resourceBar(bar)">
+<div class="resource-bar" id="resource-bar" th:fragment="resourceBar(bar, oob)"
+     th:attr="hx-swap-oob=${oob != null and oob} ? 'true' : null">
     <span class="resource">
         <img src="/img/resource-wood.svg" alt=""/>
         <span th:text="${bar.wood}"></span> Madera
@@ -29,7 +30,7 @@
         <span class="town-selector-coordinate" th:text="${header.islandCoordinateLabel}"></span>
         <span th:text="${header.capitalName}"></span>
     </div>
-    <div th:replace="~{fragments/layout :: resourceBar(bar=${header.resourceBar})}"></div>
+    <div th:replace="~{fragments/layout :: resourceBar(bar=${header.resourceBar}, oob=false)}"></div>
     <div class="view-switch">
         <a class="view-button" href="/map">Mostrar mundo</a>
         <a class="view-button" th:href="@{/islands/{id}(id=${header.islandId})}">Mostrar isla</a>

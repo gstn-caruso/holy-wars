@@ -57,7 +57,7 @@ class TownController {
         Town town = townRepository.find(new TownId(id))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         model.addAttribute("scene", TownSceneView.of(town, townSceneLayout, clock.instant()));
-        return "fragments/townScene :: townScene(scene=${scene})";
+        return "fragments/townScene :: townScene(scene=${scene}, oob=false)";
     }
 
     @GetMapping("/towns/{id}/resources")
@@ -66,6 +66,6 @@ class TownController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Player player = playerRepository.find().orElseThrow();
         model.addAttribute("bar", ResourceBarView.of(town, player, clock.instant()));
-        return "fragments/layout :: resourceBar(bar=${bar})";
+        return "fragments/layout :: resourceBar(bar=${bar}, oob=false)";
     }
 }
