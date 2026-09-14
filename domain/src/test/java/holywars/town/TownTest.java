@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import holywars.player.PlayerId;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,20 @@ class TownTest {
         assertThat(town.resources().luxury()).isEqualTo(LuxuryResource.MARBLE);
         assertThat(town.resources().wood()).isEqualTo(500);
         assertThat(town.resources().luxuryAmount()).isEqualTo(100);
+    }
+
+    @Test
+    void advancingATownAdvancesItsResourcesAndKeepsEverythingElse() {
+        Town town = Town.founded(id, "Atenas", ownerId, location, LuxuryResource.WINE, foundedAt);
+
+        Town advanced = town.advancedTo(foundedAt.plus(Duration.ofHours(1)));
+
+        assertThat(advanced.resources()).isEqualTo(resources.advancedTo(foundedAt.plus(Duration.ofHours(1))));
+        assertThat(advanced.id()).isEqualTo(town.id());
+        assertThat(advanced.name()).isEqualTo(town.name());
+        assertThat(advanced.ownerId()).isEqualTo(town.ownerId());
+        assertThat(advanced.location()).isEqualTo(town.location());
+        assertThat(advanced.slots()).isEqualTo(town.slots());
     }
 
     @Test

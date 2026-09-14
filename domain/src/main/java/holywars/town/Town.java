@@ -34,6 +34,10 @@ public record Town(
         return townHallBuilding(slots).map(Building::level).orElseThrow(MissingTownHallException::new);
     }
 
+    public Town advancedTo(Instant now) {
+        return new Town(id, name, ownerId, location, slots, resources.advancedTo(now));
+    }
+
     private static Optional<Building> townHallBuilding(List<BuildingSlot> slots) {
         return slots.stream()
                 .filter(slot -> slot.kind() == SlotKind.TOWN_HALL)
