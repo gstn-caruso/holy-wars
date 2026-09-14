@@ -51,10 +51,9 @@ class WorldController {
         Island island = world.island(new IslandId(id));
         Optional<IslandPlot> occupiedPlot = occupiedPlot(island);
         String occupiedTownName = occupiedPlot.map(this::townNameOf).orElse(null);
-        String ownerName = occupiedPlot.map(plot -> ownerName()).orElse(null);
         return playerRepository.find()
-                .flatMap(player -> capitalHeaders.forPlayer(world, player))
-                .map(header -> showIsland(model, island, occupiedTownName, ownerName, header))
+                .flatMap(player -> capitalHeaders.forPlayer(world, player)
+                        .map(header -> showIsland(model, island, occupiedTownName, occupiedPlot, player, header)))
                 .orElse("redirect:/");
     }
 
@@ -65,8 +64,9 @@ class WorldController {
         return "map";
     }
 
-    private String showIsland(Model model, Island island, String occupiedTownName, String ownerName,
-            CapitalHeaderView header) {
+    private String showIsland(Model model, Island island, String occupiedTownName, Optional<IslandPlot> occupiedPlot,
+            Player player, CapitalHeaderView header) {
+        String ownerName = occupiedPlot.map(plot -> player.name()).orElse(null);
         model.addAttribute("island", IslandView.of(island, occupiedTownName, ownerName));
         model.addAttribute("header", header);
         model.addAttribute("breadcrumb", BreadcrumbView.upToIsland(island));
@@ -80,10 +80,6 @@ class WorldController {
     private String townNameOf(IslandPlot plot) {
         long townId = plot.occupant().orElseThrow();
         return townRepository.find(new TownId(townId)).orElseThrow().name();
-    }
-
-    private String ownerName() {
-        return playerRepository.find().map(Player::name).orElse(null);
     }
 
     private World findWorldOrThrow() {
