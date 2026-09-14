@@ -28,7 +28,6 @@ body {
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding: 0 1vw;
     background: #1b140c url(/img/ui-header-marble.svg) repeat-x center / auto 100%;
     color: #f4e9c8;
@@ -38,20 +37,6 @@ body {
 .shell-top-bar .brand {
     font-weight: bold;
     letter-spacing: 0.05em;
-}
-
-.shell-top-bar nav {
-    display: flex;
-    gap: 12px;
-}
-
-.shell-top-bar .nav-button {
-    color: #f4e9c8;
-    text-decoration: none;
-}
-
-.shell-top-bar .nav-button:hover {
-    text-decoration: underline;
 }
 
 .shell-stage {
