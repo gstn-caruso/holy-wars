@@ -3,12 +3,15 @@ package holywars.town;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.Instant;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class BuildingSlotTest {
+
+    private final Instant now = Instant.parse("2024-01-01T00:00:00Z");
 
     @Test
     void emptySlotWhoseRequirementIsNotMetIsLocked() {
@@ -57,5 +60,16 @@ class BuildingSlotTest {
     void slotRejectsAPositionOutsideOneToFourteen(int invalidPosition) {
         assertThatThrownBy(() -> new BuildingSlot(invalidPosition, SlotKind.LAND, 1, Optional.empty()))
                 .isInstanceOf(InvalidBuildingSlotPositionException.class);
+    }
+
+    @Test
+    void aFreeSlotThatStartsAConstructionBecomesUnderConstruction() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty());
+
+        BuildingSlot started = slot.startingConstruction(BuildingType.ACADEMY, 1, now);
+
+        assertThat(started.state(1)).isEqualTo(SlotState.UNDER_CONSTRUCTION);
+        assertThat(started.construction())
+                .contains(new Construction(BuildingType.ACADEMY, now, now.plus(BuildingType.ACADEMY.buildTime())));
     }
 }
