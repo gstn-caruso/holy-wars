@@ -1,52 +1,85 @@
 package holywars.server.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Locale;
-import java.util.Set;
+import holywars.player.Player;
+import holywars.player.PlayerId;
+import holywars.player.PlayerRepository;
+import holywars.server.MutableClock;
+import holywars.server.TestClockConfiguration;
+import holywars.town.PlotLocation;
+import holywars.town.Town;
+import holywars.town.TownId;
+import holywars.town.TownRepository;
+import holywars.world.World;
+import holywars.world.WorldGenerationSettings;
+import holywars.world.WorldGenerator;
+import holywars.world.WorldRepository;
+import java.time.Instant;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockServletContext;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-import org.thymeleaf.web.IWebExchange;
-import org.thymeleaf.web.servlet.JakartaServletWebApplication;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
+@SpringBootTest
+@AutoConfigureMockMvc
+@Import(TestClockConfiguration.class)
+@ActiveProfiles("test")
+@Transactional
 class ResourceBarFragmentTest {
 
-    @Test
-    void showsASpanishLabelForEachResource() {
-        String html = renderResourceBar(new ResourceBarView(500, 100, "Vino", "resource-wine.svg", 500));
+    @Autowired
+    private MockMvc mockMvc;
 
-        assertThat(occurrencesOf(html, "class=\"resource-label\"")).isEqualTo(3);
-        assertThat(html).contains("<span class=\"resource-label\">Madera</span>");
-        assertThat(html).contains("<span class=\"resource-label\">Vino</span>");
-        assertThat(html).contains("<span class=\"resource-label\">Oro</span>");
+    @Autowired
+    private WorldRepository worldRepository;
+
+    @Autowired
+    private PlayerRepository playerRepository;
+
+    @Autowired
+    private TownRepository townRepository;
+
+    @Autowired
+    private MutableClock clock;
+
+    @Test
+    void showsASpanishLabelForEachResource() throws Exception {
+        World world = foundEspartaAt(Instant.parse("2026-01-01T00:00:00Z"));
+
+        MvcResult result = mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String body = result.getResponse().getContentAsString();
+        LuxuryResourceView luxury = LuxuryResourceView.of(world.islands().get(0).resource());
+        assertThat(occurrencesOf(body, "class=\"resource-label\"")).isEqualTo(3);
+        assertThat(body).contains("<span class=\"resource-label\">Madera</span>");
+        assertThat(body).contains("<span class=\"resource-label\">" + luxury.spanishName() + "</span>");
+        assertThat(body).contains("<span class=\"resource-label\">Oro</span>");
     }
 
     private long occurrencesOf(String text, String token) {
         return Pattern.compile(Pattern.quote(token)).matcher(text).results().count();
     }
 
-    private String renderResourceBar(ResourceBarView bar) {
-        ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
-        resolver.setPrefix("templates/");
-        resolver.setSuffix(".html");
-        resolver.setTemplateMode(TemplateMode.HTML);
-        SpringTemplateEngine engine = new SpringTemplateEngine();
-        engine.setTemplateResolver(resolver);
-
-        JakartaServletWebApplication application =
-                JakartaServletWebApplication.buildApplication(new MockServletContext());
-        IWebExchange webExchange = application.buildExchange(
-                new MockHttpServletRequest(), new MockHttpServletResponse());
-        WebContext context = new WebContext(webExchange, Locale.forLanguageTag("es"));
-        context.setVariable("bar", bar);
-
-        return engine.process("fragments", Set.of("resourceBar"), context);
+    private World foundEspartaAt(Instant foundedAt) {
+        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+        clock.set(foundedAt);
+        worldRepository.save(world);
+        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500, foundedAt));
+        Town town = Town.founded(
+                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(world.islands().get(0).id(), 1),
+                world.islands().get(0).resource(), foundedAt);
+        townRepository.save(town);
+        return world;
     }
 }
