@@ -2,13 +2,18 @@ package holywars.server.web;
 
 import holywars.world.Island;
 
-record MapCellView(boolean sea, Integer islandId, String islandName, String resource) {
+record MapCellView(boolean sea, Integer islandId, String islandName, String resource, int townCount) {
 
     static MapCellView seaCell() {
-        return new MapCellView(true, null, null, null);
+        return new MapCellView(true, null, null, null, 0);
     }
 
     static MapCellView islandCell(Island island) {
-        return new MapCellView(false, island.id().value(), island.name(), island.resource().name());
+        long townCount = island.plots().stream().filter(plot -> !plot.isFree()).count();
+        return new MapCellView(false, island.id().value(), island.name(), island.resource().name(), (int) townCount);
+    }
+
+    public String townsLabel() {
+        return townCount + (townCount == 1 ? " aldea" : " aldeas");
     }
 }

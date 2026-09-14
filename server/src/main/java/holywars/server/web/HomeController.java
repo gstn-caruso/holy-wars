@@ -1,20 +1,22 @@
 package holywars.server.web;
 
-import holywars.world.WorldRepository;
+import holywars.server.game.HumanCapital;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 class HomeController {
 
-    private final WorldRepository worldRepository;
+    private final HumanCapital humanCapital;
 
-    HomeController(WorldRepository worldRepository) {
-        this.worldRepository = worldRepository;
+    HomeController(HumanCapital humanCapital) {
+        this.humanCapital = humanCapital;
     }
 
     @GetMapping("/")
     String home() {
-        return worldRepository.find().isPresent() ? "redirect:/map" : "index";
+        return humanCapital.find()
+                .map(town -> "redirect:/towns/" + town.id().value())
+                .orElse("index");
     }
 }

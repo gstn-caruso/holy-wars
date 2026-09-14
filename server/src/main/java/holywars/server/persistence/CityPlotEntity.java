@@ -25,23 +25,23 @@ class CityPlotEntity {
     @Column(nullable = false)
     private int number;
 
-    @Column(nullable = false)
-    private boolean free;
+    @Column(name = "town_id")
+    private Integer townId;
 
     protected CityPlotEntity() {
     }
 
-    CityPlotEntity(int number, boolean free) {
+    CityPlotEntity(int number, Integer townId) {
         this.number = number;
-        this.free = free;
+        this.townId = townId;
     }
 
     int getNumber() {
         return number;
     }
 
-    boolean isFree() {
-        return free;
+    Integer getTownId() {
+        return townId;
     }
 
     void assignTo(IslandEntity island) {

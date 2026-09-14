@@ -43,5 +43,6 @@ class LayoutTest {
         assertThat(body).contains("/css/holy-wars.css");
         assertThat(body).contains("Inicio");
         assertThat(body).contains("Mapa");
+        assertThat(body).contains("Mi aldea");
     }
 }

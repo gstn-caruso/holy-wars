@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import holywars.town.PlotLocation;
+import holywars.town.TownId;
+import holywars.world.Island;
 import holywars.world.World;
 import holywars.world.WorldGenerationSettings;
 import holywars.world.WorldGenerator;
@@ -44,6 +47,38 @@ class MapControllerTest {
         assertThat(occurrencesOf(body, "<tr")).isEqualTo(world.grid().height());
         assertThat(occurrencesOf(body, "<td")).isEqualTo(world.grid().width() * world.grid().height());
         world.islands().forEach(island -> assertThat(body).contains(island.name()));
+    }
+
+    @Test
+    void showsHowManyTownsAreFoundedOnEachIsland() throws Exception {
+        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+        Island island = world.islands().get(0);
+        World withCapital = world.withCityFounded(new PlotLocation(island.id(), 1), new TownId(1));
+        worldRepository.save(withCapital);
+
+        MvcResult result = mockMvc.perform(get("/map"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String body = result.getResponse().getContentAsString();
+        assertThat(body).contains("1 aldea");
+    }
+
+    @Test
+    void showsAldeasInPluralWhenTwoTownsAreFoundedOnTheSameIsland() throws Exception {
+        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+        Island island = world.islands().get(0);
+        World withTwoTowns = world
+                .withCityFounded(new PlotLocation(island.id(), 1), new TownId(1))
+                .withCityFounded(new PlotLocation(island.id(), 2), new TownId(2));
+        worldRepository.save(withTwoTowns);
+
+        MvcResult result = mockMvc.perform(get("/map"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String body = result.getResponse().getContentAsString();
+        assertThat(body).contains("2 aldeas");
     }
 
     private long occurrencesOf(String text, String token) {

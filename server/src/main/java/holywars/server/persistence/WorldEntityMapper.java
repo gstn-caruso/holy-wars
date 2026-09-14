@@ -1,5 +1,6 @@
 package holywars.server.persistence;
 
+import holywars.town.TownId;
 import holywars.world.CityPlot;
 import holywars.world.Coordinate;
 import holywars.world.GridSize;
@@ -7,6 +8,7 @@ import holywars.world.Island;
 import holywars.world.IslandId;
 import holywars.world.World;
 import java.util.List;
+import java.util.Optional;
 
 final class WorldEntityMapper {
 
@@ -47,10 +49,12 @@ final class WorldEntityMapper {
     }
 
     private static CityPlotEntity toEntity(CityPlot plot) {
-        return new CityPlotEntity(plot.number(), plot.isFree());
+        Integer townId = plot.town().map(TownId::value).orElse(null);
+        return new CityPlotEntity(plot.number(), townId);
     }
 
     private static CityPlot toDomain(CityPlotEntity entity) {
-        return CityPlot.free(entity.getNumber());
+        Optional<TownId> townId = Optional.ofNullable(entity.getTownId()).map(TownId::new);
+        return new CityPlot(entity.getNumber(), townId);
     }
 }
