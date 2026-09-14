@@ -2,8 +2,9 @@
 
 Clon de Ikariam single-player: server Spring Boot que sirve el juego en el browser, Java 25.
 
-El juego se está reescribiendo desde cero; todavía no hay contenido jugable. Sin Docker el estado vive
-en memoria (H2) y se pierde al cerrar el server; con Docker, ver "Base de datos" abajo.
+El juego se está reescribiendo desde cero; todavía no hay contenido jugable. El estado vive en memoria
+(H2) y se pierde al cerrar el server; con Docker corriendo hay una forma de arrancarlo en Postgres, ver
+"Base de datos" abajo.
 
 ## Jugar
 
@@ -16,10 +17,10 @@ Abrí `http://localhost:8080` en el navegador.
 
 ## Base de datos
 
-`docker compose up -d` es opcional. Con Docker corriendo y `compose.yaml` en el directorio de trabajo,
-`java -jar server/target/holy-wars-server-0.0.0-SNAPSHOT.jar` (o `mvn -pl server spring-boot:run`) levanta
-un Postgres 17 solo y guarda ahí el estado del juego entre reinicios. Sin Docker, el server arranca con
-H2 en memoria y el estado se pierde al cerrar. `docker compose down -v` borra los datos guardados.
+Con Docker corriendo, `mvn -pl server -am spring-boot:run` desde la raíz del repo levanta un Postgres 17
+solo (usa el `compose.yaml` de la raíz) y guarda ahí el estado del juego entre reinicios. El jar empaquetado
+(`java -jar server/target/holy-wars-server-0.0.0-SNAPSHOT.jar`) y el `.deb` siempre usan H2 en memoria: el
+estado se pierde al cerrar el server. `docker compose down -v` borra los datos guardados en Postgres.
 
 ## Testear
 
