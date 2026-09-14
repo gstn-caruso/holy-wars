@@ -5,7 +5,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import holywars.player.PlayerId;
+import holywars.town.Town;
+import holywars.town.TownRepository;
 import holywars.world.WorldRepository;
+import java.util.List;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,32 +31,42 @@ class WorldControllerTest {
     @Autowired
     private WorldRepository worldRepository;
 
+    @Autowired
+    private TownRepository townRepository;
+
     @Test
-    void generatesAndSavesAWorldThenRedirectsToTheMap() throws Exception {
+    void startsANewGameAndRedirectsHome() throws Exception {
         mockMvc.perform(post("/world").param("seed", "42"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/map"));
+                .andExpect(redirectedUrl("/"));
 
-        assertThat(worldRepository.find()).isPresent();
+        assertThat(foundedTowns()).hasSize(4);
     }
 
     @Test
-    void generatesAWorldWhenNoSeedIsGiven() throws Exception {
+    void startsANewGameWhenNoSeedIsGiven() throws Exception {
         mockMvc.perform(post("/world"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/map"));
+                .andExpect(redirectedUrl("/"));
 
         assertThat(worldRepository.find().orElseThrow().islands()).hasSize(20);
     }
 
     @Test
-    void aSecondPostDoesNotDuplicateIslands() throws Exception {
+    void aSecondPostDoesNotDuplicateTheGame() throws Exception {
         mockMvc.perform(post("/world").param("seed", "42"));
 
         mockMvc.perform(post("/world").param("seed", "99"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/map"));
+                .andExpect(redirectedUrl("/"));
 
-        assertThat(worldRepository.find().orElseThrow().islands()).hasSize(20);
+        assertThat(foundedTowns()).hasSize(4);
+    }
+
+    private List<Town> foundedTowns() {
+        return IntStream.rangeClosed(1, 4)
+                .mapToObj(PlayerId::new)
+                .flatMap(id -> townRepository.findByOwner(id).stream())
+                .toList();
     }
 }
