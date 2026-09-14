@@ -38,7 +38,8 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
     }
 
     public Town advancedTo(Instant now) {
-        return new Town(id, ownerId, islandId, plotNumber, name, buildingSlots, resources.advancedTo(now));
+        List<BuildingSlot> advancedSlots = buildingSlots.stream().map(slot -> slot.advancedTo(now)).toList();
+        return new Town(id, ownerId, islandId, plotNumber, name, advancedSlots, resources.advancedTo(now));
     }
 
     public Town spend(int wood, int luxury) {

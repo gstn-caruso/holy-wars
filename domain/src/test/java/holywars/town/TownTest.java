@@ -155,6 +155,20 @@ class TownTest {
     }
 
     @Test
+    void advancedToCompletesEachOverdueConstructionIndependently() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, FOUNDED_AT);
+        Town underConstruction = town.startingConstruction(2, BuildingType.WAREHOUSE, FOUNDED_AT)
+                .startingConstruction(3, BuildingType.TAVERN, FOUNDED_AT);
+
+        Town advanced = underConstruction.advancedTo(FOUNDED_AT.plus(Duration.ofMinutes(7)));
+
+        assertThat(advanced.slot(2).building()).contains(new Building(BuildingType.WAREHOUSE, 1));
+        assertThat(advanced.slot(3).construction())
+                .contains(Construction.startingAt(BuildingType.TAVERN, FOUNDED_AT));
+    }
+
+    @Test
     void aTownWithoutAnOccupiedTownHallIsRejected() {
         List<BuildingSlot> withoutAnOccupiedTownHall = new ArrayList<>(BuildingSlots.standard());
         withoutAnOccupiedTownHall.set(0, new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1));
