@@ -26,6 +26,9 @@ public record Island(IslandId id, Coordinate coordinate, String name, LuxuryReso
     }
 
     public Island foundCity(int plotNumber, TownId townId) {
+        if (plotNumber < 1 || plotNumber > CityPlot.HIGHEST_NUMBER) {
+            throw new InvalidCityPlotNumberException(plotNumber);
+        }
         List<CityPlot> updatedPlots = plots.stream()
                 .map(plot -> plot.number() == plotNumber ? plot.foundedBy(townId) : plot)
                 .toList();

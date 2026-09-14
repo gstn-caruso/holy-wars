@@ -67,4 +67,12 @@ class IslandTest {
 
         assertThat(island.firstFreePlot()).isEmpty();
     }
+
+    @Test
+    void foundingAnOutOfRangePlotNumberIsRejected() {
+        Island island = Island.withFreePlots(new IslandId(1), new Coordinate(0, 0), "Naxos", LuxuryResource.WINE);
+
+        assertThatThrownBy(() -> island.foundCity(17, new TownId(1)))
+                .isInstanceOf(InvalidCityPlotNumberException.class);
+    }
 }
