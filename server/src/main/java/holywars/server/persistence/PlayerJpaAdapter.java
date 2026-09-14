@@ -19,11 +19,13 @@ class PlayerJpaAdapter implements PlayerRepository {
     public Optional<Player> find() {
         return playerJpaRepository.findAll().stream()
                 .findFirst()
-                .map(entity -> new Player(new PlayerId(entity.id()), entity.name()));
+                .map(entity -> Player.reconstituted(new PlayerId(entity.id()), entity.name(), entity.goldTicks(),
+                        entity.goldUpdatedAt()));
     }
 
     @Override
     public void save(Player player) {
-        playerJpaRepository.save(new PlayerEntity(player.id().value(), player.name()));
+        playerJpaRepository.save(new PlayerEntity(player.id().value(), player.name(), player.gold().ticks(),
+                player.lastUpdate()));
     }
 }

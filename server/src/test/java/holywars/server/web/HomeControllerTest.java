@@ -18,6 +18,8 @@ import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
 import holywars.world.IslandId;
+import holywars.world.LuxuryResource;
+import java.time.Instant;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(HomeController.class)
 class HomeControllerTest {
+
+    private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,8 +58,9 @@ class HomeControllerTest {
 
     @Test
     void redirectsToTheCapitalWhenThePlayerHasOne() throws Exception {
-        Player player = new Player(new PlayerId(1), "Jugador");
-        Town town = Town.founded(new TownId(5), player.id(), new IslandId(1), 1, "Atenas");
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        Town town = Town.founded(new TownId(5), player.id(), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
         given(playerRepository.find()).willReturn(Optional.of(player));
         given(townRepository.findByOwner(player.id())).willReturn(Optional.of(town));
 

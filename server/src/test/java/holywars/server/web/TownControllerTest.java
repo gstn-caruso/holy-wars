@@ -19,6 +19,7 @@ import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import holywars.world.World;
 import holywars.world.WorldRepository;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,8 @@ import org.springframework.test.web.servlet.MvcResult;
 @WebMvcTest(TownController.class)
 @Import({TownSceneConfiguration.class, PlotAnchorConverter.class})
 class TownControllerTest {
+
+    private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,11 +57,13 @@ class TownControllerTest {
 
     @Test
     void validTownRendersNameOwnerIslandAndPlotNumber() throws Exception {
-        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas");
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
         given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find()).willReturn(Optional.of(new Player(new PlayerId(1), "Jugador")));
+        given(playerRepository.find())
+                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
         given(worldRepository.find()).willReturn(Optional.of(world));
 
         mockMvc.perform(get("/towns/1"))
@@ -73,11 +78,13 @@ class TownControllerTest {
 
     @Test
     void validTownRendersTheTownSceneSvgWithFourteenPlots() throws Exception {
-        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas");
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
         given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find()).willReturn(Optional.of(new Player(new PlayerId(1), "Jugador")));
+        given(playerRepository.find())
+                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
         given(worldRepository.find()).willReturn(Optional.of(world));
 
         MvcResult result = mockMvc.perform(get("/towns/1"))

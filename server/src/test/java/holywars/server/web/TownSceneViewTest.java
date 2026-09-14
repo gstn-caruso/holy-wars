@@ -6,10 +6,14 @@ import holywars.player.PlayerId;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.world.IslandId;
+import holywars.world.LuxuryResource;
+import java.time.Instant;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class TownSceneViewTest {
+
+    private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
 
     private static final Map<Integer, PlotAnchor> STANDARD_ANCHORS = Map.ofEntries(
             Map.entry(1, new PlotAnchor(600, 330, 140)),
@@ -29,7 +33,8 @@ class TownSceneViewTest {
 
     @Test
     void ordersTheFourteenPlotsByAscendingCy() {
-        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas");
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
         TownSceneProperties layout = new TownSceneProperties(1200, 720, STANDARD_ANCHORS);
 
         TownSceneView view = TownSceneView.of(town, layout);
@@ -40,7 +45,8 @@ class TownSceneViewTest {
 
     @Test
     void carriesTheLayoutWidthAndHeight() {
-        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas");
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
         TownSceneProperties layout = new TownSceneProperties(1200, 720, STANDARD_ANCHORS);
 
         TownSceneView view = TownSceneView.of(town, layout);
