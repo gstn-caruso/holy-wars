@@ -29,4 +29,15 @@ class PlotSceneViewTest {
         assertThat(view.spriteHref()).isEqualTo("/img/plot-free.svg");
         assertThat(view.label()).isEqualTo("Parcela libre");
     }
+
+    @Test
+    void lockedSlotShowsTheLockedPlotSpriteAndRequiredLevel() {
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
+        PlotAnchor anchor = new PlotAnchor(400, 250, 140);
+
+        PlotSceneView view = PlotSceneView.of(slot, 1, anchor);
+
+        assertThat(view.spriteHref()).isEqualTo("/img/plot-locked.svg");
+        assertThat(view.label()).isEqualTo("Requiere ayuntamiento nivel 2");
+    }
 }
