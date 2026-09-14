@@ -2,6 +2,7 @@ package holywars.town;
 
 import holywars.player.PlayerId;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,9 +14,7 @@ public record Town(TownId id, String name, PlayerId ownerId, PlotLocation locati
         if (slots.size() != BuildingSlot.HIGHEST_POSITION || distinctPositions.size() != BuildingSlot.HIGHEST_POSITION) {
             throw new InvalidBuildingSlotCountException(slots.size(), distinctPositions.size());
         }
-        boolean hasOccupiedTownHall = slots.stream()
-                .anyMatch(slot -> slot.kind() == SlotKind.TOWN_HALL && slot.building().isPresent());
-        if (!hasOccupiedTownHall) {
+        if (townHallBuilding(slots).isEmpty()) {
             throw new MissingTownHallException();
         }
     }
@@ -25,11 +24,13 @@ public record Town(TownId id, String name, PlayerId ownerId, PlotLocation locati
     }
 
     public int townHallLevel() {
+        return townHallBuilding(slots).map(Building::level).orElseThrow(MissingTownHallException::new);
+    }
+
+    private static Optional<Building> townHallBuilding(List<BuildingSlot> slots) {
         return slots.stream()
                 .filter(slot -> slot.kind() == SlotKind.TOWN_HALL)
                 .findFirst()
-                .flatMap(BuildingSlot::building)
-                .map(Building::level)
-                .orElseThrow(MissingTownHallException::new);
+                .flatMap(BuildingSlot::building);
     }
 }

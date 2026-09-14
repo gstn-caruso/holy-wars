@@ -66,6 +66,17 @@ class TownTest {
     }
 
     @Test
+    void townRejectsATownWhoseFirstTownHallSlotIsEmpty() {
+        List<BuildingSlot> slotsWithASecondOccupiedTownHall = new ArrayList<>(BuildingSlots.standard(1));
+        slotsWithASecondOccupiedTownHall.set(0, new BuildingSlot(1, SlotKind.TOWN_HALL, 1, Optional.empty()));
+        slotsWithASecondOccupiedTownHall.set(
+                1, new BuildingSlot(2, SlotKind.TOWN_HALL, 1, Optional.of(new Building(BuildingType.TOWN_HALL, 1))));
+
+        assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, slotsWithASecondOccupiedTownHall))
+                .isInstanceOf(MissingTownHallException.class);
+    }
+
+    @Test
     void townRejectsSlotsWithoutAnOccupiedTownHall() {
         List<BuildingSlot> slotsWithEmptyTownHall = new ArrayList<>(BuildingSlots.standard(1));
         slotsWithEmptyTownHall.set(0, new BuildingSlot(1, SlotKind.TOWN_HALL, 1, Optional.empty()));
