@@ -66,6 +66,7 @@ class WorldControllerTest {
 
         mockMvc.perform(get("/map"))
                 .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Mapa del mundo")))
                 .andExpect(content().string(containsString("/islands/3")))
                 .andExpect(content().string(containsString("Naxos")))
                 .andExpect(content().string(containsString("/img/resource-wine.svg")))
