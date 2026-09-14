@@ -11,6 +11,10 @@ public final class World {
         this.islands = List.copyOf(islands);
     }
 
+    public List<Island> islands() {
+        return islands;
+    }
+
     public Island island(IslandId id) {
         return islands.stream()
                 .filter(island -> island.id().equals(id))
