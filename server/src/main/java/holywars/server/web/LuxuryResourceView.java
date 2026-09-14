@@ -2,7 +2,7 @@ package holywars.server.web;
 
 import holywars.world.LuxuryResource;
 
-enum LuxuryResourceView {
+public enum LuxuryResourceView {
     WINE("Vino", "resource-wine.svg"),
     MARBLE("Mármol", "resource-marble.svg"),
     CRYSTAL("Cristal", "resource-crystal.svg"),
@@ -20,11 +20,11 @@ enum LuxuryResourceView {
         return valueOf(luxury.name());
     }
 
-    String spanishName() {
+    public String spanishName() {
         return spanishName;
     }
 
-    String icon() {
+    public String icon() {
         return icon;
     }
 }

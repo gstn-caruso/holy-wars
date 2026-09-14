@@ -8,8 +8,8 @@
 <p th:text="'Coordenada: (' + ${island.coordinate().x()} + ', ' + ${island.coordinate().y()} + ')'">Coordenada</p>
 <p class="island-luxury">
     Recurso de lujo:
-    <img th:src="@{'/img/' + ${luxuryIcon}}" th:alt="${luxuryName}" class="luxury-icon">
-    <span th:text="${luxuryName}">Vino</span>
+    <img th:src="@{'/img/' + ${luxury.icon()}}" th:alt="${luxury.spanishName()}" class="luxury-icon">
+    <span th:text="${luxury.spanishName()}">Vino</span>
 </p>
 <div class="plots-grid">
     <div th:each="plot : ${plots}" th:class="${plot.cssClass()}">
