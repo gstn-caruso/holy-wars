@@ -38,6 +38,20 @@ public record Town(
         return new Town(id, name, ownerId, location, slots, resources.advancedTo(now));
     }
 
+    public Town startingConstruction(int position, BuildingType type, Instant now) {
+        Town advanced = advancedTo(now);
+        BuildingSlot targetSlot = advanced.slots.stream()
+                .filter(slot -> slot.position() == position)
+                .findFirst()
+                .orElseThrow(() -> new InvalidBuildingSlotPositionException(position));
+        BuildingSlot slotUnderConstruction = targetSlot.startingConstruction(type, advanced.townHallLevel(), now);
+        List<BuildingSlot> updatedSlots = advanced.slots.stream()
+                .map(slot -> slot.position() == position ? slotUnderConstruction : slot)
+                .toList();
+        TownResources updatedResources = advanced.resources.spend(type.woodCost(), type.luxuryCost());
+        return new Town(advanced.id, advanced.name, advanced.ownerId, advanced.location, updatedSlots, updatedResources);
+    }
+
     private static Optional<Building> townHallBuilding(List<BuildingSlot> slots) {
         return slots.stream()
                 .filter(slot -> slot.kind() == SlotKind.TOWN_HALL)

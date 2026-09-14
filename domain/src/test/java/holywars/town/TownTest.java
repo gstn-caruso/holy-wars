@@ -82,6 +82,28 @@ class TownTest {
     }
 
     @Test
+    void startingAConstructionSpendsResourcesAndPutsThatSlotUnderConstruction() {
+        Town town = Town.founded(id, "Atenas", ownerId, location, LuxuryResource.WINE, foundedAt);
+
+        Town underConstruction = town.startingConstruction(2, BuildingType.CARPENTER, foundedAt);
+
+        assertThat(underConstruction.slots().get(1).state(1)).isEqualTo(SlotState.UNDER_CONSTRUCTION);
+        assertThat(underConstruction.resources().wood()).isEqualTo(460);
+        assertThat(underConstruction.resources().luxuryAmount()).isEqualTo(100);
+        assertThat(underConstruction.id()).isEqualTo(town.id());
+        assertThat(underConstruction.name()).isEqualTo(town.name());
+        assertThat(underConstruction.ownerId()).isEqualTo(town.ownerId());
+        assertThat(underConstruction.location()).isEqualTo(town.location());
+
+        List<BuildingSlot> untouchedSlots = underConstruction.slots().stream()
+                .filter(slot -> slot.position() != 2)
+                .toList();
+        List<BuildingSlot> originalOtherSlots =
+                town.slots().stream().filter(slot -> slot.position() != 2).toList();
+        assertThat(untouchedSlots).isEqualTo(originalOtherSlots);
+    }
+
+    @Test
     void townRejectsASlotListThatIsNotTheFourteenPositions() {
         List<BuildingSlot> thirteenSlots = BuildingSlots.standard(1).subList(0, 13);
         assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, thirteenSlots, resources))
