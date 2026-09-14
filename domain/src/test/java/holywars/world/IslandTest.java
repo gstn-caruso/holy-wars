@@ -75,4 +75,13 @@ class IslandTest {
         assertThatThrownBy(() -> island.foundCity(17, new TownId(1)))
                 .isInstanceOf(InvalidCityPlotNumberException.class);
     }
+
+    @Test
+    void foundingAnAlreadyOccupiedPlotThroughTheIslandIsRejected() {
+        Island island = Island.withFreePlots(new IslandId(1), new Coordinate(0, 0), "Naxos", LuxuryResource.WINE)
+                .foundCity(3, new TownId(1));
+
+        assertThatThrownBy(() -> island.foundCity(3, new TownId(2)))
+                .isInstanceOf(PlotAlreadyOccupiedException.class);
+    }
 }
