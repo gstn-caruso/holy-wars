@@ -65,6 +65,15 @@ class BuildingSlotTest {
     }
 
     @Test
+    void aConstructionOfAnotherKindThanTheSlotIsRejected() {
+        Construction construction = Construction.startingAt(BuildingType.WAREHOUSE, Instant.parse("2026-01-01T00:00:00Z"));
+
+        assertThatThrownBy(
+                () -> new BuildingSlot(12, BuildingSlotKind.WALL, 1, Optional.empty(), Optional.of(construction)))
+                .isInstanceOf(MismatchedBuildingTypeException.class);
+    }
+
+    @Test
     void anOccupiedTownHallSlotIsReportedAsAnOccupiedTownHall() {
         BuildingSlot slot = new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1, new Building(BuildingType.TOWN_HALL, 1));
 
