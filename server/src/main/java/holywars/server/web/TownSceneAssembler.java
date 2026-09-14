@@ -6,6 +6,8 @@ import holywars.town.BuildingType;
 import holywars.town.Construction;
 import holywars.town.SlotKind;
 import holywars.town.Town;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -19,17 +21,17 @@ class TownSceneAssembler {
         this.properties = properties;
     }
 
-    TownSceneView assemble(Town town) {
+    TownSceneView assemble(Town town, Instant now) {
         int townHallLevel = town.townHallLevel();
         List<PlotSpriteView> sprites = town.slots().stream()
                 .map(slot -> new SlotWithAnchor(slot, properties.anchorFor(slot.position())))
                 .sorted(Comparator.comparingInt(slotWithAnchor -> slotWithAnchor.anchor().cy()))
-                .map(slotWithAnchor -> spriteFor(slotWithAnchor.slot(), slotWithAnchor.anchor(), townHallLevel))
+                .map(slotWithAnchor -> spriteFor(slotWithAnchor.slot(), slotWithAnchor.anchor(), townHallLevel, now))
                 .toList();
         return new TownSceneView(properties.width(), properties.height(), sprites);
     }
 
-    private PlotSpriteView spriteFor(BuildingSlot slot, PlotAnchor anchor, int townHallLevel) {
+    private PlotSpriteView spriteFor(BuildingSlot slot, PlotAnchor anchor, int townHallLevel, Instant now) {
         int x = anchor.cx() - anchor.width() / 2;
         int height = heightFor(slot.kind(), anchor.width());
         int y = anchor.cy() - height;
@@ -41,7 +43,7 @@ class TownSceneAssembler {
             case UNDER_CONSTRUCTION -> {
                 Construction construction = slot.construction().orElseThrow();
                 yield new PlotSpriteView(
-                        "plot-under-construction.svg", "En obra: " + BuildingNames.spanishNameOf(construction.type()),
+                        "plot-under-construction.svg", labelFor(construction, now),
                         x, y, anchor.width(), height);
             }
             case FREE -> new PlotSpriteView("plot-free.svg", "Parcela libre", x, y, anchor.width(), height);
@@ -62,6 +64,16 @@ class TownSceneAssembler {
 
     private static String labelFor(Building building) {
         return BuildingNames.spanishNameOf(building.type()) + " nivel " + building.level();
+    }
+
+    private static String labelFor(Construction construction, Instant now) {
+        return "En obra: " + BuildingNames.spanishNameOf(construction.type())
+                + " · faltan " + minutesLeft(now, construction.finishesAt()) + " min";
+    }
+
+    private static long minutesLeft(Instant now, Instant finishesAt) {
+        long secondsLeft = Duration.between(now, finishesAt).toSeconds();
+        return Math.max(1, (secondsLeft + 59) / 60);
     }
 
     private record SlotWithAnchor(BuildingSlot slot, PlotAnchor anchor) {

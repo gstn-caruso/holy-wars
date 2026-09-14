@@ -56,7 +56,7 @@ class TownController {
                 island.name(),
                 island.id().value(),
                 town.location().plotNumber(),
-                townSceneAssembler.assemble(town)));
+                townSceneAssembler.assemble(town, clock.instant())));
         model.addAttribute("resourceBar", resourceBarAdvancedToNow(town, owner));
         return "town";
     }

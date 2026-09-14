@@ -14,6 +14,7 @@ import holywars.town.TownId;
 import holywars.town.TownResources;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ class TownSceneAssemblerTest {
                 new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3),
                 LuxuryResource.WINE, FOUNDED_AT);
 
-        TownSceneView scene = assembler.assemble(town);
+        TownSceneView scene = assembler.assemble(town, FOUNDED_AT);
 
         assertThat(scene.width()).isEqualTo(1200);
         assertThat(scene.height()).isEqualTo(720);
@@ -67,7 +68,7 @@ class TownSceneAssemblerTest {
                 new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3),
                 LuxuryResource.WINE, FOUNDED_AT);
 
-        List<PlotSpriteView> sprites = assembler.assemble(town).plots();
+        List<PlotSpriteView> sprites = assembler.assemble(town, FOUNDED_AT).plots();
 
         assertThat(sprites)
                 .extracting(PlotSpriteView::x)
@@ -82,12 +83,29 @@ class TownSceneAssemblerTest {
                 LuxuryResource.WINE, FOUNDED_AT);
         Town town = founded.startingConstruction(2, BuildingType.ACADEMY, FOUNDED_AT);
 
-        List<PlotSpriteView> sprites = assembler.assemble(town).plots();
+        List<PlotSpriteView> sprites = assembler.assemble(town, FOUNDED_AT).plots();
 
         assertThat(sprites)
                 .filteredOn(sprite -> sprite.sprite().equals("plot-under-construction.svg"))
                 .extracting(PlotSpriteView::label)
-                .containsExactly("En obra: Academia");
+                .containsExactly("En obra: Academia · faltan 10 min");
+    }
+
+    @Test
+    void aSlotUnderConstructionShowsTheMinutesLeft() {
+        TownSceneAssembler assembler = new TownSceneAssembler(testProperties());
+        Town founded = Town.founded(
+                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3),
+                LuxuryResource.WINE, FOUNDED_AT);
+        Town town = founded.startingConstruction(2, BuildingType.ACADEMY, FOUNDED_AT);
+        Instant now = FOUNDED_AT.plus(Duration.ofMinutes(3));
+
+        List<PlotSpriteView> sprites = assembler.assemble(town, now).plots();
+
+        assertThat(sprites)
+                .filteredOn(sprite -> sprite.sprite().equals("plot-under-construction.svg"))
+                .extracting(PlotSpriteView::label)
+                .containsExactly("En obra: Academia · faltan 7 min");
     }
 
     @ParameterizedTest
@@ -96,7 +114,7 @@ class TownSceneAssemblerTest {
         TownSceneAssembler assembler = new TownSceneAssembler(testProperties());
         Town town = townOccupying(type);
 
-        List<PlotSpriteView> sprites = assembler.assemble(town).plots();
+        List<PlotSpriteView> sprites = assembler.assemble(town, FOUNDED_AT).plots();
 
         String expectedSprite = spriteFileFor(type);
         PlotSpriteView spriteView = sprites.stream()
