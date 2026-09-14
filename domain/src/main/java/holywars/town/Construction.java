@@ -7,4 +7,8 @@ public record Construction(BuildingType type, Instant startedAt, Instant finishe
     public static Construction startingAt(BuildingType type, Instant startedAt) {
         return new Construction(type, startedAt, startedAt.plus(type.buildTime()));
     }
+
+    public boolean isFinishedBy(Instant now) {
+        return !now.isBefore(finishesAt);
+    }
 }

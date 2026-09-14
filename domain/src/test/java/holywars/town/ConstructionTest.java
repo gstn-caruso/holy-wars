@@ -16,4 +16,11 @@ class ConstructionTest {
         assertThat(construction.startedAt()).isEqualTo(STARTED_AT);
         assertThat(construction.finishesAt()).isEqualTo(STARTED_AT.plus(BuildingType.WAREHOUSE.buildTime()));
     }
+
+    @Test
+    void isFinishedByIsTrueExactlyAtFinishesAt() {
+        Construction construction = Construction.startingAt(BuildingType.WAREHOUSE, STARTED_AT);
+
+        assertThat(construction.isFinishedBy(construction.finishesAt())).isTrue();
+    }
 }
