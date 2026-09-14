@@ -67,7 +67,9 @@ class BuildingSlotTest {
         BuildingSlot sameBuilt = new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1, BuildingSlotKind.TOWN_HALL, 1);
 
         assertThat(vacant).isEqualTo(sameVacant);
+        assertThat(vacant.hashCode()).isEqualTo(sameVacant.hashCode());
         assertThat(built).isEqualTo(sameBuilt);
+        assertThat(built.hashCode()).isEqualTo(sameBuilt.hashCode());
         assertThat(vacant).isNotEqualTo(built);
     }
 }

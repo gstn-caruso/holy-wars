@@ -1,64 +1,38 @@
 package holywars.town;
 
-import java.util.Objects;
 import java.util.OptionalInt;
 
-public final class BuildingSlot {
+public record BuildingSlot(int position, BuildingSlotKind kind, int requiredTownHallLevel, OptionalInt builtLevel) {
 
     static final int MIN_POSITION = 1;
     static final int MAX_POSITION = 14;
 
-    private final int position;
-    private final BuildingSlotKind kind;
-    private final int requiredTownHallLevel;
-    private final Integer builtLevel;
-
-    public BuildingSlot(int position, BuildingSlotKind kind, int requiredTownHallLevel) {
-        this(position, kind, requiredTownHallLevel, null);
-    }
-
-    public BuildingSlot(int position, BuildingSlotKind kind, int requiredTownHallLevel,
-            BuildingSlotKind builtKind, int builtLevel) {
-        this(position, kind, requiredTownHallLevel, Integer.valueOf(builtLevel));
-        if (builtKind != kind) {
-            throw new MismatchedBuildingTypeException(kind, builtKind);
-        }
-    }
-
-    private BuildingSlot(int position, BuildingSlotKind kind, int requiredTownHallLevel, Integer builtLevel) {
+    public BuildingSlot {
         if (position < MIN_POSITION || position > MAX_POSITION) {
             throw new InvalidBuildingSlotPositionException(position);
         }
         if (requiredTownHallLevel < 1) {
             throw new InvalidBuildingLevelException(requiredTownHallLevel);
         }
-        if (builtLevel != null && builtLevel < 1) {
-            throw new InvalidBuildingLevelException(builtLevel);
+        if (builtLevel.isPresent() && builtLevel.getAsInt() < 1) {
+            throw new InvalidBuildingLevelException(builtLevel.getAsInt());
         }
-        this.position = position;
-        this.kind = kind;
-        this.requiredTownHallLevel = requiredTownHallLevel;
-        this.builtLevel = builtLevel;
     }
 
-    public int position() {
-        return position;
+    public BuildingSlot(int position, BuildingSlotKind kind, int requiredTownHallLevel) {
+        this(position, kind, requiredTownHallLevel, OptionalInt.empty());
     }
 
-    public BuildingSlotKind kind() {
-        return kind;
-    }
-
-    public int requiredTownHallLevel() {
-        return requiredTownHallLevel;
+    public BuildingSlot(int position, BuildingSlotKind kind, int requiredTownHallLevel,
+            BuildingSlotKind builtKind, int builtLevel) {
+        this(position, kind, requiredTownHallLevel, OptionalInt.of(builtLevel));
+        if (builtKind != kind) {
+            throw new MismatchedBuildingTypeException(kind, builtKind);
+        }
     }
 
     public boolean isOccupied() {
-        return builtLevel != null;
-    }
-
-    public OptionalInt builtLevel() {
-        return builtLevel == null ? OptionalInt.empty() : OptionalInt.of(builtLevel);
+        return builtLevel.isPresent();
     }
 
     public BuildingSlotState state(int townHallLevel) {
@@ -66,23 +40,5 @@ public final class BuildingSlot {
             return BuildingSlotState.OCCUPIED;
         }
         return townHallLevel >= requiredTownHallLevel ? BuildingSlotState.FREE : BuildingSlotState.LOCKED;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof BuildingSlot that)) {
-            return false;
-        }
-        return position == that.position && kind == that.kind
-                && requiredTownHallLevel == that.requiredTownHallLevel
-                && Objects.equals(builtLevel, that.builtLevel);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(position, kind, requiredTownHallLevel, builtLevel);
     }
 }
