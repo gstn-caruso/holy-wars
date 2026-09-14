@@ -33,6 +33,6 @@ public record TownResources(LuxuryResource luxury, long woodTicks, long luxuryTi
                 luxury,
                 woodTicks + WOOD_PER_HOUR * elapsedSeconds,
                 luxuryTicks + LUXURY_PER_HOUR * elapsedSeconds,
-                now);
+                lastUpdate.plusSeconds(elapsedSeconds));
     }
 }

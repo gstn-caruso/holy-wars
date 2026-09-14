@@ -54,7 +54,7 @@ class TownResourcesTest {
     }
 
     @Test
-    void advancingInIrregularStepsLosesNoFractionalProduction() {
+    void advancingInIrregularWholeSecondStepsMatchesOneStep() {
         TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
 
         TownResources inThreeSteps = resources
@@ -64,6 +64,21 @@ class TownResourcesTest {
         TownResources inOneStep = resources.advancedTo(foundedAt.plusSeconds(141));
 
         assertThat(inThreeSteps).isEqualTo(inOneStep);
+    }
+
+    @Test
+    void advancingInSubSecondStepsLosesNoProduction() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        TownResources advanced = resources;
+        Instant instant = foundedAt;
+        for (int i = 0; i < 7200; i++) {
+            instant = instant.plusMillis(500);
+            advanced = advanced.advancedTo(instant);
+        }
+
+        assertThat(advanced.wood()).isEqualTo(530);
+        assertThat(advanced.luxuryAmount()).isEqualTo(110);
     }
 
     @Test
