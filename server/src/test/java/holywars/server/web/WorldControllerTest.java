@@ -18,6 +18,7 @@ import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import holywars.world.World;
 import holywars.world.WorldRepository;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -79,8 +80,10 @@ class WorldControllerTest {
         World world = new World(List.of(island));
         given(worldRepository.find()).willReturn(Optional.of(world));
         given(townRepository.find(new TownId(11L))).willReturn(
-                Optional.of(Town.founded(new TownId(11L), new PlayerId(1), island.id(), 1, "Atenas")));
-        given(playerRepository.find()).willReturn(Optional.of(new Player(new PlayerId(1), "Jugador")));
+                Optional.of(Town.founded(new TownId(11L), new PlayerId(1), island.id(), 1, "Atenas",
+                        LuxuryResource.WINE, Instant.now())));
+        given(playerRepository.find())
+                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", Instant.now())));
 
         mockMvc.perform(get("/islands/4"))
                 .andExpect(status().isOk())

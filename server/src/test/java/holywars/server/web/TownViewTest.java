@@ -6,13 +6,16 @@ import holywars.player.PlayerId;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.world.IslandId;
+import holywars.world.LuxuryResource;
+import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
 class TownViewTest {
 
     @Test
     void arrangesOwnerIslandAndPlotNumber() {
-        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(7), 3, "Atenas");
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(7), 3, "Atenas",
+                LuxuryResource.WINE, Instant.now());
 
         TownView view = TownView.of(town, "Jugador", "Naxos");
 

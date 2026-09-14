@@ -18,6 +18,8 @@ import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
 import holywars.world.IslandId;
+import holywars.world.LuxuryResource;
+import java.time.Instant;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +56,9 @@ class HomeControllerTest {
 
     @Test
     void redirectsToTheCapitalWhenThePlayerHasOne() throws Exception {
-        Player player = new Player(new PlayerId(1), "Jugador");
-        Town town = Town.founded(new TownId(5), player.id(), new IslandId(1), 1, "Atenas");
+        Player player = Player.starting(new PlayerId(1), "Jugador", Instant.now());
+        Town town = Town.founded(new TownId(5), player.id(), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, Instant.now());
         given(playerRepository.find()).willReturn(Optional.of(player));
         given(townRepository.findByOwner(player.id())).willReturn(Optional.of(town));
 

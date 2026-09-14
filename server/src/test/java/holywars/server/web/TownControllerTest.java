@@ -19,6 +19,7 @@ import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import holywars.world.World;
 import holywars.world.WorldRepository;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -54,11 +55,13 @@ class TownControllerTest {
 
     @Test
     void validTownRendersNameOwnerIslandAndPlotNumber() throws Exception {
-        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas");
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, Instant.now());
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
         given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find()).willReturn(Optional.of(new Player(new PlayerId(1), "Jugador")));
+        given(playerRepository.find())
+                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", Instant.now())));
         given(worldRepository.find()).willReturn(Optional.of(world));
 
         mockMvc.perform(get("/towns/1"))
