@@ -45,6 +45,18 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
         return new Town(id, ownerId, islandId, plotNumber, name, buildingSlots, resources.spend(wood, luxury));
     }
 
+    public Town startingConstruction(int position, BuildingType type, Instant now) {
+        Town advanced = advancedTo(now);
+        BuildingSlot slot = advanced.slot(position);
+        BuildingSlot underConstruction = slot.startingConstruction(type, advanced.townHallLevel(), now);
+        List<BuildingSlot> updatedSlots = advanced.buildingSlots.stream()
+                .map(existing -> existing.position() == position ? underConstruction : existing)
+                .toList();
+        TownResources spentResources = advanced.resources.spend(type.woodCost(), type.luxuryCost());
+        return new Town(advanced.id, advanced.ownerId, advanced.islandId, advanced.plotNumber, advanced.name,
+                updatedSlots, spentResources);
+    }
+
     public int townHallLevel() {
         return buildingSlots.stream()
                 .filter(BuildingSlot::isOccupiedTownHall)

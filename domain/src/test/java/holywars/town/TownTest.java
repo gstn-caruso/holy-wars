@@ -98,6 +98,19 @@ class TownTest {
     }
 
     @Test
+    void startingConstructionSpendsResourcesAndLeavesTheConstruction() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, FOUNDED_AT);
+
+        Town underConstruction = town.startingConstruction(2, BuildingType.WAREHOUSE, FOUNDED_AT);
+
+        assertThat(underConstruction.resources().woodAmount()).isEqualTo(460);
+        assertThat(underConstruction.resources().luxuryAmount()).isEqualTo(100);
+        assertThat(underConstruction.slot(2).construction())
+                .contains(Construction.startingAt(BuildingType.WAREHOUSE, FOUNDED_AT));
+    }
+
+    @Test
     void aTownWithoutAnOccupiedTownHallIsRejected() {
         List<BuildingSlot> withoutAnOccupiedTownHall = new ArrayList<>(BuildingSlots.standard());
         withoutAnOccupiedTownHall.set(0, new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1));
