@@ -13,4 +13,11 @@ class BuildingSlotTest {
 
         assertThat(slot.state(1)).isEqualTo(SlotState.LOCKED);
     }
+
+    @Test
+    void emptySlotWhoseRequirementIsExactlyMetIsFree() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 2, Optional.empty());
+
+        assertThat(slot.state(2)).isEqualTo(SlotState.FREE);
+    }
 }
