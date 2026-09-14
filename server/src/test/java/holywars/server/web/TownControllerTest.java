@@ -202,6 +202,23 @@ class TownControllerTest {
                 .andExpect(content().string(not(containsString("capital-header"))));
     }
 
+    @Test
+    void resourcesEndpointRendersOnlyTheResourceBar() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(playerRepository.find()).willReturn(Optional.of(player));
+
+        mockMvc.perform(get("/towns/1/resources"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("id=\"resource-bar\"")))
+                .andExpect(content().string(containsString("500")))
+                .andExpect(content().string(containsString("Madera")))
+                .andExpect(content().string(not(containsString("<!DOCTYPE"))))
+                .andExpect(content().string(not(containsString("capital-header"))));
+    }
+
     private static CapitalHeaderView aCapitalHeader() {
         ResourceBarView resourceBar = new ResourceBarView(530, 110, "Vino", "/img/resource-wine.svg", 520);
         return new CapitalHeaderView("Atenas", "[2:2]", resourceBar, 3L, 1L);
