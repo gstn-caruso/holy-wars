@@ -50,6 +50,30 @@ class NewGameTest {
     }
 
     @Test
+    void startWithTheSameSeedFoundsTheSameCapital() {
+        InMemoryWorldRepository worldRepositoryA = new InMemoryWorldRepository();
+        InMemoryPlayerRepository playerRepositoryA = new InMemoryPlayerRepository();
+        InMemoryTownRepository townRepositoryA = new InMemoryTownRepository();
+        NewGame newGameA = new NewGame(worldRepositoryA, playerRepositoryA, townRepositoryA, new WorldGenerator());
+
+        InMemoryWorldRepository worldRepositoryB = new InMemoryWorldRepository();
+        InMemoryPlayerRepository playerRepositoryB = new InMemoryPlayerRepository();
+        InMemoryTownRepository townRepositoryB = new InMemoryTownRepository();
+        NewGame newGameB = new NewGame(worldRepositoryB, playerRepositoryB, townRepositoryB, new WorldGenerator());
+
+        newGameA.start(1L);
+        newGameB.start(1L);
+
+        Town townA = townRepositoryA.find(1L).orElseThrow();
+        Town townB = townRepositoryB.find(1L).orElseThrow();
+        World worldA = worldRepositoryA.find().orElseThrow();
+        World worldB = worldRepositoryB.find().orElseThrow();
+
+        assertThat(townA).isEqualTo(townB);
+        assertThat(worldA).isEqualTo(worldB);
+    }
+
+    @Test
     void startDoesNothingWhenAWorldAlreadyExists() {
         InMemoryWorldRepository worldRepository = new InMemoryWorldRepository();
         InMemoryPlayerRepository playerRepository = new InMemoryPlayerRepository();
