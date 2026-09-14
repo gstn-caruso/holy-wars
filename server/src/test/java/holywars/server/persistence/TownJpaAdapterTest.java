@@ -100,6 +100,19 @@ class TownJpaAdapterTest {
                 .isEqualTo(startedAt.plus(BuildingType.WAREHOUSE.buildTime()));
     }
 
+    @Test
+    void savingATownAgainAfterStartingAConstructionUpdatesTheSlotRowInPlace() {
+        Town town = Town.founded(new TownId(6), new PlayerId(7), new IslandId(3), 1, "Micenas",
+                LuxuryResource.CRYSTAL, FOUNDED_AT);
+        townJpaAdapter.save(town);
+
+        Town underConstruction = town.startingConstruction(2, BuildingType.WAREHOUSE, FOUNDED_AT);
+        townJpaAdapter.save(underConstruction);
+
+        assertThat(townJpaAdapter.find(new TownId(6))).contains(underConstruction);
+        assertThat(countBuildingSlotRowsFor(6L)).isEqualTo(14L);
+    }
+
     private long countBuildingSlotRowsFor(long townId) {
         Long count = jdbcTemplate.queryForObject(
                 "select count(*) from building_slot where town_id = ?", Long.class, townId);
