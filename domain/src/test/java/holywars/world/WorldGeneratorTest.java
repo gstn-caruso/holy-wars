@@ -23,8 +23,8 @@ class WorldGeneratorTest {
         List<Coordinate> coordinates = islands.stream().map(Island::coordinate).distinct().toList();
         assertThat(coordinates).hasSize(settings.islandCount());
         assertThat(coordinates).allSatisfy(coordinate -> {
-            assertThat(coordinate.x()).isBetween(0, settings.gridWidth() - 1);
-            assertThat(coordinate.y()).isBetween(0, settings.gridHeight() - 1);
+            assertThat(coordinate.x()).isBetween(0, settings.grid().width() - 1);
+            assertThat(coordinate.y()).isBetween(0, settings.grid().height() - 1);
         });
 
         assertThat(islands).allSatisfy(island -> {

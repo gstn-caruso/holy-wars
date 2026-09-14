@@ -11,20 +11,19 @@ class WorldGenerationSettingsTest {
     void standardSettingsUseATenByTenGridWithTwentyIslands() {
         WorldGenerationSettings settings = WorldGenerationSettings.standard();
 
-        assertThat(settings.gridWidth()).isEqualTo(10);
-        assertThat(settings.gridHeight()).isEqualTo(10);
+        assertThat(settings.grid()).isEqualTo(new GridSize(10, 10));
         assertThat(settings.islandCount()).isEqualTo(20);
     }
 
     @Test
     void rejectsAnIslandCountLargerThanTheGrid() {
-        assertThatThrownBy(() -> new WorldGenerationSettings(2, 2, 5))
+        assertThatThrownBy(() -> new WorldGenerationSettings(new GridSize(2, 2), 5))
                 .isInstanceOf(WorldTooSmallException.class);
     }
 
     @Test
     void acceptsAnIslandCountEqualToTheGridCells() {
-        WorldGenerationSettings settings = new WorldGenerationSettings(2, 2, 4);
+        WorldGenerationSettings settings = new WorldGenerationSettings(new GridSize(2, 2), 4);
 
         assertThat(settings.islandCount()).isEqualTo(4);
     }
