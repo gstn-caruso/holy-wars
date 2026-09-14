@@ -1,6 +1,7 @@
 package holywars.world;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import holywars.town.PlotLocation;
 import holywars.town.TownId;
@@ -66,6 +67,14 @@ class WorldTest {
         Island updatedIkaria = updated.island(new IslandId(2)).orElseThrow();
         assertThat(updatedIkaria.plots().stream().filter(plot -> plot.number() == 5).findFirst().orElseThrow().town())
                 .isEqualTo(Optional.of(townId));
+    }
+
+    @Test
+    void foundingACityOnAnUnknownIslandIsRejected() {
+        World world = new World(GRID, List.of(islandNamed(1, "Naxos")));
+
+        assertThatThrownBy(() -> world.withCityFounded(new PlotLocation(new IslandId(99), 1), new TownId(1)))
+                .isInstanceOf(UnknownIslandException.class);
     }
 
     private Island islandNamed(int id, String name) {
