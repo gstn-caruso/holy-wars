@@ -25,7 +25,8 @@ public record TownResources(LuxuryResource luxury, long woodTicks, long luxuryTi
     }
 
     public TownResources spend(int wood, int luxury) {
-        return this;
+        return new TownResources(
+                this.luxury, woodTicks - wood * TICKS_PER_UNIT, luxuryTicks - luxury * TICKS_PER_UNIT, lastUpdate);
     }
 
     public TownResources advancedTo(Instant now) {

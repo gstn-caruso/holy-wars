@@ -99,6 +99,18 @@ class TownResourcesTest {
     }
 
     @Test
+    void spendingLessThanTheStockDiscountsExactlyThatAmount() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        TownResources afterSpending = resources.spend(100, 30);
+
+        assertThat(afterSpending.wood()).isEqualTo(400);
+        assertThat(afterSpending.luxuryAmount()).isEqualTo(70);
+        assertThat(afterSpending.lastUpdate()).isEqualTo(resources.lastUpdate());
+        assertThat(afterSpending.luxury()).isEqualTo(resources.luxury());
+    }
+
+    @Test
     void theLuxuryProducedNeverChangesWhenAdvancing() {
         TownResources resources = TownResources.initial(LuxuryResource.MARBLE, foundedAt);
 
