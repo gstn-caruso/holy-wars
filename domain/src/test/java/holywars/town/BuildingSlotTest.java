@@ -51,4 +51,11 @@ class BuildingSlotTest {
         assertThatThrownBy(() -> new BuildingSlot(13, SlotKind.COAST, 1, Optional.of(academy)))
                 .isInstanceOf(MismatchedBuildingTypeException.class);
     }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, 15})
+    void slotRejectsAPositionOutsideOneToFourteen(int invalidPosition) {
+        assertThatThrownBy(() -> new BuildingSlot(invalidPosition, SlotKind.LAND, 1, Optional.empty()))
+                .isInstanceOf(InvalidBuildingSlotPositionException.class);
+    }
 }
