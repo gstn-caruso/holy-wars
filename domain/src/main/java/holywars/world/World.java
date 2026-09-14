@@ -14,4 +14,10 @@ public record World(GridSize grid, List<Island> islands) {
                 .filter(candidate -> candidate.id().equals(id))
                 .findFirst();
     }
+
+    public Optional<Island> islandAt(Coordinate coordinate) {
+        return islands.stream()
+                .filter(candidate -> candidate.coordinate().equals(coordinate))
+                .findFirst();
+    }
 }
