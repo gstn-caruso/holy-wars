@@ -12,5 +12,13 @@
     <a th:href="@{/islands/{id}(id=${town.islandId()})}" th:text="${town.islandName()}">Isla</a>
 </p>
 <p th:text="'Parcela: ' + ${town.plotNumber()}">Parcela</p>
+<svg th:attr="viewBox='0 0 ' + ${town.scene().width()} + ' ' + ${town.scene().height()}" class="town-scene">
+    <image th:href="@{/img/town-scene.svg}" x="0" y="0" th:width="${town.scene().width()}" th:height="${town.scene().height()}"/>
+    <image th:each="plot : ${town.scene().plots()}"
+           th:href="@{'/img/' + ${plot.sprite()}}"
+           th:attr="x=${plot.x()},y=${plot.y()},width=${plot.width()},height=${plot.height()}">
+        <title th:text="${plot.label()}"></title>
+    </image>
+</svg>
 </body>
 </html>

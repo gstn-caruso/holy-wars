@@ -8,11 +8,13 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -72,6 +74,17 @@ class HolyWarsServerTest {
                 columnNames.add(resultSet.getString("name"));
             }
             assertThat(columnNames).contains("town_id").doesNotContain("free");
+        }
+    }
+
+    @Test
+    void buildingSlotsMigrationRejectsABuildingTypeWithoutALevel() throws Exception {
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement()) {
+            assertThatThrownBy(() -> statement.executeUpdate(
+                    "INSERT INTO building_slot (town_id, position, kind, required_town_hall_level, building_type, building_level) "
+                            + "VALUES (1, 1, 'TOWN_HALL', 1, 'TOWN_HALL', NULL)"))
+                    .isInstanceOf(SQLException.class);
         }
     }
 }

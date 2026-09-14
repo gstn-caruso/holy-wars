@@ -46,3 +46,10 @@ td.sea {
 td.island {
     background-color: #e3c16f;
 }
+
+.town-scene {
+    width: 100%;
+    max-width: 1200px;
+    height: auto;
+    display: block;
+}

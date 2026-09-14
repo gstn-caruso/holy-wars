@@ -124,6 +124,32 @@ class TownControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void showsTheTownSceneWithEachPlotsSprite() throws Exception {
+        foundEspartaAt(Instant.parse("2026-01-01T00:00:00Z"));
+
+        MvcResult result = mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String body = result.getResponse().getContentAsString();
+        assertThat(body).contains("/img/town-scene.svg");
+        assertThat(occurrencesOf(body, "<image")).isEqualTo(15);
+        assertThat(body).contains("Ayuntamiento nivel 1");
+        assertThat(body).contains("Requiere ayuntamiento nivel 2");
+        assertThat(body).contains("Parcela libre");
+
+        int firstLevelThreeLock = body.indexOf("Requiere ayuntamiento nivel 3");
+        int townHall = body.indexOf("Ayuntamiento nivel 1");
+        int levelFourLock = body.indexOf("Requiere ayuntamiento nivel 4");
+        assertThat(firstLevelThreeLock).isLessThan(townHall);
+        assertThat(townHall).isLessThan(levelFourLock);
+    }
+
+    private static int occurrencesOf(String body, String needle) {
+        return (body.length() - body.replace(needle, "").length()) / needle.length();
+    }
+
     private World foundEspartaAt(Instant foundedAt) {
         World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
         clock.set(foundedAt);
