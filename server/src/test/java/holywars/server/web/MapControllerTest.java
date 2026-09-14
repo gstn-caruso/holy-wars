@@ -64,6 +64,23 @@ class MapControllerTest {
         assertThat(body).contains("1 aldea");
     }
 
+    @Test
+    void showsAldeasInPluralWhenTwoTownsAreFoundedOnTheSameIsland() throws Exception {
+        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+        Island island = world.islands().get(0);
+        World withTwoTowns = world
+                .withCityFounded(new PlotLocation(island.id(), 1), new TownId(1))
+                .withCityFounded(new PlotLocation(island.id(), 2), new TownId(2));
+        worldRepository.save(withTwoTowns);
+
+        MvcResult result = mockMvc.perform(get("/map"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String body = result.getResponse().getContentAsString();
+        assertThat(body).contains("2 aldeas");
+    }
+
     private long occurrencesOf(String text, String token) {
         return Pattern.compile(Pattern.quote(token)).matcher(text).results().count();
     }
