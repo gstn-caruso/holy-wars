@@ -23,4 +23,11 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
                 .builtLevel()
                 .orElseThrow();
     }
+
+    public BuildingSlot slot(int position) {
+        return buildingSlots.stream()
+                .filter(slot -> slot.position() == position)
+                .findFirst()
+                .orElseThrow(() -> new InvalidBuildingSlotPositionException(position));
+    }
 }
