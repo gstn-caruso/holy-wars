@@ -51,4 +51,13 @@ class ConstructionWebFlowTest {
                 .andExpect(content().string(containsString("En obra: Almacén")))
                 .andExpect(content().string(containsString("460")));
     }
+
+    @Test
+    void buildingOnAnInvalidSlotPositionShowsItDoesNotExistInsteadOfFailing() throws Exception {
+        mockMvc.perform(post("/world")).andExpect(status().is3xxRedirection());
+
+        mockMvc.perform(post("/towns/1/slots/20/build").param("type", "WAREHOUSE"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("La parcela no existe")));
+    }
 }

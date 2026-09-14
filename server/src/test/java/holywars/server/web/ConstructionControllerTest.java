@@ -138,11 +138,22 @@ class ConstructionControllerTest {
     void buildEndpointShowsInvalidSlotPositionMessageInline() throws Exception {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
-        given(constructionService.start(new TownId(1), 2, BuildingType.WAREHOUSE))
-                .willThrow(new InvalidBuildingSlotPositionException(2));
+        given(constructionService.start(new TownId(1), 20, BuildingType.WAREHOUSE))
+                .willThrow(new InvalidBuildingSlotPositionException(20));
         given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
 
-        mockMvc.perform(post("/towns/1/slots/2/build").param("type", "WAREHOUSE"))
+        mockMvc.perform(post("/towns/1/slots/20/build").param("type", "WAREHOUSE"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("La parcela no existe")));
+    }
+
+    @Test
+    void buildMenuForAnInvalidSlotPositionShowsItDoesNotExist() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+
+        mockMvc.perform(get("/towns/1/slots/20/build-menu"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("La parcela no existe")));
     }
