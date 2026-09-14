@@ -1,7 +1,9 @@
 package holywars.server.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +14,15 @@ class TownScenePropertiesTest {
         TownSceneProperties properties = new TownSceneProperties(1200, 720, fullLayout());
 
         assertThat(properties.anchorFor(1)).isEqualTo(new PlotAnchor(600, 330, 140));
+    }
+
+    @Test
+    void rejectsALayoutMissingAPosition() {
+        Map<Integer, String> incompleteLayout = new HashMap<>(fullLayout());
+        incompleteLayout.remove(14);
+
+        assertThatThrownBy(() -> new TownSceneProperties(1200, 720, incompleteLayout))
+                .isInstanceOf(IncompleteTownSceneLayoutException.class);
     }
 
     private static Map<Integer, String> fullLayout() {
