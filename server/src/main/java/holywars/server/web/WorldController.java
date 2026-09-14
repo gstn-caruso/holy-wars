@@ -23,8 +23,6 @@ import org.springframework.web.server.ResponseStatusException;
 @Controller
 class WorldController {
 
-    private static final int GRID_SIZE = 10;
-
     private final WorldRepository worldRepository;
     private final TownRepository townRepository;
     private final PlayerRepository playerRepository;
@@ -68,7 +66,7 @@ class WorldController {
     }
 
     private List<List<MapCellView>> mapRows(World world) {
-        MapCellView[][] grid = new MapCellView[GRID_SIZE][GRID_SIZE];
+        MapCellView[][] grid = new MapCellView[World.GRID_SIZE][World.GRID_SIZE];
         for (MapCellView[] row : grid) {
             Arrays.fill(row, MapCellView.sea());
         }

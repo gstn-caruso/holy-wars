@@ -7,7 +7,6 @@ import java.util.Random;
 
 public final class WorldGenerator {
 
-    private static final int GRID_SIZE = 10;
     private static final int ISLAND_COUNT = 20;
 
     private static final List<String> GREEK_ISLAND_NAMES = List.of(
@@ -35,8 +34,8 @@ public final class WorldGenerator {
 
     private List<Coordinate> shuffledCoordinates(Random random) {
         List<Coordinate> coordinates = new ArrayList<>();
-        for (int x = 0; x < GRID_SIZE; x++) {
-            for (int y = 0; y < GRID_SIZE; y++) {
+        for (int x = 0; x < World.GRID_SIZE; x++) {
+            for (int y = 0; y < World.GRID_SIZE; y++) {
                 coordinates.add(new Coordinate(x, y));
             }
         }

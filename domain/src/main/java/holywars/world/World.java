@@ -6,6 +6,8 @@ import java.util.Random;
 
 public final class World {
 
+    public static final int GRID_SIZE = 10;
+
     private final List<Island> islands;
 
     public World(List<Island> islands) {
