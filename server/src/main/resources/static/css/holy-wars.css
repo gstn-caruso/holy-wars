@@ -370,3 +370,64 @@ td.island > div {
     font-size: 0.55rem;
     color: #274a1f;
 }
+
+#build-panel {
+    position: absolute;
+    top: 3vh;
+    right: 1vw;
+    width: 35vw;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#build-panel:empty {
+    display: none;
+}
+
+.build-menu {
+    background: #e9d8a6 url(/img/ui-panel-papyrus.svg) center / cover;
+    border-radius: 4px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+    padding: 16px 20px;
+    color: #4a2f12;
+}
+
+.build-menu h2 {
+    margin: 0 0 10px;
+    font-size: 1.1rem;
+}
+
+.build-menu .error {
+    color: #7a1a1a;
+    font-weight: bold;
+}
+
+.build-menu-status {
+    font-weight: bold;
+}
+
+.build-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-top: 1px solid #b39a5e;
+}
+
+.build-option img {
+    width: 64px;
+    height: 64px;
+}
+
+.build-option-name {
+    font-weight: bold;
+    flex: 1;
+}
+
+.build-menu-close {
+    display: inline-block;
+    margin-top: 12px;
+    color: #7a4a1f;
+    text-decoration: none;
+    font-weight: bold;
+}
