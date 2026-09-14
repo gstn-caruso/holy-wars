@@ -1,6 +1,7 @@
 package holywars.server.game;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import holywars.player.Player;
 import holywars.player.PlayerId;
@@ -70,8 +71,7 @@ class ConstructionServiceTest {
                 FOUNDED_AT);
         townRepository.save(town);
 
-        org.assertj.core.api.Assertions.assertThatThrownBy(
-                        () -> constructionService.startConstruction(new TownId(1), 2, BuildingType.ACADEMY))
+        assertThatThrownBy(() -> constructionService.startConstruction(new TownId(1), 2, BuildingType.ACADEMY))
                 .isInstanceOf(ForeignTownException.class);
 
         Town unchanged = townRepository.find(new TownId(1)).orElseThrow();
