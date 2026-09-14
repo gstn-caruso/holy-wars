@@ -34,4 +34,13 @@ class ResourceStockTest {
 
         assertThat(steppedTwice).isEqualTo(steppedOnce);
     }
+
+    @Test
+    void amountTruncatesAPartialUnit() {
+        ResourceStock stock = ResourceStock.of(0, 30);
+
+        ResourceStock advanced = stock.advancedTo(Duration.ofMinutes(1));
+
+        assertThat(advanced.amount()).isZero();
+    }
 }
