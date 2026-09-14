@@ -32,4 +32,14 @@ class WorldGeneratorTest {
             assertThat(island.plots()).allSatisfy(plot -> assertThat(plot.isFree()).isTrue());
         });
     }
+
+    @Test
+    void theSameSeedProducesEqualWorlds() {
+        WorldGenerationSettings settings = WorldGenerationSettings.standard();
+
+        World first = WorldGenerator.generate(123L, settings);
+        World second = WorldGenerator.generate(123L, settings);
+
+        assertThat(first).isEqualTo(second);
+    }
 }
