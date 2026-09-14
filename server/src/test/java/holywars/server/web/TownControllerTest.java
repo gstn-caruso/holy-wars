@@ -15,6 +15,7 @@ import holywars.world.World;
 import holywars.world.WorldGenerationSettings;
 import holywars.world.WorldGenerator;
 import holywars.world.WorldRepository;
+import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,9 +46,12 @@ class TownControllerTest {
     @Test
     void showsTheTownNameOwnerIslandAndPlot() throws Exception {
         World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+        Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
         worldRepository.save(world);
-        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500));
-        Town town = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(world.islands().get(0).id(), 1));
+        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500, foundedAt));
+        Town town = Town.founded(
+                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(world.islands().get(0).id(), 1),
+                world.islands().get(0).resource(), foundedAt);
         townRepository.save(town);
 
         MvcResult result = mockMvc.perform(get("/towns/1"))
