@@ -132,13 +132,15 @@ class JpaTownRepositoryTest {
 
     @Test
     void savingATownAgainReplacesItsSlots() {
-        Town town = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
+        Town town = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), LuxuryResource.WINE, FOUNDED_AT);
         townRepository.save(town);
         entityManager.flush();
         entityManager.clear();
 
         List<BuildingSlot> slotsWithAnAcademy = withBuildingAt(BuildingSlots.standard(1), 5, new Building(BuildingType.ACADEMY, 1));
-        Town townWithAnAcademy = new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), slotsWithAnAcademy);
+        Town townWithAnAcademy = new Town(
+                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), slotsWithAnAcademy,
+                TownResources.initial(LuxuryResource.WINE, FOUNDED_AT));
         townRepository.save(townWithAnAcademy);
         entityManager.flush();
         entityManager.clear();
@@ -149,7 +151,9 @@ class JpaTownRepositoryTest {
     @Test
     void savedTownWithAnOccupiedWallSlotIsFoundBackWithThatWall() {
         List<BuildingSlot> slots = withBuildingAt(BuildingSlots.standard(1), 12, new Building(BuildingType.WALL, 1));
-        Town town = new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), slots);
+        Town town = new Town(
+                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), slots,
+                TownResources.initial(LuxuryResource.WINE, FOUNDED_AT));
 
         townRepository.save(town);
         entityManager.flush();

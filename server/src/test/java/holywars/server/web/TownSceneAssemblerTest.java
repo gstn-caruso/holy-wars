@@ -11,7 +11,10 @@ import holywars.town.PlotLocation;
 import holywars.town.SlotKind;
 import holywars.town.Town;
 import holywars.town.TownId;
+import holywars.town.TownResources;
 import holywars.world.IslandId;
+import holywars.world.LuxuryResource;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +25,14 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 class TownSceneAssemblerTest {
 
+    private static final Instant FOUNDED_AT = Instant.parse("2026-01-01T00:00:00Z");
+
     @Test
     void aFreshlyFoundedTownDrawsItsTownHallAndItsFreeAndLockedPlots() {
         TownSceneAssembler assembler = new TownSceneAssembler(testProperties());
-        Town town = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
+        Town town = Town.founded(
+                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3),
+                LuxuryResource.WINE, FOUNDED_AT);
 
         TownSceneView scene = assembler.assemble(town);
 
@@ -56,7 +63,9 @@ class TownSceneAssemblerTest {
     @Test
     void sortsThePlotsByAscendingCy() {
         TownSceneAssembler assembler = new TownSceneAssembler(reversedCyProperties());
-        Town town = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
+        Town town = Town.founded(
+                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3),
+                LuxuryResource.WINE, FOUNDED_AT);
 
         List<PlotSpriteView> sprites = assembler.assemble(town).plots();
 
@@ -93,7 +102,9 @@ class TownSceneAssemblerTest {
         slots.set(
                 position - 1,
                 new BuildingSlot(position, original.kind(), original.requiredTownHallLevel(), Optional.of(new Building(type, 1))));
-        return new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), slots);
+        return new Town(
+                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), slots,
+                TownResources.initial(LuxuryResource.WINE, FOUNDED_AT));
     }
 
     private static int positionFor(SlotKind kind) {
