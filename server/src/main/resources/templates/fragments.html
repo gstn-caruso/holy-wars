@@ -15,5 +15,19 @@
     <a th:href="@{/map}">Mapa</a>
     <a th:href="@{/}">Mi aldea</a>
 </nav>
+<div th:fragment="resourceBar(bar)" class="resource-bar">
+    <span class="resource">
+        <img th:src="@{/img/resource-wood.svg}" alt="Madera">
+        <span th:text="${bar.wood()}">500</span>
+    </span>
+    <span class="resource">
+        <img th:src="@{'/img/' + ${bar.luxuryIcon()}}" th:alt="${bar.luxuryName()}">
+        <span th:text="${bar.luxuryAmount()}">100</span>
+    </span>
+    <span class="resource">
+        <img th:src="@{/img/resource-gold.svg}" alt="Oro">
+        <span th:text="${bar.gold()}">500</span>
+    </span>
+</div>
 </body>
 </html>
