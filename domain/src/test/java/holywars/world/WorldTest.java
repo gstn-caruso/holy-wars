@@ -1,6 +1,7 @@
 package holywars.world;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,14 @@ class WorldTest {
         World world = new World(List.of(naxos, ikaria));
 
         assertThat(world.island(new IslandId(2))).isSameAs(ikaria);
+    }
+
+    @Test
+    void aWorldRejectsAnUnknownIslandId() {
+        World world = new World(List.of(anIsland(1, "Naxos")));
+
+        assertThatThrownBy(() -> world.island(new IslandId(99)))
+                .isInstanceOf(UnknownIslandException.class);
     }
 
     private Island anIsland(long id, String name) {

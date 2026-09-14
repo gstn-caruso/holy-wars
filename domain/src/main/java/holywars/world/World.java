@@ -14,6 +14,6 @@ public final class World {
         return islands.stream()
                 .filter(island -> island.id().equals(id))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new UnknownIslandException(id));
     }
 }
