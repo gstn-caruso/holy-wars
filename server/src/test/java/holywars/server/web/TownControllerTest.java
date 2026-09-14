@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import holywars.player.Player;
 import holywars.player.PlayerId;
 import holywars.player.PlayerRepository;
+import holywars.town.BuildingType;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
@@ -200,6 +201,21 @@ class TownControllerTest {
                 .andExpect(content().string(containsString("id=\"build-panel\"")))
                 .andExpect(content().string(containsString("hx-get=\"/towns/1/slots/1/build-menu\"")))
                 .andExpect(content().string(containsString("hx-target=\"#build-panel\"")));
+    }
+
+    @Test
+    void sceneEndpointShowsAFinishedConstructionWithoutPersistingIt() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW)
+                .startingConstruction(2, BuildingType.WAREHOUSE, NOW);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(clock.instant()).willReturn(NOW.plus(BuildingType.WAREHOUSE.buildTime()));
+
+        mockMvc.perform(get("/towns/1/scene"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Almacén nivel 1")));
+
+        verify(townRepository, never()).save(any());
     }
 
     @Test
