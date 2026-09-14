@@ -6,7 +6,11 @@
 <nav th:replace="~{fragments :: nav}"></nav>
 <h1 th:text="${island.name()}">Isla</h1>
 <p th:text="'Coordenada: (' + ${island.coordinate().x()} + ', ' + ${island.coordinate().y()} + ')'">Coordenada</p>
-<p th:text="'Recurso: ' + ${island.resource()}">Recurso</p>
+<p class="island-luxury">
+    Recurso de lujo:
+    <img th:src="@{'/img/' + ${luxuryIcon}}" th:alt="${luxuryName}" class="luxury-icon">
+    <span th:text="${luxuryName}">Vino</span>
+</p>
 <ul>
     <li th:each="plot : ${plots}">
         <span th:text="'Parcela ' + ${plot.number()} + ' — '">Parcela</span>

@@ -12,6 +12,7 @@ import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
 import holywars.world.Island;
+import holywars.world.LuxuryResource;
 import holywars.world.World;
 import holywars.world.WorldGenerationSettings;
 import holywars.world.WorldGenerator;
@@ -80,6 +81,25 @@ class IslandControllerTest {
         String body = result.getResponse().getContentAsString();
         assertThat(body).contains(island.name());
         assertThat(occurrencesOf(body, "Libre")).isEqualTo(16);
+    }
+
+    @Test
+    void showsTheIslandsLuxuryInSpanishWithItsIcon() throws Exception {
+        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+        worldRepository.save(world);
+        Island island = world.islands().get(0);
+
+        MvcResult result = mockMvc.perform(get("/islands/" + island.id().value()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String body = result.getResponse().getContentAsString();
+        LuxuryResourceView luxury = LuxuryResourceView.of(island.resource());
+        assertThat(body).contains(luxury.spanishName());
+        assertThat(body).contains(luxury.icon());
+        for (LuxuryResource resource : LuxuryResource.values()) {
+            assertThat(body).doesNotContain(resource.name());
+        }
     }
 
     @Test

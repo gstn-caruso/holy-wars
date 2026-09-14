@@ -32,7 +32,10 @@ class IslandController {
         Island island = world.island(new IslandId(id))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
+        LuxuryResourceView luxury = LuxuryResourceView.of(island.resource());
         model.addAttribute("island", island);
+        model.addAttribute("luxuryName", luxury.spanishName());
+        model.addAttribute("luxuryIcon", luxury.icon());
         model.addAttribute("plots", plotViews(island));
         return "island";
     }
