@@ -127,6 +127,29 @@ class TownControllerTest {
     }
 
     @Test
+    void showingTheTownDoesNotPersistTheAdvancedResources() throws Exception {
+        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+        Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
+        clock.set(foundedAt);
+        worldRepository.save(world);
+        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500, foundedAt));
+        Town town = Town.founded(
+                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(world.islands().get(0).id(), 1),
+                world.islands().get(0).resource(), foundedAt);
+        townRepository.save(town);
+
+        clock.advance(Duration.ofHours(1));
+
+        mockMvc.perform(get("/towns/1")).andExpect(status().isOk());
+
+        Town persistedTown = townRepository.find(new TownId(1)).orElseThrow();
+        assertThat(persistedTown.resources().lastUpdate()).isEqualTo(foundedAt);
+
+        Player persistedOwner = playerRepository.find(new PlayerId(1)).orElseThrow();
+        assertThat(persistedOwner.lastUpdate()).isEqualTo(foundedAt);
+    }
+
+    @Test
     void returnsNotFoundForAnUnknownTown() throws Exception {
         mockMvc.perform(get("/towns/999"))
                 .andExpect(status().isNotFound());
