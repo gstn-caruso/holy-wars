@@ -37,4 +37,15 @@ class TownSceneViewTest {
         assertThat(view.plots()).extracting(PlotSceneView::position)
                 .containsExactly(12, 9, 2, 5, 6, 1, 10, 11, 7, 8, 3, 4, 13, 14);
     }
+
+    @Test
+    void carriesTheLayoutWidthAndHeight() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas");
+        TownSceneProperties layout = new TownSceneProperties(1200, 720, STANDARD_ANCHORS);
+
+        TownSceneView view = TownSceneView.of(town, layout);
+
+        assertThat(view.width()).isEqualTo(1200);
+        assertThat(view.height()).isEqualTo(720);
+    }
 }
