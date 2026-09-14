@@ -6,6 +6,7 @@ import holywars.player.Player;
 import holywars.player.PlayerId;
 import holywars.player.PlayerRepository;
 import jakarta.persistence.EntityManager;
+import java.time.Duration;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,18 @@ class JpaPlayerRepositoryTest {
     @Test
     void savedPlayerIsFoundBackEqualToTheOriginal() {
         Player player = Player.human(new PlayerId(1), "Jugador", 500, STARTED_AT);
+
+        playerRepository.save(player);
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThat(playerRepository.find(new PlayerId(1))).contains(player);
+    }
+
+    @Test
+    void savedPlayerWithAdvancedGoldIsFoundBackEqualToTheOriginal() {
+        Player player = Player.human(new PlayerId(1), "Jugador", 500, STARTED_AT)
+                .advancedTo(STARTED_AT.plus(Duration.ofHours(1)));
 
         playerRepository.save(player);
         entityManager.flush();

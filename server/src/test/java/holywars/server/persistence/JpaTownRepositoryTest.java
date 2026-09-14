@@ -10,6 +10,7 @@ import holywars.town.TownRepository;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import jakarta.persistence.EntityManager;
+import java.time.Duration;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,18 @@ class JpaTownRepositoryTest {
     @Test
     void savedTownIsFoundBackEqualToTheOriginal() {
         Town town = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), LuxuryResource.WINE, FOUNDED_AT);
+
+        townRepository.save(town);
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThat(townRepository.find(new TownId(1))).contains(town);
+    }
+
+    @Test
+    void savedTownWithAdvancedResourcesIsFoundBackEqualToTheOriginal() {
+        Town town = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), LuxuryResource.WINE, FOUNDED_AT)
+                .advancedTo(FOUNDED_AT.plus(Duration.ofHours(1)));
 
         townRepository.save(town);
         entityManager.flush();
