@@ -8,7 +8,6 @@ import holywars.town.TownRepository;
 import holywars.world.Island;
 import holywars.world.World;
 import holywars.world.WorldRepository;
-import java.time.Clock;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,15 +22,15 @@ class TownController {
     private final WorldRepository worldRepository;
     private final PlayerRepository playerRepository;
     private final TownSceneProperties townSceneLayout;
-    private final Clock clock;
+    private final CapitalHeaders capitalHeaders;
 
     TownController(TownRepository townRepository, WorldRepository worldRepository,
-            PlayerRepository playerRepository, TownSceneProperties townSceneLayout, Clock clock) {
+            PlayerRepository playerRepository, TownSceneProperties townSceneLayout, CapitalHeaders capitalHeaders) {
         this.townRepository = townRepository;
         this.worldRepository = worldRepository;
         this.playerRepository = playerRepository;
         this.townSceneLayout = townSceneLayout;
-        this.clock = clock;
+        this.capitalHeaders = capitalHeaders;
     }
 
     @GetMapping("/towns/{id}")
@@ -44,15 +43,8 @@ class TownController {
 
         model.addAttribute("town", TownView.of(town, player.name(), island.name()));
         model.addAttribute("scene", TownSceneView.of(town, townSceneLayout));
-        model.addAttribute("header", capitalHeader(world, player));
+        model.addAttribute("header", capitalHeaders.forPlayer(world, player));
         model.addAttribute("breadcrumb", BreadcrumbView.upToTown(island, town));
         return "town";
-    }
-
-    private CapitalHeaderView capitalHeader(World world, Player player) {
-        Town capital = townRepository.findByOwner(player.id()).orElseThrow();
-        Island capitalIsland = world.island(capital.islandId());
-        ResourceBarView resourceBar = ResourceBarView.of(capital, player, clock.instant());
-        return CapitalHeaderView.of(capitalIsland, capital, resourceBar);
     }
 }
