@@ -1,6 +1,8 @@
 package holywars.town;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 
 public enum BuildingType {
     TOWN_HALL(SlotKind.TOWN_HALL, 0, 0, Duration.ZERO),
@@ -29,6 +31,10 @@ public enum BuildingType {
         this.woodCost = woodCost;
         this.luxuryCost = luxuryCost;
         this.buildTime = buildTime;
+    }
+
+    public static List<BuildingType> forKind(SlotKind kind) {
+        return Arrays.stream(values()).filter(type -> type.kind == kind).toList();
     }
 
     public SlotKind kind() {
