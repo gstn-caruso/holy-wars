@@ -129,6 +129,14 @@ class TownTest {
     }
 
     @Test
+    void startingAConstructionOnAnUnknownPositionIsRejected() {
+        Town town = Town.founded(id, "Atenas", ownerId, location, LuxuryResource.WINE, foundedAt);
+
+        assertThatThrownBy(() -> town.startingConstruction(15, BuildingType.CARPENTER, foundedAt))
+                .isInstanceOf(InvalidBuildingSlotPositionException.class);
+    }
+
+    @Test
     void townRejectsASlotListThatIsNotTheFourteenPositions() {
         List<BuildingSlot> thirteenSlots = BuildingSlots.standard(1).subList(0, 13);
         assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, thirteenSlots, resources))
