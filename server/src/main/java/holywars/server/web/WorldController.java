@@ -55,7 +55,7 @@ class WorldController {
     }
 
     private Optional<IslandPlot> occupiedPlot(Island island) {
-        return island.plots().stream().filter(plot -> !plot.isFree()).findFirst();
+        return island.occupiedPlots().stream().findFirst();
     }
 
     private String townNameOf(IslandPlot plot) {

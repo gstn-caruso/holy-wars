@@ -9,7 +9,7 @@ record MapCellView(boolean island, long islandId, String islandName, String icon
     }
 
     static MapCellView of(Island island) {
-        long occupiedPlotCount = island.plots().stream().filter(plot -> !plot.isFree()).count();
+        int occupiedPlotCount = island.occupiedPlots().size();
         return new MapCellView(true, island.id().value(), island.name(),
                 LuxuryResourceIcon.pathFor(island.luxuryResource()), villageCountLabel(occupiedPlotCount));
     }
