@@ -25,6 +25,7 @@ import holywars.world.LuxuryResource;
 import holywars.world.World;
 import holywars.world.WorldRepository;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -205,11 +206,12 @@ class TownControllerTest {
 
     @Test
     void sceneEndpointShowsAFinishedConstructionWithoutPersistingIt() throws Exception {
+        Instant foundedAt = NOW.minus(BuildingType.WAREHOUSE.buildTime()).minus(Duration.ofDays(1));
+        Instant startedAt = NOW.minus(BuildingType.WAREHOUSE.buildTime());
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
-                LuxuryResource.WINE, NOW)
-                .startingConstruction(2, BuildingType.WAREHOUSE, NOW);
+                LuxuryResource.WINE, foundedAt)
+                .startingConstruction(2, BuildingType.WAREHOUSE, startedAt);
         given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(clock.instant()).willReturn(NOW.plus(BuildingType.WAREHOUSE.buildTime()));
 
         mockMvc.perform(get("/towns/1/scene"))
                 .andExpect(status().isOk())
