@@ -104,6 +104,23 @@ class TownControllerTest {
     }
 
     @Test
+    void showsASpanishLabelForEachResource() throws Exception {
+        World world = foundEspartaAt(Instant.parse("2026-01-01T00:00:00Z"));
+
+        String body = mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        LuxuryResourceView luxury = LuxuryResourceView.of(world.islands().get(0).resource());
+        assertThat(occurrencesOf(body, "class=\"resource-label\"")).isEqualTo(3);
+        assertThat(body).contains("<span class=\"resource-label\">Madera</span>");
+        assertThat(body).contains("<span class=\"resource-label\">" + luxury.spanishName() + "</span>");
+        assertThat(body).contains("<span class=\"resource-label\">Oro</span>");
+    }
+
+    @Test
     void showingTheTownDoesNotPersistTheAdvancedResources() throws Exception {
         Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
         foundEspartaAt(foundedAt);

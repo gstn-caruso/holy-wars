@@ -33,6 +33,7 @@ class IslandController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         model.addAttribute("island", island);
+        model.addAttribute("luxury", LuxuryResourceView.of(island.resource()));
         model.addAttribute("plots", plotViews(island));
         return "island";
     }

@@ -21,8 +21,8 @@
     </image>
 </svg>
 <p class="error" th:if="${error}" th:text="${error}">Error</p>
-<div class="build-menu" th:each="option : ${buildOptions}">
-    <form method="post" th:action="@{/towns/{id}/slots/{position}/build(id=${town.id()}, position=${option.position()})}">
+<section class="build-menu" th:if="${not #lists.isEmpty(buildOptions)}">
+    <form th:each="option : ${buildOptions}" method="post" th:action="@{/towns/{id}/slots/{position}/build(id=${town.id()}, position=${option.position()})}">
         <label th:text="${option.slotLabel()}">Parcela</label>
         <select name="type">
             <option th:each="choice : ${option.choices()}"
@@ -33,6 +33,6 @@
         </select>
         <button type="submit">Construir</button>
     </form>
-</div>
+</section>
 </body>
 </html>

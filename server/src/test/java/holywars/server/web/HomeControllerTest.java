@@ -50,6 +50,14 @@ class HomeControllerTest {
     }
 
     @Test
+    void theHomePageWelcomesInAPanelWithTheNewGameButton() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("class=\"panel welcome\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Nueva partida")));
+    }
+
+    @Test
     void redirectsToTheHumanCapitalWhenAGameIsInProgress() throws Exception {
         Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
         playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500, foundedAt));

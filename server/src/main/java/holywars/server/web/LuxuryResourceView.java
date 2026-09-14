@@ -20,11 +20,11 @@ enum LuxuryResourceView {
         return valueOf(luxury.name());
     }
 
-    String spanishName() {
+    public String spanishName() {
         return spanishName;
     }
 
-    String icon() {
+    public String icon() {
         return icon;
     }
 }

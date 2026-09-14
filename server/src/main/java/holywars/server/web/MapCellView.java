@@ -2,7 +2,7 @@ package holywars.server.web;
 
 import holywars.world.Island;
 
-record MapCellView(boolean sea, Integer islandId, String islandName, String resource, int townCount) {
+record MapCellView(boolean sea, Integer islandId, String islandName, LuxuryResourceView luxury, int townCount) {
 
     static MapCellView seaCell() {
         return new MapCellView(true, null, null, null, 0);
@@ -10,7 +10,8 @@ record MapCellView(boolean sea, Integer islandId, String islandName, String reso
 
     static MapCellView islandCell(Island island) {
         long townCount = island.plots().stream().filter(plot -> !plot.isFree()).count();
-        return new MapCellView(false, island.id().value(), island.name(), island.resource().name(), (int) townCount);
+        return new MapCellView(
+                false, island.id().value(), island.name(), LuxuryResourceView.of(island.resource()), (int) townCount);
     }
 
     public String townsLabel() {

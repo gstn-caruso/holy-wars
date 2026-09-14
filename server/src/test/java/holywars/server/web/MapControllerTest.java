@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import holywars.town.PlotLocation;
 import holywars.town.TownId;
 import holywars.world.Island;
+import holywars.world.LuxuryResource;
 import holywars.world.World;
 import holywars.world.WorldGenerationSettings;
 import holywars.world.WorldGenerator;
@@ -79,6 +80,26 @@ class MapControllerTest {
 
         String body = result.getResponse().getContentAsString();
         assertThat(body).contains("2 aldeas");
+    }
+
+    @Test
+    void showsEachIslandsLuxuryInSpanishWithItsIcon() throws Exception {
+        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+        worldRepository.save(world);
+
+        MvcResult result = mockMvc.perform(get("/map"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String body = result.getResponse().getContentAsString();
+        world.islands().forEach(island -> {
+            LuxuryResourceView luxury = LuxuryResourceView.of(island.resource());
+            assertThat(body).contains(luxury.spanishName());
+            assertThat(body).contains(luxury.icon());
+        });
+        for (LuxuryResource resource : LuxuryResource.values()) {
+            assertThat(body).doesNotContain(resource.name());
+        }
     }
 
     private long occurrencesOf(String text, String token) {

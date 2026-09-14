@@ -10,7 +10,10 @@
         <td th:each="cell : ${row}" th:class="${cell.sea()} ? 'sea' : 'island'">
             <a th:if="${!cell.sea()}"
                th:href="@{/islands/{id}(id=${cell.islandId()})}"
-               th:text="${cell.islandName() + ' (' + cell.resource() + ')'}">Isla</a>
+               class="island-link">
+                <span class="island-name" th:text="${cell.islandName()}">Isla</span>
+                <img th:src="@{'/img/' + ${cell.luxury().icon()}}" th:alt="${cell.luxury().spanishName()}" class="luxury-icon">
+            </a>
             <span th:if="${!cell.sea() and cell.townCount() > 0}"
                   th:text="${cell.townsLabel()}">n aldeas</span>
         </td>
