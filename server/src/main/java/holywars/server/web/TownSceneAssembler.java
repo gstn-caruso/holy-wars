@@ -72,8 +72,8 @@ class TownSceneAssembler {
     }
 
     private static long minutesLeft(Instant now, Instant finishesAt) {
-        long secondsLeft = Duration.between(now, finishesAt).toSeconds();
-        return (secondsLeft + 59) / 60;
+        long millisLeft = Duration.between(now, finishesAt).toMillis();
+        return (millisLeft + 59_999) / 60_000;
     }
 
     private record SlotWithAnchor(BuildingSlot slot, PlotAnchor anchor) {
