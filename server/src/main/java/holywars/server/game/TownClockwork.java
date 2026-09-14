@@ -12,12 +12,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Component
 public class TownClockwork {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TownClockwork.class);
     private static final Duration TICK_INTERVAL = Duration.ofSeconds(10);
     private static final Duration SUBSCRIPTION_TIMEOUT = Duration.ofMinutes(30);
 
@@ -53,6 +56,7 @@ public class TownClockwork {
             ScheduledFuture<?> task = scheduler.schedule(() -> onFinish(town.id()), delay.toMillis(),
                     TimeUnit.MILLISECONDS);
             finishTasksByTown.put(town.id(), task);
+            LOG.info("Scheduled finish for town {} in {}", town.id(), delay);
         });
     }
 
@@ -79,6 +83,7 @@ public class TownClockwork {
         if (sinks == null) {
             return;
         }
+        LOG.info("Emitting {} to town {}", eventName, townId);
         for (TownEventSink sink : sinks) {
             try {
                 sink.send(eventName);
