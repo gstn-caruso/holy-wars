@@ -9,6 +9,7 @@ import holywars.player.PlayerId;
 import holywars.player.PlayerRepository;
 import holywars.server.MutableClock;
 import holywars.server.TestClockConfiguration;
+import holywars.town.BuildingType;
 import holywars.town.PlotLocation;
 import holywars.town.Town;
 import holywars.town.TownId;
@@ -119,6 +120,42 @@ class TownControllerTest {
     }
 
     @Test
+    void showsABuildFormForEachFreePlot() throws Exception {
+        foundEspartaAt(Instant.parse("2026-01-01T00:00:00Z"));
+
+        String body = mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertThat(occurrencesOf(body, "<form")).isEqualTo(6);
+        assertThat(body).contains("action=\"/towns/1/slots/2/build\"");
+        assertThat(body).contains("<option value=\"ACADEMY\"");
+    }
+
+    @Test
+    void aRivalsTownShowsNoBuildForm() throws Exception {
+        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+        Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
+        clock.set(foundedAt);
+        worldRepository.save(world);
+        playerRepository.save(Player.ai(new PlayerId(2), "Rival", 500, foundedAt));
+        Town town = Town.founded(
+                new TownId(1), "Troya", new PlayerId(2), new PlotLocation(world.islands().get(0).id(), 1),
+                world.islands().get(0).resource(), foundedAt);
+        townRepository.save(town);
+
+        String body = mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertThat(occurrencesOf(body, "<form")).isEqualTo(0);
+    }
+
+    @Test
     void returnsNotFoundForAnUnknownTown() throws Exception {
         mockMvc.perform(get("/towns/999"))
                 .andExpect(status().isNotFound());
@@ -144,6 +181,30 @@ class TownControllerTest {
         int levelFourLock = body.indexOf("Requiere ayuntamiento nivel 4");
         assertThat(firstLevelThreeLock).isLessThan(townHall);
         assertThat(townHall).isLessThan(levelFourLock);
+    }
+
+    @Test
+    void showsTheFinishedBuildingOnceTheClockPassesTheEnd() throws Exception {
+        Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
+        foundEspartaAt(foundedAt);
+        Town underConstruction = townRepository.find(new TownId(1)).orElseThrow()
+                .startingConstruction(2, BuildingType.ACADEMY, foundedAt);
+        townRepository.save(underConstruction);
+
+        clock.set(foundedAt.plus(BuildingType.ACADEMY.buildTime()).plusSeconds(1));
+
+        String body = mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertThat(body).contains("building-academy.svg");
+        assertThat(body).contains("Academia nivel 1");
+
+        Town persisted = townRepository.find(new TownId(1)).orElseThrow();
+        assertThat(persisted.slots().stream().filter(slot -> slot.position() == 2).findFirst().orElseThrow().construction())
+                .isPresent();
     }
 
     private static int occurrencesOf(String body, String needle) {

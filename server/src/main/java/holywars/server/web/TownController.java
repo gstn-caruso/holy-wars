@@ -10,6 +10,7 @@ import holywars.world.World;
 import holywars.world.WorldRepository;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,22 +26,37 @@ class TownController {
     private final WorldRepository worldRepository;
     private final Clock clock;
     private final TownSceneAssembler townSceneAssembler;
+    private final BuildMenuAssembler buildMenuAssembler;
 
     TownController(
             TownRepository townRepository,
             PlayerRepository playerRepository,
             WorldRepository worldRepository,
             Clock clock,
-            TownSceneAssembler townSceneAssembler) {
+            TownSceneAssembler townSceneAssembler,
+            BuildMenuAssembler buildMenuAssembler) {
         this.townRepository = townRepository;
         this.playerRepository = playerRepository;
         this.worldRepository = worldRepository;
         this.clock = clock;
         this.townSceneAssembler = townSceneAssembler;
+        this.buildMenuAssembler = buildMenuAssembler;
     }
 
     @GetMapping("/towns/{id}")
     String town(@PathVariable("id") int id, Model model) {
+        TownContext context = loadContext(id);
+        Instant now = clock.instant();
+        Town advancedTown = context.town().advancedTo(now);
+        Player advancedOwner = context.owner().advancedTo(now);
+
+        model.addAttribute("town", townViewOf(id, context, advancedTown, now));
+        model.addAttribute("resourceBar", resourceBarOf(advancedTown, advancedOwner));
+        model.addAttribute("buildOptions", buildOptionsFor(advancedOwner, advancedTown));
+        return "town";
+    }
+
+    private TownContext loadContext(int id) {
         Town town = townRepository.find(new TownId(id))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Player owner = playerRepository.find(town.ownerId())
@@ -49,22 +65,25 @@ class TownController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Island island = world.island(town.location().island())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        model.addAttribute("town", new TownView(
-                town.name(),
-                owner.name(),
-                island.name(),
-                island.id().value(),
-                town.location().plotNumber(),
-                townSceneAssembler.assemble(town)));
-        model.addAttribute("resourceBar", resourceBarAdvancedToNow(town, owner));
-        return "town";
+        return new TownContext(town, owner, island);
     }
 
-    private ResourceBarView resourceBarAdvancedToNow(Town town, Player owner) {
-        Instant now = clock.instant();
-        Town advancedTown = town.advancedTo(now);
-        Player advancedOwner = owner.advancedTo(now);
+    private TownView townViewOf(int id, TownContext context, Town advancedTown, Instant now) {
+        return new TownView(
+                id,
+                advancedTown.name(),
+                context.owner().name(),
+                context.island().name(),
+                context.island().id().value(),
+                advancedTown.location().plotNumber(),
+                townSceneAssembler.assemble(advancedTown, now));
+    }
+
+    private List<BuildOptionView> buildOptionsFor(Player advancedOwner, Town advancedTown) {
+        return advancedOwner.isHuman() ? buildMenuAssembler.assemble(advancedTown) : List.of();
+    }
+
+    private static ResourceBarView resourceBarOf(Town advancedTown, Player advancedOwner) {
         LuxuryResourceView luxury = LuxuryResourceView.of(advancedTown.resources().luxury());
 
         return new ResourceBarView(
@@ -73,5 +92,8 @@ class TownController {
                 luxury.spanishName(),
                 luxury.icon(),
                 advancedOwner.gold());
+    }
+
+    private record TownContext(Town town, Player owner, Island island) {
     }
 }

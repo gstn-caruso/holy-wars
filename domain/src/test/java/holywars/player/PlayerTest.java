@@ -32,6 +32,20 @@ class PlayerTest {
     }
 
     @Test
+    void aHumanPlayerIsHuman() {
+        Player player = Player.human(new PlayerId(1), "Jugador", 500, startedAt);
+
+        assertThat(player.isHuman()).isTrue();
+    }
+
+    @Test
+    void anAiPlayerIsNotHuman() {
+        Player player = Player.ai(new PlayerId(2), "Perseo", 500, startedAt);
+
+        assertThat(player.isHuman()).isFalse();
+    }
+
+    @Test
     void aPlayersGoldGrowsTwentyPerHour() {
         Player player = Player.human(new PlayerId(1), "Jugador", 500, startedAt);
 

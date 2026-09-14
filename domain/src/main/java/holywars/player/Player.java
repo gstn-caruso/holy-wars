@@ -20,6 +20,10 @@ public record Player(PlayerId id, String name, PlayerKind kind, long goldTicks, 
         return goldTicks / TICKS_PER_UNIT;
     }
 
+    public boolean isHuman() {
+        return kind == PlayerKind.HUMAN;
+    }
+
     public Player advancedTo(Instant now) {
         if (now.isBefore(lastUpdate)) {
             throw new InvalidAdvanceInstantException(lastUpdate, now);

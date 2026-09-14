@@ -20,5 +20,19 @@
         <title th:text="${plot.label()}"></title>
     </image>
 </svg>
+<p class="error" th:if="${error}" th:text="${error}">Error</p>
+<div class="build-menu" th:each="option : ${buildOptions}">
+    <form method="post" th:action="@{/towns/{id}/slots/{position}/build(id=${town.id()}, position=${option.position()})}">
+        <label th:text="${option.slotLabel()}">Parcela</label>
+        <select name="type">
+            <option th:each="choice : ${option.choices()}"
+                    th:value="${choice.type()}"
+                    th:text="${choice.name()} + ' · ' + ${choice.wood()} + ' madera, ' + ${choice.luxury()} + ' lujo, ' + ${choice.minutes()} + ' min'">
+                Edificio
+            </option>
+        </select>
+        <button type="submit">Construir</button>
+    </form>
+</div>
 </body>
 </html>

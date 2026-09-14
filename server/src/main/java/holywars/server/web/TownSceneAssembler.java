@@ -6,30 +6,14 @@ import holywars.town.BuildingType;
 import holywars.town.Construction;
 import holywars.town.SlotKind;
 import holywars.town.Town;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import org.springframework.stereotype.Component;
 
 @Component
 class TownSceneAssembler {
-
-    private static final Map<BuildingType, String> BUILDING_NAMES = Map.ofEntries(
-            Map.entry(BuildingType.TOWN_HALL, "Ayuntamiento"),
-            Map.entry(BuildingType.WALL, "Muralla"),
-            Map.entry(BuildingType.TRADING_PORT, "Puerto comercial"),
-            Map.entry(BuildingType.SHIPYARD, "Astillero"),
-            Map.entry(BuildingType.ACADEMY, "Academia"),
-            Map.entry(BuildingType.WAREHOUSE, "Almacén"),
-            Map.entry(BuildingType.TAVERN, "Taberna"),
-            Map.entry(BuildingType.BARRACKS, "Cuartel"),
-            Map.entry(BuildingType.TEMPLE, "Templo"),
-            Map.entry(BuildingType.MARKET, "Mercado"),
-            Map.entry(BuildingType.CARPENTER, "Carpintería"),
-            Map.entry(BuildingType.WINERY, "Viñedo"),
-            Map.entry(BuildingType.STONEMASON, "Cantería"),
-            Map.entry(BuildingType.GLASSBLOWER, "Vidriería"),
-            Map.entry(BuildingType.ALCHEMIST, "Alquimista"));
 
     private final TownSceneProperties properties;
 
@@ -37,17 +21,17 @@ class TownSceneAssembler {
         this.properties = properties;
     }
 
-    TownSceneView assemble(Town town) {
+    TownSceneView assemble(Town town, Instant now) {
         int townHallLevel = town.townHallLevel();
         List<PlotSpriteView> sprites = town.slots().stream()
                 .map(slot -> new SlotWithAnchor(slot, properties.anchorFor(slot.position())))
                 .sorted(Comparator.comparingInt(slotWithAnchor -> slotWithAnchor.anchor().cy()))
-                .map(slotWithAnchor -> spriteFor(slotWithAnchor.slot(), slotWithAnchor.anchor(), townHallLevel))
+                .map(slotWithAnchor -> spriteFor(slotWithAnchor.slot(), slotWithAnchor.anchor(), townHallLevel, now))
                 .toList();
         return new TownSceneView(properties.width(), properties.height(), sprites);
     }
 
-    private PlotSpriteView spriteFor(BuildingSlot slot, PlotAnchor anchor, int townHallLevel) {
+    private PlotSpriteView spriteFor(BuildingSlot slot, PlotAnchor anchor, int townHallLevel, Instant now) {
         int x = anchor.cx() - anchor.width() / 2;
         int height = heightFor(slot.kind(), anchor.width());
         int y = anchor.cy() - height;
@@ -59,7 +43,7 @@ class TownSceneAssembler {
             case UNDER_CONSTRUCTION -> {
                 Construction construction = slot.construction().orElseThrow();
                 yield new PlotSpriteView(
-                        "plot-under-construction.svg", "En obra: " + BUILDING_NAMES.get(construction.type()),
+                        "plot-under-construction.svg", labelFor(construction, now),
                         x, y, anchor.width(), height);
             }
             case FREE -> new PlotSpriteView("plot-free.svg", "Parcela libre", x, y, anchor.width(), height);
@@ -79,7 +63,17 @@ class TownSceneAssembler {
     }
 
     private static String labelFor(Building building) {
-        return BUILDING_NAMES.get(building.type()) + " nivel " + building.level();
+        return BuildingNames.spanishNameOf(building.type()) + " nivel " + building.level();
+    }
+
+    private static String labelFor(Construction construction, Instant now) {
+        return "En obra: " + BuildingNames.spanishNameOf(construction.type())
+                + " · faltan " + minutesLeft(now, construction.finishesAt()) + " min";
+    }
+
+    private static long minutesLeft(Instant now, Instant finishesAt) {
+        long millisLeft = Duration.between(now, finishesAt).toMillis();
+        return (millisLeft + 59_999) / 60_000;
     }
 
     private record SlotWithAnchor(BuildingSlot slot, PlotAnchor anchor) {
