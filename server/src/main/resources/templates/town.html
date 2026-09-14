@@ -8,6 +8,7 @@
 <p th:text="'Dueño: ' + ${town.ownerName}"></p>
 <p>Isla: <a th:href="@{/islands/{id}(id=${town.islandId})}" th:text="${town.islandName}"></a></p>
 <p th:text="'Parcela: ' + ${town.plotNumber}"></p>
+<svg th:replace="~{fragments/townScene :: townScene(scene=${scene})}"></svg>
 </main>
 </body>
 </html>

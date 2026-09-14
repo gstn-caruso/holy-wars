@@ -19,12 +19,14 @@ class TownController {
     private final TownRepository townRepository;
     private final WorldRepository worldRepository;
     private final PlayerRepository playerRepository;
+    private final TownSceneProperties townSceneLayout;
 
     TownController(TownRepository townRepository, WorldRepository worldRepository,
-            PlayerRepository playerRepository) {
+            PlayerRepository playerRepository, TownSceneProperties townSceneLayout) {
         this.townRepository = townRepository;
         this.worldRepository = worldRepository;
         this.playerRepository = playerRepository;
+        this.townSceneLayout = townSceneLayout;
     }
 
     @GetMapping("/towns/{id}")
@@ -34,6 +36,7 @@ class TownController {
         String ownerName = playerRepository.find().orElseThrow().name();
         Island island = worldRepository.find().orElseThrow().island(town.islandId());
         model.addAttribute("town", TownView.of(town, ownerName, island.name()));
+        model.addAttribute("scene", TownSceneView.of(town, townSceneLayout));
         return "town";
     }
 }

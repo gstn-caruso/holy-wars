@@ -1,5 +1,6 @@
 package holywars.server.web;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -23,10 +24,13 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(TownController.class)
+@Import({TownSceneConfiguration.class, PlotAnchorConverter.class})
 class TownControllerTest {
 
     @Autowired
@@ -65,5 +69,38 @@ class TownControllerTest {
                 .andExpect(content().string(containsString("Naxos")))
                 .andExpect(content().string(containsString("/islands/3")))
                 .andExpect(content().string(containsString("Parcela: 1")));
+    }
+
+    @Test
+    void validTownRendersTheTownSceneSvgWithFourteenPlots() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas");
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        World world = new World(List.of(island));
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(playerRepository.find()).willReturn(Optional.of(new Player(new PlayerId(1), "Jugador")));
+        given(worldRepository.find()).willReturn(Optional.of(world));
+
+        MvcResult result = mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("viewBox=\"0 0 1200 720\"")))
+                .andExpect(content().string(containsString("Ayuntamiento nivel 1")))
+                .andExpect(content().string(containsString("Parcela libre")))
+                .andExpect(content().string(containsString("Requiere ayuntamiento nivel 2")))
+                .andExpect(content().string(containsString(
+                        "href=\"/img/building-town-hall.svg\" x=\"530\" y=\"274\" width=\"140\" height=\"113\"")))
+                .andReturn();
+
+        String body = result.getResponse().getContentAsString();
+        assertThat(countOccurrences(body, "<image")).isEqualTo(15);
+    }
+
+    private static int countOccurrences(String text, String token) {
+        int count = 0;
+        int index = 0;
+        while ((index = text.indexOf(token, index)) != -1) {
+            count++;
+            index += token.length();
+        }
+        return count;
     }
 }
