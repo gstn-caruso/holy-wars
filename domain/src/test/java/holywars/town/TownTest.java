@@ -87,7 +87,7 @@ class TownTest {
 
         Town underConstruction = town.startingConstruction(2, BuildingType.CARPENTER, foundedAt);
 
-        assertThat(underConstruction.slots().get(1).state(1)).isEqualTo(SlotState.UNDER_CONSTRUCTION);
+        assertThat(slotAt(underConstruction, 2).state(1)).isEqualTo(SlotState.UNDER_CONSTRUCTION);
         assertThat(underConstruction.resources().wood()).isEqualTo(460);
         assertThat(underConstruction.resources().luxuryAmount()).isEqualTo(100);
         assertThat(underConstruction.id()).isEqualTo(town.id());
@@ -133,8 +133,8 @@ class TownTest {
 
         Town advanced = underConstruction.advancedTo(foundedAt.plus(Duration.ofHours(1)));
 
-        assertThat(advanced.slots().get(1).state(1)).isEqualTo(SlotState.OCCUPIED);
-        assertThat(advanced.slots().get(1).building()).contains(new Building(BuildingType.CARPENTER, 1));
+        assertThat(slotAt(advanced, 2).state(1)).isEqualTo(SlotState.OCCUPIED);
+        assertThat(slotAt(advanced, 2).building()).contains(new Building(BuildingType.CARPENTER, 1));
         assertThat(advanced.resources().wood()).isEqualTo(490);
         assertThat(advanced.resources().luxuryAmount()).isEqualTo(110);
     }
@@ -177,5 +177,12 @@ class TownTest {
 
         assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, slotsWithEmptyTownHall, resources))
                 .isInstanceOf(MissingTownHallException.class);
+    }
+
+    private static BuildingSlot slotAt(Town town, int position) {
+        return town.slots().stream()
+                .filter(slot -> slot.position() == position)
+                .findFirst()
+                .orElseThrow();
     }
 }
