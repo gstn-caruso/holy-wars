@@ -73,6 +73,14 @@ body > p:has(+ :not(p)) {
     border-radius: 0 0 6px 6px;
 }
 
+body > p.error {
+    background: var(--terracotta);
+    border-radius: 6px;
+    color: var(--marble-light);
+    margin: 1em 0;
+    padding: 0.6em var(--page-gutter);
+}
+
 body > p a {
     color: var(--marble-light);
     text-decoration: underline;
