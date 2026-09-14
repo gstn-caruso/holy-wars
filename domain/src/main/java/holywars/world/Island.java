@@ -26,11 +26,12 @@ public record Island(IslandId id, Coordinate coordinate, String name, LuxuryReso
     }
 
     public Island foundCity(int plotNumber, TownId townId) {
-        if (plotNumber < 1 || plotNumber > CityPlot.HIGHEST_NUMBER) {
-            throw new InvalidCityPlotNumberException(plotNumber);
-        }
+        CityPlot chosenPlot = plots.stream()
+                .filter(plot -> plot.number() == plotNumber)
+                .findFirst()
+                .orElseThrow(() -> new InvalidCityPlotNumberException(plotNumber));
         List<CityPlot> updatedPlots = plots.stream()
-                .map(plot -> plot.number() == plotNumber ? plot.foundedBy(townId) : plot)
+                .map(plot -> plot.number() == plotNumber ? chosenPlot.foundedBy(townId) : plot)
                 .toList();
         return new Island(id, coordinate, name, resource, updatedPlots);
     }
