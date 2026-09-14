@@ -8,28 +8,10 @@ import holywars.town.SlotKind;
 import holywars.town.Town;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import org.springframework.stereotype.Component;
 
 @Component
 class TownSceneAssembler {
-
-    private static final Map<BuildingType, String> BUILDING_NAMES = Map.ofEntries(
-            Map.entry(BuildingType.TOWN_HALL, "Ayuntamiento"),
-            Map.entry(BuildingType.WALL, "Muralla"),
-            Map.entry(BuildingType.TRADING_PORT, "Puerto comercial"),
-            Map.entry(BuildingType.SHIPYARD, "Astillero"),
-            Map.entry(BuildingType.ACADEMY, "Academia"),
-            Map.entry(BuildingType.WAREHOUSE, "Almacén"),
-            Map.entry(BuildingType.TAVERN, "Taberna"),
-            Map.entry(BuildingType.BARRACKS, "Cuartel"),
-            Map.entry(BuildingType.TEMPLE, "Templo"),
-            Map.entry(BuildingType.MARKET, "Mercado"),
-            Map.entry(BuildingType.CARPENTER, "Carpintería"),
-            Map.entry(BuildingType.WINERY, "Viñedo"),
-            Map.entry(BuildingType.STONEMASON, "Cantería"),
-            Map.entry(BuildingType.GLASSBLOWER, "Vidriería"),
-            Map.entry(BuildingType.ALCHEMIST, "Alquimista"));
 
     private final TownSceneProperties properties;
 
@@ -59,7 +41,7 @@ class TownSceneAssembler {
             case UNDER_CONSTRUCTION -> {
                 Construction construction = slot.construction().orElseThrow();
                 yield new PlotSpriteView(
-                        "plot-under-construction.svg", "En obra: " + BUILDING_NAMES.get(construction.type()),
+                        "plot-under-construction.svg", "En obra: " + BuildingNames.spanishNameOf(construction.type()),
                         x, y, anchor.width(), height);
             }
             case FREE -> new PlotSpriteView("plot-free.svg", "Parcela libre", x, y, anchor.width(), height);
@@ -79,7 +61,7 @@ class TownSceneAssembler {
     }
 
     private static String labelFor(Building building) {
-        return BUILDING_NAMES.get(building.type()) + " nivel " + building.level();
+        return BuildingNames.spanishNameOf(building.type()) + " nivel " + building.level();
     }
 
     private record SlotWithAnchor(BuildingSlot slot, PlotAnchor anchor) {
