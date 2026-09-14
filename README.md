@@ -5,7 +5,8 @@ Clon de Ikariam single-player: server Spring Boot que sirve el juego en el brows
 ## Jugar
 
 ```
-mvn -B -pl server -am spring-boot:run
+mvn -B -pl server -am package -DskipTests
+java -jar server/target/holy-wars-server-0.0.0-SNAPSHOT.jar
 ```
 
 Abrí `http://localhost:8080` en el navegador.
