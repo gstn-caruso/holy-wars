@@ -12,4 +12,11 @@ class BuildingSlotTest {
 
         assertThat(slot.state(1)).isEqualTo(BuildingSlotState.LOCKED);
     }
+
+    @Test
+    void aFreeSlotExactlyAtTheRequiredTownHallLevelIsFree() {
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
+
+        assertThat(slot.state(2)).isEqualTo(BuildingSlotState.FREE);
+    }
 }
