@@ -38,4 +38,15 @@ class MapCellViewTest {
 
         assertThat(cell.villageCountLabel()).isEqualTo("1 aldea");
     }
+
+    @Test
+    void islandCellWithTwoOccupiedPlotsSaysTwoVillages() {
+        Island island = Island.withFreePlots(new IslandId(1), new Coordinate(2, 3), "Naxos", LuxuryResource.WINE);
+        island.plots().get(0).occupy(99L);
+        island.plots().get(1).occupy(100L);
+
+        MapCellView cell = MapCellView.of(island);
+
+        assertThat(cell.villageCountLabel()).isEqualTo("2 aldeas");
+    }
 }
