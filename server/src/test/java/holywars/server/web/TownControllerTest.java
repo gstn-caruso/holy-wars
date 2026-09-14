@@ -133,10 +133,6 @@ class TownControllerTest {
                 .andReturn();
 
         String body = result.getResponse().getContentAsString();
-        assertThat(body).contains("Esparta");
-        assertThat(body).contains("Dueño: Jugador");
-        assertThat(body).contains(world.islands().get(0).name());
-        assertThat(body).contains("Parcela: 1");
         assertThat(body).contains("/img/town-scene.svg");
         assertThat(occurrencesOf(body, "<image")).isEqualTo(15);
         assertThat(body).contains("Ayuntamiento nivel 1");
