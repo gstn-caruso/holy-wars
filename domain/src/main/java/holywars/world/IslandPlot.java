@@ -44,6 +44,6 @@ public final class IslandPlot {
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, occupantTownId);
+        return Integer.hashCode(number);
     }
 }
