@@ -7,7 +7,7 @@ record CapitalHeaderView(String capitalName, String islandCoordinateLabel, Resou
         long islandId, long townId) {
 
     static CapitalHeaderView of(Island island, Town capital, ResourceBarView resourceBar) {
-        return new CapitalHeaderView(capital.name(), BreadcrumbView.coordinateLabel(island.coordinate()),
-                resourceBar, island.id().value(), capital.id().value());
+        return new CapitalHeaderView(capital.name(), island.coordinate().label(), resourceBar,
+                island.id().value(), capital.id().value());
     }
 }

@@ -1,7 +1,6 @@
 package holywars.server.web;
 
 import holywars.town.Town;
-import holywars.world.Coordinate;
 import holywars.world.Island;
 import java.util.List;
 
@@ -24,12 +23,8 @@ record BreadcrumbView(List<Crumb> crumbs) {
         return new BreadcrumbView(List.of(WORLD_CRUMB, islandCrumb(island), townCrumb(town)));
     }
 
-    static String coordinateLabel(Coordinate coordinate) {
-        return "[" + coordinate.x() + ":" + coordinate.y() + "]";
-    }
-
     private static Crumb islandCrumb(Island island) {
-        String label = island.name() + " " + coordinateLabel(island.coordinate());
+        String label = island.name() + " " + island.coordinate().label();
         return new Crumb(label, "/islands/" + island.id().value());
     }
 
