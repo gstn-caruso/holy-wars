@@ -36,6 +36,15 @@ class WorldControllerTest {
     }
 
     @Test
+    void generatesAWorldWhenNoSeedIsGiven() throws Exception {
+        mockMvc.perform(post("/world"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/map"));
+
+        assertThat(worldRepository.find().orElseThrow().islands()).hasSize(20);
+    }
+
+    @Test
     void aSecondPostDoesNotDuplicateIslands() throws Exception {
         mockMvc.perform(post("/world").param("seed", "42"));
 
