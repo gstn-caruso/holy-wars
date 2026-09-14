@@ -26,7 +26,7 @@ class TownJpaAdapterTest {
 
     @Test
     void savesATownAndFindsItByIdAndByOwner() {
-        Town town = new Town(new TownId(1), new PlayerId(7), new IslandId(3), 1, "Atenas");
+        Town town = Town.founded(new TownId(1), new PlayerId(7), new IslandId(3), 1, "Atenas");
 
         townJpaAdapter.save(town);
 

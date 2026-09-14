@@ -79,7 +79,7 @@ class WorldControllerTest {
         World world = new World(List.of(island));
         given(worldRepository.find()).willReturn(Optional.of(world));
         given(townRepository.find(new TownId(11L))).willReturn(
-                Optional.of(new Town(new TownId(11L), new PlayerId(1), island.id(), 1, "Atenas")));
+                Optional.of(Town.founded(new TownId(11L), new PlayerId(1), island.id(), 1, "Atenas")));
         given(playerRepository.find()).willReturn(Optional.of(new Player(new PlayerId(1), "Jugador")));
 
         mockMvc.perform(get("/islands/4"))

@@ -40,6 +40,8 @@ class NewGameTest {
         assertThat(town.ownerId()).isEqualTo(player.id());
         assertThat(town.plotNumber()).isEqualTo(1);
         assertThat(GREEK_TOWN_NAMES).contains(town.name());
+        assertThat(town.buildingSlots()).hasSize(14);
+        assertThat(town.townHallLevel()).isEqualTo(1);
 
         World world = worldRepository.find().orElseThrow();
         Island capitalIsland = world.island(town.islandId());

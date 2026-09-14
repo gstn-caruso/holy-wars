@@ -55,7 +55,7 @@ class HomeControllerTest {
     @Test
     void redirectsToTheCapitalWhenThePlayerHasOne() throws Exception {
         Player player = new Player(new PlayerId(1), "Jugador");
-        Town town = new Town(new TownId(5), player.id(), new IslandId(1), 1, "Atenas");
+        Town town = Town.founded(new TownId(5), player.id(), new IslandId(1), 1, "Atenas");
         given(playerRepository.find()).willReturn(Optional.of(player));
         given(townRepository.findByOwner(player.id())).willReturn(Optional.of(town));
 

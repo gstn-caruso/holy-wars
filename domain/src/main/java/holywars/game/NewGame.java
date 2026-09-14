@@ -48,7 +48,7 @@ public final class NewGame {
         TownId townId = new TownId(1);
         capitalPlot.occupy(townId.value());
         String townName = GREEK_TOWN_NAMES.get(random.nextInt(GREEK_TOWN_NAMES.size()));
-        Town capital = new Town(townId, player.id(), capitalIsland.id(), capitalPlot.number(), townName);
+        Town capital = Town.founded(townId, player.id(), capitalIsland.id(), capitalPlot.number(), townName);
 
         worldRepository.save(world);
         playerRepository.save(player);
