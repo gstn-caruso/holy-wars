@@ -14,12 +14,12 @@ import org.junit.jupiter.api.Test;
 
 class TownTest {
 
+    private final TownId id = new TownId(1);
+    private final PlayerId ownerId = new PlayerId(1);
+    private final PlotLocation location = new PlotLocation(new IslandId(3), 5);
+
     @Test
     void townKnowsItsNameOwnerAndLocation() {
-        TownId id = new TownId(1);
-        PlayerId ownerId = new PlayerId(1);
-        PlotLocation location = new PlotLocation(new IslandId(3), 5);
-
         Town town = Town.founded(id, "Atenas", ownerId, location);
 
         assertThat(town.id()).isEqualTo(id);
@@ -30,10 +30,6 @@ class TownTest {
 
     @Test
     void foundedTownHasATownHallAtLevelOne() {
-        TownId id = new TownId(1);
-        PlayerId ownerId = new PlayerId(1);
-        PlotLocation location = new PlotLocation(new IslandId(3), 5);
-
         Town town = Town.founded(id, "Atenas", ownerId, location);
 
         assertThat(town.townHallLevel()).isEqualTo(1);
@@ -42,9 +38,6 @@ class TownTest {
 
     @Test
     void townWithTownHallAtLevelThreeReportsThatLevelAndUnlocksSlotsUpToIt() {
-        TownId id = new TownId(1);
-        PlayerId ownerId = new PlayerId(1);
-        PlotLocation location = new PlotLocation(new IslandId(3), 5);
         Town town = new Town(id, "Atenas", ownerId, location, BuildingSlots.standard(3));
 
         assertThat(town.townHallLevel()).isEqualTo(3);
@@ -62,10 +55,6 @@ class TownTest {
 
     @Test
     void townRejectsASlotListThatIsNotTheFourteenPositions() {
-        TownId id = new TownId(1);
-        PlayerId ownerId = new PlayerId(1);
-        PlotLocation location = new PlotLocation(new IslandId(3), 5);
-
         List<BuildingSlot> thirteenSlots = BuildingSlots.standard(1).subList(0, 13);
         assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, thirteenSlots))
                 .isInstanceOf(InvalidBuildingSlotCountException.class);
@@ -78,10 +67,6 @@ class TownTest {
 
     @Test
     void townRejectsSlotsWithoutAnOccupiedTownHall() {
-        TownId id = new TownId(1);
-        PlayerId ownerId = new PlayerId(1);
-        PlotLocation location = new PlotLocation(new IslandId(3), 5);
-
         List<BuildingSlot> slotsWithEmptyTownHall = new ArrayList<>(BuildingSlots.standard(1));
         slotsWithEmptyTownHall.set(0, new BuildingSlot(1, SlotKind.TOWN_HALL, 1, Optional.empty()));
 
