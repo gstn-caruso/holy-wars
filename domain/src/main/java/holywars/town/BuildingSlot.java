@@ -43,6 +43,10 @@ public record BuildingSlot(
     }
 
     public BuildingSlot startingConstruction(BuildingType type, int townHallLevel, Instant now) {
+        SlotState currentState = state(townHallLevel);
+        if (currentState != SlotState.FREE) {
+            throw new SlotNotFreeException(position, currentState);
+        }
         return new BuildingSlot(position, kind, requiredTownHallLevel, building, Optional.of(Construction.of(type, now)));
     }
 }

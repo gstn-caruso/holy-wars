@@ -82,4 +82,33 @@ class BuildingSlotTest {
         assertThat(slot.construction()).isEmpty();
         assertThat(slot.state(1)).isEqualTo(SlotState.FREE);
     }
+
+    @Test
+    void startingAConstructionOnALockedSlotIsRejected() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 2, Optional.empty());
+
+        assertThatThrownBy(() -> slot.startingConstruction(BuildingType.ACADEMY, 1, now))
+                .isInstanceOf(SlotNotFreeException.class)
+                .hasMessageContaining("LOCKED");
+    }
+
+    @Test
+    void startingAConstructionOnAnOccupiedSlotIsRejected() {
+        Building academy = new Building(BuildingType.ACADEMY, 1);
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.of(academy));
+
+        assertThatThrownBy(() -> slot.startingConstruction(BuildingType.TAVERN, 1, now))
+                .isInstanceOf(SlotNotFreeException.class)
+                .hasMessageContaining("OCCUPIED");
+    }
+
+    @Test
+    void startingAConstructionOnABusySlotIsRejected() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty());
+        BuildingSlot alreadyBusy = slot.startingConstruction(BuildingType.ACADEMY, 1, now);
+
+        assertThatThrownBy(() -> alreadyBusy.startingConstruction(BuildingType.TAVERN, 1, now))
+                .isInstanceOf(SlotNotFreeException.class)
+                .hasMessageContaining("UNDER_CONSTRUCTION");
+    }
 }
