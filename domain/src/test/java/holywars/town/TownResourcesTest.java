@@ -51,4 +51,17 @@ class TownResourcesTest {
 
         assertThat(inTwoSteps).isEqualTo(inOneStep);
     }
+
+    @Test
+    void advancingInIrregularStepsLosesNoFractionalProduction() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        TownResources inThreeSteps = resources
+                .advancedTo(foundedAt.plusSeconds(47))
+                .advancedTo(foundedAt.plusSeconds(94))
+                .advancedTo(foundedAt.plusSeconds(141));
+        TownResources inOneStep = resources.advancedTo(foundedAt.plusSeconds(141));
+
+        assertThat(inThreeSteps).isEqualTo(inOneStep);
+    }
 }
