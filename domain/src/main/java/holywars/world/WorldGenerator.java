@@ -28,7 +28,7 @@ public final class WorldGenerator {
             islands.add(Island.withFreePlots(id, coordinate, name, resource));
         }
 
-        return new World(islands);
+        return new World(settings.grid(), islands);
     }
 
     private static LuxuryResource randomResource(Random random) {

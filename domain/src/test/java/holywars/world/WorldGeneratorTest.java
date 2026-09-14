@@ -34,6 +34,15 @@ class WorldGeneratorTest {
     }
 
     @Test
+    void theGeneratedWorldHasTheGridFromTheSettings() {
+        WorldGenerationSettings settings = WorldGenerationSettings.standard();
+
+        World world = WorldGenerator.generate(42L, settings);
+
+        assertThat(world.grid()).isEqualTo(settings.grid());
+    }
+
+    @Test
     void everyGeneratedIslandHasADistinctNameAndALuxuryResource() {
         WorldGenerationSettings settings = WorldGenerationSettings.standard();
 

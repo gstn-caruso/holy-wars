@@ -3,7 +3,7 @@ package holywars.world;
 import java.util.List;
 import java.util.Optional;
 
-public record World(List<Island> islands) {
+public record World(GridSize grid, List<Island> islands) {
 
     public World {
         islands = List.copyOf(islands);
