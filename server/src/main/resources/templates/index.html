@@ -5,7 +5,7 @@
 <body>
 <nav th:replace="~{fragments :: nav}"></nav>
 <h1>Holy Wars</h1>
-<form method="post" action="/world">
+<form method="post" th:action="@{/world}">
     <button type="submit">Nueva partida</button>
 </form>
 </body>
