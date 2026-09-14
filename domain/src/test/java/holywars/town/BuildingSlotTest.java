@@ -1,6 +1,7 @@
 package holywars.town;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 
@@ -32,5 +33,11 @@ class BuildingSlotTest {
         BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2, BuildingSlotKind.LAND, 1);
 
         assertThat(slot.state(1)).isEqualTo(BuildingSlotState.OCCUPIED);
+    }
+
+    @Test
+    void aPositionOutsideOneToFourteenIsRejected() {
+        assertThatThrownBy(() -> new BuildingSlot(15, BuildingSlotKind.LAND, 1))
+                .isInstanceOf(InvalidBuildingSlotPositionException.class);
     }
 }

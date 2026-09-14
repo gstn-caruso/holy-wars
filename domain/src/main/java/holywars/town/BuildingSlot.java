@@ -4,6 +4,9 @@ import java.util.OptionalInt;
 
 public final class BuildingSlot {
 
+    static final int MIN_POSITION = 1;
+    static final int MAX_POSITION = 14;
+
     private final int position;
     private final BuildingSlotKind kind;
     private final int requiredTownHallLevel;
@@ -19,6 +22,9 @@ public final class BuildingSlot {
     }
 
     private BuildingSlot(int position, BuildingSlotKind kind, int requiredTownHallLevel, Integer builtLevel) {
+        if (position < MIN_POSITION || position > MAX_POSITION) {
+            throw new InvalidBuildingSlotPositionException(position);
+        }
         this.position = position;
         this.kind = kind;
         this.requiredTownHallLevel = requiredTownHallLevel;
