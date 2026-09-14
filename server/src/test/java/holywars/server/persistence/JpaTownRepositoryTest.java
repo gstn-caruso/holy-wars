@@ -130,6 +130,18 @@ class JpaTownRepositoryTest {
         assertThat(townRepository.findByOwner(new PlayerId(1))).containsExactly(lowerId, higherId);
     }
 
+    @Test
+    void savedTownWithAnOccupiedWallSlotIsFoundBackWithThatWall() {
+        List<BuildingSlot> slots = withBuildingAt(BuildingSlots.standard(1), 12, new Building(BuildingType.WALL, 1));
+        Town town = new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), slots);
+
+        townRepository.save(town);
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThat(townRepository.find(new TownId(1))).contains(town);
+    }
+
     private static List<BuildingSlot> withBuildingAt(List<BuildingSlot> slots, int position, Building building) {
         return slots.stream()
                 .map(slot -> slot.position() == position
