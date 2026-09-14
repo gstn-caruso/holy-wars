@@ -12,7 +12,12 @@ import holywars.player.PlayerId;
 import holywars.player.PlayerRepository;
 import holywars.resources.NotEnoughResourcesException;
 import holywars.server.game.ConstructionService;
+import holywars.town.BuildingSlotKind;
+import holywars.town.BuildingSlotState;
 import holywars.town.BuildingType;
+import holywars.town.InvalidBuildingSlotPositionException;
+import holywars.town.MismatchedBuildingTypeException;
+import holywars.town.SlotNotFreeException;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
@@ -100,5 +105,44 @@ class ConstructionControllerTest {
         mockMvc.perform(post("/towns/1/slots/2/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("No alcanzan los recursos")));
+    }
+
+    @Test
+    void buildEndpointShowsSlotNotFreeMessageInline() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        given(constructionService.start(new TownId(1), 1, BuildingType.WAREHOUSE))
+                .willThrow(new SlotNotFreeException(1, BuildingSlotState.OCCUPIED));
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+
+        mockMvc.perform(post("/towns/1/slots/1/build").param("type", "WAREHOUSE"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("La parcela no está libre")));
+    }
+
+    @Test
+    void buildEndpointShowsMismatchedBuildingTypeMessageInline() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        given(constructionService.start(new TownId(1), 12, BuildingType.WAREHOUSE))
+                .willThrow(new MismatchedBuildingTypeException(BuildingSlotKind.WALL, BuildingType.WAREHOUSE));
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+
+        mockMvc.perform(post("/towns/1/slots/12/build").param("type", "WAREHOUSE"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Ese edificio no va en esa parcela")));
+    }
+
+    @Test
+    void buildEndpointShowsInvalidSlotPositionMessageInline() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        given(constructionService.start(new TownId(1), 2, BuildingType.WAREHOUSE))
+                .willThrow(new InvalidBuildingSlotPositionException(2));
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+
+        mockMvc.perform(post("/towns/1/slots/2/build").param("type", "WAREHOUSE"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("La parcela no existe")));
     }
 }
