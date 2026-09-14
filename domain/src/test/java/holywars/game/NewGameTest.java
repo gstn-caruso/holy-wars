@@ -9,11 +9,9 @@ import holywars.town.TownId;
 import holywars.world.Coordinate;
 import holywars.world.Island;
 import holywars.world.IslandId;
-import holywars.world.IslandPlot;
 import holywars.world.LuxuryResource;
 import holywars.world.World;
 import holywars.world.WorldGenerator;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -89,10 +87,6 @@ class NewGameTest {
     }
 
     private Island anIsland() {
-        List<IslandPlot> plots = new ArrayList<>();
-        for (int number = 1; number <= 16; number++) {
-            plots.add(new IslandPlot(number));
-        }
-        return new Island(new IslandId(1), new Coordinate(0, 0), "Naxos", LuxuryResource.WINE, plots);
+        return Island.withFreePlots(new IslandId(1), new Coordinate(0, 0), "Naxos", LuxuryResource.WINE);
     }
 }

@@ -1,11 +1,12 @@
 package holywars.world;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public final class Island {
 
-    private static final int REQUIRED_PLOT_COUNT = 16;
+    static final int REQUIRED_PLOT_COUNT = 16;
 
     private final IslandId id;
     private final Coordinate coordinate;
@@ -23,6 +24,19 @@ public final class Island {
         this.name = name;
         this.luxuryResource = luxuryResource;
         this.plots = List.copyOf(plots);
+    }
+
+    public static Island withFreePlots(IslandId id, Coordinate coordinate, String name,
+            LuxuryResource luxuryResource) {
+        return new Island(id, coordinate, name, luxuryResource, freshPlots());
+    }
+
+    private static List<IslandPlot> freshPlots() {
+        List<IslandPlot> plots = new ArrayList<>();
+        for (int number = 1; number <= REQUIRED_PLOT_COUNT; number++) {
+            plots.add(new IslandPlot(number));
+        }
+        return plots;
     }
 
     public IslandId id() {

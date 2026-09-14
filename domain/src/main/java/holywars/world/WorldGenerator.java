@@ -9,7 +9,6 @@ public final class WorldGenerator {
 
     private static final int GRID_SIZE = 10;
     private static final int ISLAND_COUNT = 20;
-    private static final int PLOTS_PER_ISLAND = 16;
 
     private static final List<String> GREEK_ISLAND_NAMES = List.of(
             "Naxos", "Ikaria", "Milos", "Paros", "Kea", "Kythnos", "Serifos", "Sifnos",
@@ -24,12 +23,11 @@ public final class WorldGenerator {
 
         for (int index = 0; index < ISLAND_COUNT; index++) {
             LuxuryResource luxuryResource = randomLuxuryResource(random);
-            islands.add(new Island(
+            islands.add(Island.withFreePlots(
                     new IslandId(index + 1L),
                     coordinates.get(index),
                     names.get(index),
-                    luxuryResource,
-                    freshPlots()));
+                    luxuryResource));
         }
 
         return new World(islands);
@@ -55,13 +53,5 @@ public final class WorldGenerator {
     private LuxuryResource randomLuxuryResource(Random random) {
         LuxuryResource[] resources = LuxuryResource.values();
         return resources[random.nextInt(resources.length)];
-    }
-
-    private List<IslandPlot> freshPlots() {
-        List<IslandPlot> plots = new ArrayList<>();
-        for (int number = 1; number <= PLOTS_PER_ISLAND; number++) {
-            plots.add(new IslandPlot(number));
-        }
-        return plots;
     }
 }

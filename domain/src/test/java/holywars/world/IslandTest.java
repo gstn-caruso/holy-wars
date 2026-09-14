@@ -12,12 +12,7 @@ class IslandTest {
 
     @Test
     void aNewIslandHasSixteenFreePlotsNumberedOneToSixteenAndTheFirstFreeIsOne() {
-        Island island = new Island(
-                new IslandId(1),
-                new Coordinate(3, 4),
-                "Naxos",
-                LuxuryResource.WINE,
-                sixteenFreePlots());
+        Island island = Island.withFreePlots(new IslandId(1), new Coordinate(3, 4), "Naxos", LuxuryResource.WINE);
 
         assertThat(island.plots()).hasSize(16);
         assertThat(island.plots()).allMatch(IslandPlot::isFree);
@@ -28,8 +23,10 @@ class IslandTest {
 
     @Test
     void anIslandCannotBeCreatedWithoutExactlySixteenPlots() {
-        List<IslandPlot> fifteenPlots = new ArrayList<>(sixteenFreePlots());
-        fifteenPlots.remove(0);
+        List<IslandPlot> fifteenPlots = new ArrayList<>();
+        for (int number = 1; number <= 15; number++) {
+            fifteenPlots.add(new IslandPlot(number));
+        }
 
         assertThatThrownBy(() -> new Island(
                 new IslandId(1),
@@ -38,13 +35,5 @@ class IslandTest {
                 LuxuryResource.WINE,
                 fifteenPlots))
                 .isInstanceOf(InvalidIslandPlotCountException.class);
-    }
-
-    private List<IslandPlot> sixteenFreePlots() {
-        List<IslandPlot> plots = new ArrayList<>();
-        for (int number = 1; number <= 16; number++) {
-            plots.add(new IslandPlot(number));
-        }
-        return plots;
     }
 }
