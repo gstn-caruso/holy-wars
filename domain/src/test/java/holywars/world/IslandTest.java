@@ -56,4 +56,15 @@ class IslandTest {
         assertThat(occupiedPlot.town()).isEqualTo(Optional.of(townId));
         assertThat(founded.plots().stream().filter(plot -> plot.number() != 3)).allSatisfy(plot -> assertThat(plot.isFree()).isTrue());
     }
+
+    @Test
+    void firstFreePlotIsEmptyWhenAllPlotsAreOccupied() {
+        Island island = Island.withFreePlots(new IslandId(1), new Coordinate(0, 0), "Naxos", LuxuryResource.WINE);
+
+        for (int plotNumber = 1; plotNumber <= CityPlot.HIGHEST_NUMBER; plotNumber++) {
+            island = island.foundCity(plotNumber, new TownId(plotNumber));
+        }
+
+        assertThat(island.firstFreePlot()).isEmpty();
+    }
 }
