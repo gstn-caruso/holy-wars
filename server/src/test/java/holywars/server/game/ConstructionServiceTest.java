@@ -1,10 +1,12 @@
 package holywars.server.game;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import holywars.player.PlayerId;
 import holywars.town.BuildingSlotState;
 import holywars.town.BuildingType;
+import holywars.town.SlotNotFreeException;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
@@ -56,6 +58,24 @@ class ConstructionServiceTest {
         Town found = townRepository.find(new TownId(1)).orElseThrow();
         assertThat(found.slot(2).state(1)).isEqualTo(BuildingSlotState.UNDER_CONSTRUCTION);
         assertThat(found.resources().woodAmount()).isEqualTo(500 - BuildingType.WAREHOUSE.woodCost());
+    }
+
+    @Test
+    void startingAConstructionForAnUnknownTownThrowsUnknownTown() {
+        assertThatThrownBy(() -> constructionService.start(new TownId(404), 2, BuildingType.WAREHOUSE))
+                .isInstanceOf(UnknownTownException.class);
+    }
+
+    @Test
+    void startingAConstructionOnANonFreeSlotPropagatesWithoutPersisting() {
+        Town town = Town.founded(new TownId(2), new PlayerId(1), new IslandId(1), 1, "Esparta",
+                LuxuryResource.WINE, NOW);
+        townRepository.save(town);
+
+        assertThatThrownBy(() -> constructionService.start(new TownId(2), 1, BuildingType.WAREHOUSE))
+                .isInstanceOf(SlotNotFreeException.class);
+
+        assertThat(townRepository.find(new TownId(2))).contains(town);
     }
 
     @TestConfiguration
