@@ -116,6 +116,17 @@ class TownTest {
     }
 
     @Test
+    void startingAConstructionOnALockedSlotIsRejectedBeforeSpending() {
+        TownResources scarceResources = new TownResources(LuxuryResource.WINE, 0, 0, foundedAt);
+        Town town = new Town(id, "Atenas", ownerId, location, BuildingSlots.standard(1), scarceResources);
+
+        assertThatThrownBy(() -> town.startingConstruction(5, BuildingType.ACADEMY, foundedAt))
+                .isInstanceOf(SlotNotFreeException.class);
+
+        assertThat(town.resources()).isEqualTo(scarceResources);
+    }
+
+    @Test
     void advancingATownCompletesDueConstructionsAndProducesResourcesAtOnce() {
         Town town = Town.founded(id, "Atenas", ownerId, location, LuxuryResource.WINE, foundedAt);
         Town underConstruction = town.startingConstruction(2, BuildingType.CARPENTER, foundedAt);
