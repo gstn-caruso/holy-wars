@@ -11,7 +11,7 @@ public record Town(TownId id, String name, PlayerId ownerId, PlotLocation locati
         slots = List.copyOf(slots);
         Set<Integer> distinctPositions = slots.stream().map(BuildingSlot::position).collect(Collectors.toSet());
         if (slots.size() != BuildingSlot.HIGHEST_POSITION || distinctPositions.size() != BuildingSlot.HIGHEST_POSITION) {
-            throw new InvalidBuildingSlotCountException(slots.size());
+            throw new InvalidBuildingSlotCountException(slots.size(), distinctPositions.size());
         }
         boolean hasOccupiedTownHall = slots.stream()
                 .anyMatch(slot -> slot.kind() == SlotKind.TOWN_HALL && slot.building().isPresent());
