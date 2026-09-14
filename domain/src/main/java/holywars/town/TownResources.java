@@ -25,8 +25,12 @@ public record TownResources(LuxuryResource luxury, long woodTicks, long luxuryTi
     }
 
     public TownResources spend(int wood, int luxury) {
+        long woodTicksNeeded = wood * TICKS_PER_UNIT;
+        if (woodTicksNeeded > woodTicks) {
+            throw new NotEnoughResourcesException("wood", wood(), wood);
+        }
         return new TownResources(
-                this.luxury, woodTicks - wood * TICKS_PER_UNIT, luxuryTicks - luxury * TICKS_PER_UNIT, lastUpdate);
+                this.luxury, woodTicks - woodTicksNeeded, luxuryTicks - luxury * TICKS_PER_UNIT, lastUpdate);
     }
 
     public TownResources advancedTo(Instant now) {
