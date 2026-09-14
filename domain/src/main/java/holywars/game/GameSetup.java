@@ -40,7 +40,7 @@ public final class GameSetup {
             Island island = assignedIslands.get(index);
             CityPlot capitalPlot = island.firstFreePlot().orElseThrow();
             PlotLocation location = new PlotLocation(island.id(), capitalPlot.number());
-            Town town = new Town(townId, townNames.get(index), playerId, location);
+            Town town = Town.founded(townId, townNames.get(index), playerId, location);
 
             updatedWorld = updatedWorld.withCityFounded(location, townId);
             players.add(player);
