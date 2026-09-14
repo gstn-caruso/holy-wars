@@ -30,6 +30,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(WorldController.class)
 class WorldControllerTest {
 
+    private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -81,9 +83,9 @@ class WorldControllerTest {
         given(worldRepository.find()).willReturn(Optional.of(world));
         given(townRepository.find(new TownId(11L))).willReturn(
                 Optional.of(Town.founded(new TownId(11L), new PlayerId(1), island.id(), 1, "Atenas",
-                        LuxuryResource.WINE, Instant.now())));
+                        LuxuryResource.WINE, NOW)));
         given(playerRepository.find())
-                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", Instant.now())));
+                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
 
         mockMvc.perform(get("/islands/4"))
                 .andExpect(status().isOk())

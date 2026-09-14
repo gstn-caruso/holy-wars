@@ -12,10 +12,12 @@ import org.junit.jupiter.api.Test;
 
 class TownViewTest {
 
+    private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
+
     @Test
     void arrangesOwnerIslandAndPlotNumber() {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(7), 3, "Atenas",
-                LuxuryResource.WINE, Instant.now());
+                LuxuryResource.WINE, NOW);
 
         TownView view = TownView.of(town, "Jugador", "Naxos");
 

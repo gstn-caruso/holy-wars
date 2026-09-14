@@ -34,6 +34,8 @@ import org.springframework.test.web.servlet.MvcResult;
 @Import({TownSceneConfiguration.class, PlotAnchorConverter.class})
 class TownControllerTest {
 
+    private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -56,12 +58,12 @@ class TownControllerTest {
     @Test
     void validTownRendersNameOwnerIslandAndPlotNumber() throws Exception {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
-                LuxuryResource.WINE, Instant.now());
+                LuxuryResource.WINE, NOW);
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
         given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
         given(playerRepository.find())
-                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", Instant.now())));
+                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
         given(worldRepository.find()).willReturn(Optional.of(world));
 
         mockMvc.perform(get("/towns/1"))
