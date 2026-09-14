@@ -63,6 +63,16 @@ class BuildingSlotTest {
     }
 
     @Test
+    void aSlotCannotHoldABuildingAndAConstructionAtTheSameTime() {
+        Building academy = new Building(BuildingType.ACADEMY, 1);
+        Construction construction = Construction.of(BuildingType.ACADEMY, now);
+
+        assertThatThrownBy(() ->
+                        new BuildingSlot(5, SlotKind.LAND, 1, Optional.of(academy), Optional.of(construction)))
+                .isInstanceOf(ConflictingSlotContentsException.class);
+    }
+
+    @Test
     void aFreeSlotThatStartsAConstructionBecomesUnderConstruction() {
         BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty());
 

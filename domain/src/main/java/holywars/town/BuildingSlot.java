@@ -17,6 +17,9 @@ public record BuildingSlot(
         if (position < 1 || position > HIGHEST_POSITION) {
             throw new InvalidBuildingSlotPositionException(position);
         }
+        if (building.isPresent() && construction.isPresent()) {
+            throw new ConflictingSlotContentsException(position);
+        }
         building.ifPresent(placedBuilding -> requireMatchingKind(kind, placedBuilding.type()));
         construction.ifPresent(activeConstruction -> requireMatchingKind(kind, activeConstruction.type()));
     }
