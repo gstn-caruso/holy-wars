@@ -6,6 +6,7 @@ import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumber, String name,
         List<BuildingSlot> buildingSlots, TownResources resources) {
@@ -66,6 +67,13 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
                 .building()
                 .orElseThrow()
                 .level();
+    }
+
+    public Optional<Instant> nextFinishAt() {
+        return buildingSlots.stream()
+                .map(BuildingSlot::finishesAt)
+                .flatMap(Optional::stream)
+                .min(Instant::compareTo);
     }
 
     public BuildingSlot slot(int position) {

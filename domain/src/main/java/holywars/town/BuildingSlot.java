@@ -58,6 +58,10 @@ public record BuildingSlot(int position, BuildingSlotKind kind, int requiredTown
         return state(townHallLevel) == BuildingSlotState.FREE ? BuildingType.allowedFor(kind) : List.of();
     }
 
+    public Optional<Instant> finishesAt() {
+        return construction.map(Construction::finishesAt);
+    }
+
     public BuildingSlot startingConstruction(BuildingType type, int townHallLevel, Instant startedAt) {
         BuildingSlotState currentState = state(townHallLevel);
         if (currentState != BuildingSlotState.FREE) {

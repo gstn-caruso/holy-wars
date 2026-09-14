@@ -169,6 +169,32 @@ class TownTest {
     }
 
     @Test
+    void nextFinishAtIsEmptyWithoutAnyConstruction() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, FOUNDED_AT);
+
+        assertThat(town.nextFinishAt()).isEmpty();
+    }
+
+    @Test
+    void nextFinishAtIsTheFinishesAtOfItsOnlyConstruction() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, FOUNDED_AT).startingConstruction(2, BuildingType.WAREHOUSE, FOUNDED_AT);
+
+        assertThat(town.nextFinishAt()).contains(FOUNDED_AT.plus(BuildingType.WAREHOUSE.buildTime()));
+    }
+
+    @Test
+    void nextFinishAtIsTheNearestOfSeveralConstructions() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, FOUNDED_AT)
+                .startingConstruction(2, BuildingType.WAREHOUSE, FOUNDED_AT)
+                .startingConstruction(3, BuildingType.TAVERN, FOUNDED_AT);
+
+        assertThat(town.nextFinishAt()).contains(FOUNDED_AT.plus(BuildingType.WAREHOUSE.buildTime()));
+    }
+
+    @Test
     void aTownWithoutAnOccupiedTownHallIsRejected() {
         List<BuildingSlot> withoutAnOccupiedTownHall = new ArrayList<>(BuildingSlots.standard());
         withoutAnOccupiedTownHall.set(0, new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1));
