@@ -35,7 +35,7 @@ class NewGameTest {
         assertThat(player.id()).isEqualTo(new PlayerId(1));
         assertThat(player.name()).isEqualTo("Jugador");
 
-        Town town = townRepository.find(1L).orElseThrow();
+        Town town = townRepository.find(new TownId(1)).orElseThrow();
         assertThat(town.id()).isEqualTo(new TownId(1));
         assertThat(town.ownerId()).isEqualTo(player.id());
         assertThat(town.plotNumber()).isEqualTo(1);
@@ -62,8 +62,8 @@ class NewGameTest {
         newGameA.start(1L);
         newGameB.start(1L);
 
-        Town townA = townRepositoryA.find(1L).orElseThrow();
-        Town townB = townRepositoryB.find(1L).orElseThrow();
+        Town townA = townRepositoryA.find(new TownId(1)).orElseThrow();
+        Town townB = townRepositoryB.find(new TownId(1)).orElseThrow();
         World worldA = worldRepositoryA.find().orElseThrow();
         World worldB = worldRepositoryB.find().orElseThrow();
 

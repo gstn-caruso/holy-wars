@@ -1,12 +1,13 @@
 package holywars.town;
 
+import holywars.player.PlayerId;
 import java.util.Optional;
 
 public interface TownRepository {
 
-    Optional<Town> find(long townId);
+    Optional<Town> find(TownId id);
 
-    Optional<Town> findByOwner(long playerId);
+    Optional<Town> findByOwner(PlayerId ownerId);
 
     void save(Town town);
 }
