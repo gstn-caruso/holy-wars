@@ -20,4 +20,8 @@ public record CityPlot(int number, Optional<TownId> town) {
     public boolean isFree() {
         return town.isEmpty();
     }
+
+    public CityPlot foundedBy(TownId townId) {
+        return new CityPlot(number, Optional.of(townId));
+    }
 }

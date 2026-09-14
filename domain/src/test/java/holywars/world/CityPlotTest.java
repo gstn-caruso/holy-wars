@@ -27,6 +27,18 @@ class CityPlotTest {
         assertThat(plot.town()).isEqualTo(Optional.empty());
     }
 
+    @Test
+    void foundingAFreePlotMakesItOccupiedByThatTown() {
+        CityPlot plot = CityPlot.free(5);
+        TownId townId = new TownId(1);
+
+        CityPlot founded = plot.foundedBy(townId);
+
+        assertThat(founded.isFree()).isFalse();
+        assertThat(founded.town()).isEqualTo(Optional.of(townId));
+        assertThat(founded.number()).isEqualTo(5);
+    }
+
     @ParameterizedTest
     @ValueSource(ints = {0, 17})
     void plotNumberOutsideOneToSixteenIsRejected(int invalidNumber) {
