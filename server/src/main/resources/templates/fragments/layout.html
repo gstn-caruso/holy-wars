@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <title th:text="${title}">Holy Wars</title>
+    <link rel="stylesheet" href="/css/holy-wars.css"/>
+</head>
+<body>
+<header class="marble" th:fragment="header()">
+    <span class="brand">Holy Wars</span>
+    <nav>
+        <a class="nav-button" href="/">Inicio</a>
+        <a class="nav-button" href="/map">Mapa</a>
+        <a class="nav-button" href="/">Mi aldea</a>
+    </nav>
+</header>
+</body>
+</html>

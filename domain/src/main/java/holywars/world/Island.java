@@ -63,6 +63,10 @@ public final class Island {
         return plots.stream().filter(IslandPlot::isFree).findFirst().orElseThrow();
     }
 
+    public List<IslandPlot> occupiedPlots() {
+        return plots.stream().filter(plot -> !plot.isFree()).toList();
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {

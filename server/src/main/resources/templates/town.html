@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title=${town.name})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header()}"></header>
+<main>
+<h1 th:text="${town.name}"></h1>
+<p th:text="'Dueño: ' + ${town.ownerName}"></p>
+<p>Isla: <a th:href="@{/islands/{id}(id=${town.islandId})}" th:text="${town.islandName}"></a></p>
+<p th:text="'Parcela: ' + ${town.plotNumber}"></p>
+</main>
+</body>
+</html>
