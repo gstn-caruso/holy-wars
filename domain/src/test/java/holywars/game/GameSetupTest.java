@@ -126,10 +126,27 @@ class GameSetupTest {
         assertThat(newGame.towns()).extracting(Town::townHallLevel).containsOnly(1);
     }
 
+    @Test
+    void startFoundsEveryTownWithItsIslandLuxuryAndTheStartInstant() {
+        World world = worldWithIslands(4);
+        GameSetupSettings settings = new GameSetupSettings(3, 500);
+
+        NewGame newGame = GameSetup.start(world, new Random(42), settings, startedAt);
+
+        for (Town town : newGame.towns()) {
+            Island island = newGame.world().island(town.location().island()).orElseThrow();
+            assertThat(town.resources().luxury()).isEqualTo(island.resource());
+            assertThat(town.resources().lastUpdate()).isEqualTo(startedAt);
+        }
+        assertThat(newGame.players()).extracting(Player::gold).containsOnly(500L);
+        assertThat(newGame.players()).extracting(Player::lastUpdate).containsOnly(startedAt);
+    }
+
     private World worldWithIslands(int count) {
+        LuxuryResource[] luxuries = LuxuryResource.values();
         List<Island> islands = IntStream.rangeClosed(1, count)
-                .mapToObj(index -> Island.withFreePlots(
-                        new IslandId(index), new Coordinate(index, index), "Island" + index, LuxuryResource.WINE))
+                .mapToObj(index -> Island.withFreePlots(new IslandId(index), new Coordinate(index, index),
+                        "Island" + index, luxuries[(index - 1) % luxuries.length]))
                 .toList();
         return new World(new GridSize(10, 10), islands);
     }
