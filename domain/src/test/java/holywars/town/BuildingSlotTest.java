@@ -178,4 +178,33 @@ class BuildingSlotTest {
 
         assertThat(advanced).isEqualTo(slot);
     }
+
+    @Test
+    void allowedTypesOnAFreeSlotAreTheTypesOfItsKind() {
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
+
+        assertThat(slot.allowedTypes(2)).isEqualTo(BuildingType.allowedFor(BuildingSlotKind.LAND));
+    }
+
+    @Test
+    void allowedTypesOnALockedSlotAreEmpty() {
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
+
+        assertThat(slot.allowedTypes(1)).isEmpty();
+    }
+
+    @Test
+    void allowedTypesOnAnOccupiedSlotAreEmpty() {
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2, new Building(BuildingType.WAREHOUSE, 1));
+
+        assertThat(slot.allowedTypes(2)).isEmpty();
+    }
+
+    @Test
+    void allowedTypesOnASlotUnderConstructionAreEmpty() {
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2)
+                .startingConstruction(BuildingType.WAREHOUSE, 2, Instant.parse("2026-01-01T00:00:00Z"));
+
+        assertThat(slot.allowedTypes(2)).isEmpty();
+    }
 }
