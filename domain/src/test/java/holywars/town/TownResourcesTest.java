@@ -73,4 +73,13 @@ class TownResourcesTest {
         assertThatThrownBy(() -> resources.advancedTo(foundedAt.minusSeconds(1)))
                 .isInstanceOf(InvalidAdvanceInstantException.class);
     }
+
+    @Test
+    void theLuxuryProducedNeverChangesWhenAdvancing() {
+        TownResources resources = TownResources.initial(LuxuryResource.MARBLE, foundedAt);
+
+        TownResources advanced = resources.advancedTo(foundedAt.plus(Duration.ofHours(5)));
+
+        assertThat(advanced.luxury()).isEqualTo(LuxuryResource.MARBLE);
+    }
 }
