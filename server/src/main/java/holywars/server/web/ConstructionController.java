@@ -2,13 +2,9 @@ package holywars.server.web;
 
 import holywars.player.Player;
 import holywars.player.PlayerRepository;
-import holywars.resources.NotEnoughResourcesException;
 import holywars.server.game.ConstructionService;
 import holywars.server.game.UnknownTownException;
 import holywars.town.BuildingType;
-import holywars.town.InvalidBuildingSlotPositionException;
-import holywars.town.MismatchedBuildingTypeException;
-import holywars.town.SlotNotFreeException;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
@@ -57,8 +53,7 @@ class ConstructionController {
             model.addAttribute("scene", TownSceneView.of(updated, townSceneLayout, now));
             model.addAttribute("bar", ResourceBarView.of(updated, player, now));
             return "fragments/buildResult :: buildResult(menu=${menu},scene=${scene},bar=${bar})";
-        } catch (NotEnoughResourcesException | SlotNotFreeException | MismatchedBuildingTypeException
-                | InvalidBuildingSlotPositionException exception) {
+        } catch (RuntimeException exception) {
             Town town = findOrThrow(id);
             String error = ConstructionErrorMessages.forException(exception);
             model.addAttribute("menu", BuildMenuView.withError(town, position, clock.instant(), error));
