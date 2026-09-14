@@ -19,6 +19,9 @@ public final class BuildingSlot {
     public BuildingSlot(int position, BuildingSlotKind kind, int requiredTownHallLevel,
             BuildingSlotKind builtKind, int builtLevel) {
         this(position, kind, requiredTownHallLevel, Integer.valueOf(builtLevel));
+        if (builtKind != kind) {
+            throw new MismatchedBuildingTypeException(kind, builtKind);
+        }
     }
 
     private BuildingSlot(int position, BuildingSlotKind kind, int requiredTownHallLevel, Integer builtLevel) {

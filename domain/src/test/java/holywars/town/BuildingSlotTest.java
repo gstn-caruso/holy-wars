@@ -52,4 +52,10 @@ class BuildingSlotTest {
         assertThatThrownBy(() -> new BuildingSlot(5, BuildingSlotKind.LAND, 1, BuildingSlotKind.LAND, 0))
                 .isInstanceOf(InvalidBuildingLevelException.class);
     }
+
+    @Test
+    void aBuiltKindThatDoesNotMatchTheSlotKindIsRejected() {
+        assertThatThrownBy(() -> new BuildingSlot(12, BuildingSlotKind.WALL, 1, BuildingSlotKind.LAND, 1))
+                .isInstanceOf(MismatchedBuildingTypeException.class);
+    }
 }
