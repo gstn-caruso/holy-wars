@@ -1,9 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/holy-wars"
-mkdir -p "$DATA_DIR"
-
 PORT=8080
 
 (
@@ -17,4 +14,4 @@ PORT=8080
   done
 ) &
 
-exec java -jar /usr/share/holy-wars/holy-wars-server.jar --holywars.db="$DATA_DIR/holy-wars.db" --server.port="$PORT"
+exec java -jar /usr/share/holy-wars/holy-wars-server.jar --server.port="$PORT"
