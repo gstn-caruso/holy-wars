@@ -9,4 +9,8 @@ record PlotView(int number, boolean occupied, Integer townId, String townName, S
     static PlotView occupiedBy(int number, int townId, String townName, String ownerName) {
         return new PlotView(number, true, townId, townName, ownerName);
     }
+
+    public String occupantLabel() {
+        return townName + " (" + ownerName + ")";
+    }
 }

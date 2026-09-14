@@ -14,7 +14,7 @@
         <span th:if="${plot.occupied()}">
             Ocupada:
             <a th:href="@{/towns/{id}(id=${plot.townId()})}"
-               th:text="${plot.townName()} + ' (' + ${plot.ownerName()} + ')'">Aldea</a>
+               th:text="${plot.occupantLabel()}">Aldea</a>
         </span>
     </li>
 </ul>
