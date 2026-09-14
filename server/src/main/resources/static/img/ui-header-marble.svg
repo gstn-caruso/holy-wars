@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 80">
+  <defs>
+    <linearGradient id="hdrBase" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f7f5ee"/>
+      <stop offset="1" stop-color="#d9d4c5"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1200" height="80" fill="url(#hdrBase)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#c9a227"/>
+  <rect x="0" y="74" width="1200" height="6" fill="#b8a375"/>
+  <g stroke="#c3bda9" stroke-width="1.5" opacity="0.6" fill="none">
+    <path d="M-20 20 Q 180 40, 380 14 T 780 30 T 1180 12"/>
+    <path d="M-20 50 Q 220 30, 460 58 T 900 40 T 1220 60"/>
+    <path d="M-20 68 Q 300 60, 600 70 T 1220 64"/>
+  </g>
+</svg>
