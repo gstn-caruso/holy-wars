@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import holywars.player.PlayerId;
 import holywars.town.Building;
+import holywars.town.BuildingSlots;
 import holywars.town.BuildingType;
 import holywars.town.Construction;
 import holywars.town.Town;
@@ -137,6 +138,21 @@ class TownJpaAdapterTest {
         statistics.clear();
         assertThat(townJpaAdapter.findByOwner(new PlayerId(9))).contains(town);
         assertThat(statistics.getPrepareStatementCount()).isEqualTo(1L);
+    }
+
+    @Test
+    void reconstructsTheStandardLayoutForATownWithoutPersistedSlotsAndBackfillsOnSave() {
+        TownEntity legacyEntity = new TownEntity(8, 7, 3, 1, "Rodas", 500, 100, LuxuryResource.WINE.name(),
+                FOUNDED_AT);
+        townJpaRepository.save(legacyEntity);
+
+        Town found = townJpaAdapter.find(new TownId(8)).orElseThrow();
+        assertThat(found.buildingSlots()).isEqualTo(BuildingSlots.standard());
+        assertThat(countBuildingSlotRowsFor(8L)).isZero();
+
+        townJpaAdapter.save(found);
+
+        assertThat(countBuildingSlotRowsFor(8L)).isEqualTo(14L);
     }
 
     private long countBuildingSlotRowsFor(long townId) {
