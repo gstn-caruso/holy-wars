@@ -52,6 +52,14 @@ class TownScenePropertiesTest {
     }
 
     @Test
+    void plotsIsImmutableToCallers() {
+        TownSceneProperties layout = bind(STANDARD_LAYOUT);
+
+        assertThatThrownBy(() -> layout.plots().put(99, new PlotAnchor(0, 0, 0)))
+                .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
     void invalidAnchorFormatFailsWithInvalidPlotAnchor() {
         Map<String, String> invalid = new HashMap<>(STANDARD_LAYOUT);
         invalid.put("holywars.town-scene.plots.13", "not-an-anchor");

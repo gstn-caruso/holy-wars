@@ -13,6 +13,7 @@ record TownSceneProperties(int width, int height, Map<Integer, PlotAnchor> plots
         if (!plots.keySet().equals(REQUIRED_POSITIONS)) {
             throw new IncompleteTownSceneLayoutException(plots.keySet());
         }
+        plots = Map.copyOf(plots);
     }
 
     PlotAnchor anchorFor(int position) {
