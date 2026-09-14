@@ -2,6 +2,7 @@ package holywars.server.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
@@ -22,19 +23,24 @@ import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import holywars.world.World;
 import holywars.world.WorldRepository;
+import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(TownController.class)
-@Import({TownSceneConfiguration.class, PlotAnchorConverter.class})
+@Import({TownSceneConfiguration.class, PlotAnchorConverter.class, TownControllerTest.FixedClockConfiguration.class})
 class TownControllerTest {
 
     private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
@@ -176,6 +182,58 @@ class TownControllerTest {
         verify(playerRepository, never()).save(any());
     }
 
+    @Test
+    void validTownIncludesTheHtmxScriptClickablePlotsAndABuildPanel() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        World world = new World(List.of(island));
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(playerRepository.find()).willReturn(Optional.of(player));
+        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
+
+        mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("<script src=\"/js/htmx.min.js\" defer>")))
+                .andExpect(content().string(containsString("id=\"build-panel\"")))
+                .andExpect(content().string(containsString("hx-get=\"/towns/1/slots/1/build-menu\"")))
+                .andExpect(content().string(containsString("hx-target=\"#build-panel\"")));
+    }
+
+    @Test
+    void sceneEndpointRendersOnlyTheTownSceneSvg() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+
+        mockMvc.perform(get("/towns/1/scene"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("<svg")))
+                .andExpect(content().string(containsString("id=\"town-scene\"")))
+                .andExpect(content().string(containsString("Ayuntamiento nivel 1")))
+                .andExpect(content().string(not(containsString("<!DOCTYPE"))))
+                .andExpect(content().string(not(containsString("capital-header"))));
+    }
+
+    @Test
+    void resourcesEndpointRendersOnlyTheResourceBar() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(playerRepository.find()).willReturn(Optional.of(player));
+
+        mockMvc.perform(get("/towns/1/resources"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("id=\"resource-bar\"")))
+                .andExpect(content().string(containsString("500")))
+                .andExpect(content().string(containsString("Madera")))
+                .andExpect(content().string(not(containsString("<!DOCTYPE"))))
+                .andExpect(content().string(not(containsString("capital-header"))));
+    }
+
     private static CapitalHeaderView aCapitalHeader() {
         ResourceBarView resourceBar = new ResourceBarView(530, 110, "Vino", "/img/resource-wine.svg", 520);
         return new CapitalHeaderView("Atenas", "[2:2]", resourceBar, 3L, 1L);
@@ -189,5 +247,15 @@ class TownControllerTest {
             index += token.length();
         }
         return count;
+    }
+
+    @TestConfiguration
+    static class FixedClockConfiguration {
+
+        @Bean
+        @Primary
+        Clock fixedClock() {
+            return Clock.fixed(NOW, ZoneOffset.UTC);
+        }
     }
 }

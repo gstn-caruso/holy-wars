@@ -5,10 +5,11 @@
 <div class="shell">
     <header th:replace="~{fragments/layout :: topBar()}"></header>
     <div class="shell-stage">
-        <svg th:replace="~{fragments/townScene :: townScene(scene=${scene})}"></svg>
+        <svg th:replace="~{fragments/townScene :: townScene(scene=${scene}, oob=false)}"></svg>
         <div th:replace="~{fragments/layout :: capitalHeader(header=${header})}"></div>
         <nav th:replace="~{fragments/layout :: breadcrumb(breadcrumb=${breadcrumb})}"></nav>
         <div th:replace="~{fragments/layout :: frieze()}"></div>
+        <aside id="build-panel"></aside>
         <div class="town-meta visually-hidden">
             <h1 th:text="${town.name}"></h1>
             <p th:text="'Dueño: ' + ${town.ownerName}"></p>
