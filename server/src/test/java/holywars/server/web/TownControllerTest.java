@@ -119,6 +119,21 @@ class TownControllerTest {
     }
 
     @Test
+    void showsABuildFormForEachFreePlot() throws Exception {
+        foundEspartaAt(Instant.parse("2026-01-01T00:00:00Z"));
+
+        String body = mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertThat(occurrencesOf(body, "<form")).isEqualTo(6);
+        assertThat(body).contains("action=\"/towns/1/slots/2/build\"");
+        assertThat(body).contains("<option value=\"ACADEMY\"");
+    }
+
+    @Test
     void returnsNotFoundForAnUnknownTown() throws Exception {
         mockMvc.perform(get("/towns/999"))
                 .andExpect(status().isNotFound());

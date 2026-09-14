@@ -25,18 +25,21 @@ class TownController {
     private final WorldRepository worldRepository;
     private final Clock clock;
     private final TownSceneAssembler townSceneAssembler;
+    private final BuildMenuAssembler buildMenuAssembler;
 
     TownController(
             TownRepository townRepository,
             PlayerRepository playerRepository,
             WorldRepository worldRepository,
             Clock clock,
-            TownSceneAssembler townSceneAssembler) {
+            TownSceneAssembler townSceneAssembler,
+            BuildMenuAssembler buildMenuAssembler) {
         this.townRepository = townRepository;
         this.playerRepository = playerRepository;
         this.worldRepository = worldRepository;
         this.clock = clock;
         this.townSceneAssembler = townSceneAssembler;
+        this.buildMenuAssembler = buildMenuAssembler;
     }
 
     @GetMapping("/towns/{id}")
@@ -51,6 +54,7 @@ class TownController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         model.addAttribute("town", new TownView(
+                id,
                 town.name(),
                 owner.name(),
                 island.name(),
@@ -58,6 +62,7 @@ class TownController {
                 town.location().plotNumber(),
                 townSceneAssembler.assemble(town, clock.instant())));
         model.addAttribute("resourceBar", resourceBarAdvancedToNow(town, owner));
+        model.addAttribute("buildOptions", buildMenuAssembler.assemble(town));
         return "town";
     }
 
