@@ -8,8 +8,15 @@
 <p th:text="'Coordenada: (' + ${island.coordinate().x()} + ', ' + ${island.coordinate().y()} + ')'">Coordenada</p>
 <p th:text="'Recurso: ' + ${island.resource()}">Recurso</p>
 <ul>
-    <li th:each="plot : ${island.plots()}"
-        th:text="'Parcela ' + ${plot.number()} + ' — ' + (${plot.isFree()} ? 'Libre' : 'Ocupada')">Parcela</li>
+    <li th:each="plot : ${plots}">
+        <span th:text="'Parcela ' + ${plot.number()} + ' — '">Parcela</span>
+        <span th:unless="${plot.occupied()}">Libre</span>
+        <span th:if="${plot.occupied()}">
+            Ocupada:
+            <a th:href="@{/towns/{id}(id=${plot.townId()})}"
+               th:text="${plot.townName()} + ' (' + ${plot.ownerName()} + ')'">Aldea</a>
+        </span>
+    </li>
 </ul>
 </body>
 </html>
