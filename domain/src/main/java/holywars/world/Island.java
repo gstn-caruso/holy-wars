@@ -1,0 +1,21 @@
+package holywars.world;
+
+import java.util.List;
+import java.util.stream.IntStream;
+
+public record Island(IslandId id, Coordinate coordinate, String name, LuxuryResource resource, List<CityPlot> plots) {
+
+    public Island {
+        plots = List.copyOf(plots);
+        if (plots.size() != CityPlot.HIGHEST_NUMBER) {
+            throw new InvalidIslandPlotCountException(plots.size());
+        }
+    }
+
+    public static Island withFreePlots(IslandId id, Coordinate coordinate, String name, LuxuryResource resource) {
+        List<CityPlot> freePlots = IntStream.rangeClosed(1, CityPlot.HIGHEST_NUMBER)
+                .mapToObj(CityPlot::free)
+                .toList();
+        return new Island(id, coordinate, name, resource, freePlots);
+    }
+}
