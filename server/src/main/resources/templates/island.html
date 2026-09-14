@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${island.name()}">Isla</title>
+</head>
+<body>
+<h1 th:text="${island.name()}">Isla</h1>
+<p th:text="'Coordenada: (' + ${island.coordinate().x()} + ', ' + ${island.coordinate().y()} + ')'">Coordenada</p>
+<p th:text="'Recurso: ' + ${island.resource()}">Recurso</p>
+<ul>
+    <li th:each="plot : ${island.plots()}"
+        th:text="'Parcela ' + ${plot.number()} + ' — ' + (${plot.isFree()} ? 'Libre' : 'Ocupada')">Parcela</li>
+</ul>
+</body>
+</html>
