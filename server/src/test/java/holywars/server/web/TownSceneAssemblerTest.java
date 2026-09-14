@@ -108,6 +108,23 @@ class TownSceneAssemblerTest {
                 .containsExactly("En obra: Academia · faltan 7 min");
     }
 
+    @Test
+    void roundsThePartialMinuteUp() {
+        TownSceneAssembler assembler = new TownSceneAssembler(testProperties());
+        Town founded = Town.founded(
+                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3),
+                LuxuryResource.WINE, FOUNDED_AT);
+        Town town = founded.startingConstruction(2, BuildingType.ACADEMY, FOUNDED_AT);
+        Instant now = FOUNDED_AT.plusSeconds(30);
+
+        List<PlotSpriteView> sprites = assembler.assemble(town, now).plots();
+
+        assertThat(sprites)
+                .filteredOn(sprite -> sprite.sprite().equals("plot-under-construction.svg"))
+                .extracting(PlotSpriteView::label)
+                .containsExactly("En obra: Academia · faltan 10 min");
+    }
+
     @ParameterizedTest
     @EnumSource(BuildingType.class)
     void everyBuildingTypeHasALabelAndAnExistingSprite(BuildingType type) {
