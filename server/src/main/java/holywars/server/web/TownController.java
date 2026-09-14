@@ -43,7 +43,7 @@ class TownController {
 
         model.addAttribute("town", TownView.of(town, player.name(), island.name()));
         model.addAttribute("scene", TownSceneView.of(town, townSceneLayout));
-        model.addAttribute("header", capitalHeaders.forPlayer(world, player));
+        model.addAttribute("header", capitalHeaders.forPlayer(world, player).orElseThrow());
         model.addAttribute("breadcrumb", BreadcrumbView.upToTown(island, town));
         return "town";
     }

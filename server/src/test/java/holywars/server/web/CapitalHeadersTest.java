@@ -40,7 +40,7 @@ class CapitalHeadersTest {
         Town capital = Town.founded(new TownId(9), player.id(), island.id(), 1, "Atenas", LuxuryResource.WINE, NOW);
         given(townRepository.findByOwner(player.id())).willReturn(Optional.of(capital));
 
-        CapitalHeaderView header = capitalHeaders.forPlayer(world, player);
+        CapitalHeaderView header = capitalHeaders.forPlayer(world, player).orElseThrow();
 
         assertThat(header.capitalName()).isEqualTo("Atenas");
         assertThat(header.islandCoordinateLabel()).isEqualTo("[2:2]");
@@ -61,5 +61,15 @@ class CapitalHeadersTest {
         capitalHeaders.forPlayer(world, player);
 
         verify(townRepository, never()).save(any());
+    }
+
+    @Test
+    void isEmptyWhenThePlayerHasNoCapitalYet() {
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        World world = new World(List.of(island));
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        given(townRepository.findByOwner(player.id())).willReturn(Optional.empty());
+
+        assertThat(capitalHeaders.forPlayer(world, player)).isEmpty();
     }
 }

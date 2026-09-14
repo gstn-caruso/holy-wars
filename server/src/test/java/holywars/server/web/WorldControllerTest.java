@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import holywars.player.Player;
@@ -62,7 +63,7 @@ class WorldControllerTest {
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
         given(worldRepository.find()).willReturn(Optional.of(world));
         given(playerRepository.find()).willReturn(Optional.of(player));
-        given(capitalHeaders.forPlayer(world, player)).willReturn(aCapitalHeader());
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/map"))
                 .andExpect(status().isOk())
@@ -80,7 +81,7 @@ class WorldControllerTest {
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
         given(worldRepository.find()).willReturn(Optional.of(world));
         given(playerRepository.find()).willReturn(Optional.of(player));
-        given(capitalHeaders.forPlayer(world, player)).willReturn(aCapitalHeader());
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/map"))
                 .andExpect(status().isOk())
@@ -88,6 +89,17 @@ class WorldControllerTest {
                 .andExpect(content().string(containsString("Atenas")))
                 .andExpect(content().string(containsString("[2:2]")))
                 .andExpect(content().string(containsString("Mundo")));
+    }
+
+    @Test
+    void mapWithoutAPlayerRedirectsToTheIndex() throws Exception {
+        World world = new World(List.of());
+        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(playerRepository.find()).willReturn(Optional.empty());
+
+        mockMvc.perform(get("/map"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
     }
 
     @Test
@@ -109,7 +121,7 @@ class WorldControllerTest {
         given(worldRepository.find()).willReturn(Optional.of(world));
         given(townRepository.find(new TownId(11L))).willReturn(Optional.of(occupant));
         given(playerRepository.find()).willReturn(Optional.of(player));
-        given(capitalHeaders.forPlayer(world, player)).willReturn(aCapitalHeader());
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/islands/4"))
                 .andExpect(status().isOk())
@@ -131,7 +143,7 @@ class WorldControllerTest {
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
         given(worldRepository.find()).willReturn(Optional.of(world));
         given(playerRepository.find()).willReturn(Optional.of(player));
-        given(capitalHeaders.forPlayer(world, player)).willReturn(aCapitalHeader());
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/islands/4"))
                 .andExpect(status().isOk())
@@ -139,6 +151,18 @@ class WorldControllerTest {
                 .andExpect(content().string(containsString("Atenas")))
                 .andExpect(content().string(containsString("Mundo")))
                 .andExpect(content().string(containsString("Naxos [1:2]")));
+    }
+
+    @Test
+    void islandWithoutAPlayerRedirectsToTheIndex() throws Exception {
+        Island island = Island.withFreePlots(new IslandId(4), new Coordinate(1, 2), "Naxos", LuxuryResource.WINE);
+        World world = new World(List.of(island));
+        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(playerRepository.find()).willReturn(Optional.empty());
+
+        mockMvc.perform(get("/islands/4"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
     }
 
     private static CapitalHeaderView aCapitalHeader() {

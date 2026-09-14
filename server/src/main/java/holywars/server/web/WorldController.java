@@ -39,11 +39,10 @@ class WorldController {
     @GetMapping("/map")
     String map(Model model) {
         World world = findWorldOrThrow();
-        Player player = playerRepository.find().orElseThrow();
-        model.addAttribute("rows", mapRows(world));
-        model.addAttribute("header", capitalHeaders.forPlayer(world, player));
-        model.addAttribute("breadcrumb", BreadcrumbView.worldOnly());
-        return "map";
+        return playerRepository.find()
+                .flatMap(player -> capitalHeaders.forPlayer(world, player))
+                .map(header -> showMap(model, world, header))
+                .orElse("redirect:/");
     }
 
     @GetMapping("/islands/{id}")
@@ -53,9 +52,23 @@ class WorldController {
         Optional<IslandPlot> occupiedPlot = occupiedPlot(island);
         String occupiedTownName = occupiedPlot.map(this::townNameOf).orElse(null);
         String ownerName = occupiedPlot.map(plot -> ownerName()).orElse(null);
-        Player player = playerRepository.find().orElseThrow();
+        return playerRepository.find()
+                .flatMap(player -> capitalHeaders.forPlayer(world, player))
+                .map(header -> showIsland(model, island, occupiedTownName, ownerName, header))
+                .orElse("redirect:/");
+    }
+
+    private String showMap(Model model, World world, CapitalHeaderView header) {
+        model.addAttribute("rows", mapRows(world));
+        model.addAttribute("header", header);
+        model.addAttribute("breadcrumb", BreadcrumbView.worldOnly());
+        return "map";
+    }
+
+    private String showIsland(Model model, Island island, String occupiedTownName, String ownerName,
+            CapitalHeaderView header) {
         model.addAttribute("island", IslandView.of(island, occupiedTownName, ownerName));
-        model.addAttribute("header", capitalHeaders.forPlayer(world, player));
+        model.addAttribute("header", header);
         model.addAttribute("breadcrumb", BreadcrumbView.upToIsland(island));
         return "island";
     }

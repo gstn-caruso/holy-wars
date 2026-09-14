@@ -71,7 +71,7 @@ class TownControllerTest {
         given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
         given(playerRepository.find()).willReturn(Optional.of(player));
         given(worldRepository.find()).willReturn(Optional.of(world));
-        given(capitalHeaders.forPlayer(world, player)).willReturn(aCapitalHeader());
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
@@ -93,7 +93,7 @@ class TownControllerTest {
         given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
         given(playerRepository.find()).willReturn(Optional.of(player));
         given(worldRepository.find()).willReturn(Optional.of(world));
-        given(capitalHeaders.forPlayer(world, player)).willReturn(aCapitalHeader());
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         MvcResult result = mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
@@ -119,7 +119,7 @@ class TownControllerTest {
         given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
         given(playerRepository.find()).willReturn(Optional.of(player));
         given(worldRepository.find()).willReturn(Optional.of(world));
-        given(capitalHeaders.forPlayer(world, player)).willReturn(aCapitalHeader());
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
@@ -149,7 +149,7 @@ class TownControllerTest {
         given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
         given(playerRepository.find()).willReturn(Optional.of(player));
         given(worldRepository.find()).willReturn(Optional.of(world));
-        given(capitalHeaders.forPlayer(world, player)).willReturn(aCapitalHeader());
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
@@ -168,7 +168,7 @@ class TownControllerTest {
         given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
         given(playerRepository.find()).willReturn(Optional.of(player));
         given(worldRepository.find()).willReturn(Optional.of(world));
-        given(capitalHeaders.forPlayer(world, player)).willReturn(aCapitalHeader());
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/towns/1")).andExpect(status().isOk());
 
