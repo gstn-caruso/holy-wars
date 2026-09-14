@@ -25,6 +25,15 @@ class TownScenePropertiesTest {
                 .isInstanceOf(IncompleteTownSceneLayoutException.class);
     }
 
+    @Test
+    void rejectsALayoutWithAMalformedAnchor() {
+        Map<Integer, String> malformedLayout = new HashMap<>(fullLayout());
+        malformedLayout.put(7, "380,420");
+
+        assertThatThrownBy(() -> new TownSceneProperties(1200, 720, malformedLayout))
+                .isInstanceOf(InvalidPlotAnchorException.class);
+    }
+
     private static Map<Integer, String> fullLayout() {
         return Map.ofEntries(
                 Map.entry(1, "600,330,140"),
