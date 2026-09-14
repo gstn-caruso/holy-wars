@@ -13,4 +13,11 @@ class PlotAnchorTest {
 
         assertThat(anchor.height(BuildingSlotKind.LAND)).isEqualTo(140);
     }
+
+    @Test
+    void heightForWallScalesWidthByOneElevenOverTwoZeroOne() {
+        PlotAnchor anchor = new PlotAnchor(600, 330, 201);
+
+        assertThat(anchor.height(BuildingSlotKind.WALL)).isEqualTo(111);
+    }
 }

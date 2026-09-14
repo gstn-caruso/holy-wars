@@ -5,6 +5,6 @@ import holywars.town.BuildingSlotKind;
 record PlotAnchor(int cx, int cy, int width) {
 
     int height(BuildingSlotKind kind) {
-        return width * 140 / 172;
+        return kind == BuildingSlotKind.WALL ? width * 111 / 201 : width * 140 / 172;
     }
 }
