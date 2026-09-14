@@ -1,8 +1,10 @@
 package holywars.server.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import holywars.world.Coordinate;
+import holywars.world.InvalidIslandPlotCountException;
 import holywars.world.Island;
 import holywars.world.IslandId;
 import holywars.world.IslandPlot;
@@ -103,6 +105,17 @@ class WorldMapperTest {
                 .findFirst()
                 .orElseThrow();
         assertThat(secondPlotEntity.occupantTownId()).isNull();
+    }
+
+    @Test
+    void refusesToRebuildAnIslandEntityWithoutSixteenPlots() {
+        IslandEntity naxos = new IslandEntity(1, 0, 0, "Naxos", "WINE");
+        for (int number = 1; number <= 15; number++) {
+            naxos.addPlot(new IslandPlotEntity(naxos, number, null));
+        }
+
+        assertThatThrownBy(() -> worldMapper.toDomain(List.of(naxos)))
+                .isInstanceOf(InvalidIslandPlotCountException.class);
     }
 
     private IslandEntity anIslandEntityWithFreePlots(long id, int x, int y, String name, String luxuryResource) {
