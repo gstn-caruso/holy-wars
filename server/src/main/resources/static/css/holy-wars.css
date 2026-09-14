@@ -24,6 +24,10 @@ body {
     background: linear-gradient(#274a1f, #3f6b30);
 }
 
+.shell-no-footer {
+    grid-template-rows: 2.5vh 1fr;
+}
+
 .shell-top-bar {
     box-sizing: border-box;
     display: flex;
