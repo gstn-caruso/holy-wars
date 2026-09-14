@@ -25,6 +25,9 @@ public final class BuildingSlot {
         if (position < MIN_POSITION || position > MAX_POSITION) {
             throw new InvalidBuildingSlotPositionException(position);
         }
+        if (requiredTownHallLevel < 1) {
+            throw new InvalidBuildingLevelException(requiredTownHallLevel);
+        }
         this.position = position;
         this.kind = kind;
         this.requiredTownHallLevel = requiredTownHallLevel;
