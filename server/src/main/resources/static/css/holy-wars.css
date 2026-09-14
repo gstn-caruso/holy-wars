@@ -145,7 +145,8 @@ header.marble nav {
     margin-bottom: 1.5em;
 }
 
-.button-bronze {
+.button-bronze,
+.build-menu button {
     background: linear-gradient(180deg, var(--bronze-light) 0%, var(--bronze-mid) 55%, var(--bronze-dark) 100%);
     border: 1px solid var(--bronze-border);
     border-radius: 8px;
@@ -158,8 +159,37 @@ header.marble nav {
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
-.button-bronze:hover {
+.button-bronze:hover,
+.build-menu button:hover {
     background: linear-gradient(180deg, #eccd6b 0%, var(--bronze-mid) 55%, #8f7318 100%);
+}
+
+.build-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    margin: 1.5em 0;
+}
+
+.build-menu form {
+    background: linear-gradient(135deg, var(--papyrus-light) 0%, var(--papyrus-dark) 100%);
+    border: 3px solid var(--papyrus-border);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6em;
+    min-width: 220px;
+    padding: 1em;
+}
+
+.build-menu label {
+    font-weight: bold;
+}
+
+.build-menu select {
+    font-family: inherit;
+    font-size: 1em;
+    padding: 0.4em;
 }
 
 .resource-bar {
