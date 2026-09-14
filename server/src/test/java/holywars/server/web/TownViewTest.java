@@ -12,7 +12,7 @@ class TownViewTest {
 
     @Test
     void arrangesOwnerIslandAndPlotNumber() {
-        Town town = new Town(new TownId(1), new PlayerId(1), new IslandId(7), 3, "Atenas");
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(7), 3, "Atenas");
 
         TownView view = TownView.of(town, "Jugador", "Naxos");
 
