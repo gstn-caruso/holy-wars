@@ -28,6 +28,6 @@ class WorldJpaAdapter implements WorldRepository {
 
     @Override
     public void save(World world) {
-        throw new UnsupportedOperationException();
+        islandJpaRepository.saveAll(worldMapper.toEntities(world));
     }
 }
