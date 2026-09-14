@@ -41,6 +41,36 @@ class TownSceneAssemblerTest {
                         "Requiere ayuntamiento nivel 4");
     }
 
+    @Test
+    void sortsThePlotsByAscendingCy() {
+        TownSceneAssembler assembler = new TownSceneAssembler(reversedCyProperties());
+        Town town = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
+
+        List<PlotSpriteView> sprites = assembler.assemble(town);
+
+        assertThat(sprites)
+                .extracting(PlotSpriteView::x)
+                .containsExactly(1350, 1250, 1150, 1050, 950, 850, 750, 650, 550, 450, 350, 250, 150, 50);
+    }
+
+    private static TownSceneProperties reversedCyProperties() {
+        return new TownSceneProperties(1200, 720, Map.ofEntries(
+                Map.entry(1, "100,140,100"),
+                Map.entry(2, "200,130,100"),
+                Map.entry(3, "300,120,100"),
+                Map.entry(4, "400,110,100"),
+                Map.entry(5, "500,100,100"),
+                Map.entry(6, "600,90,100"),
+                Map.entry(7, "700,80,100"),
+                Map.entry(8, "800,70,100"),
+                Map.entry(9, "900,60,100"),
+                Map.entry(10, "1000,50,100"),
+                Map.entry(11, "1100,40,100"),
+                Map.entry(12, "1200,30,100"),
+                Map.entry(13, "1300,20,100"),
+                Map.entry(14, "1400,10,100")));
+    }
+
     private static TownSceneProperties testProperties() {
         return new TownSceneProperties(1200, 720, Map.ofEntries(
                 Map.entry(1, "600,330,140"),
