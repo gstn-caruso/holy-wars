@@ -8,6 +8,7 @@ import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
+import java.io.IOException;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -78,6 +79,25 @@ class TownClockworkTest {
 
         assertThat(scheduler.pendingOneShotTaskCount()).isEqualTo(1);
         assertThat(scheduler.lastScheduledDelayMillis()).isEqualTo(Duration.ofMinutes(3).toMillis());
+    }
+
+    @Test
+    void thePeriodicTickEmitsResourcesToTownsWithSinksAndStopsRetryingClosedOnes() {
+        FakeScheduledExecutorService scheduler = new FakeScheduledExecutorService();
+        TownClockwork clockwork = new TownClockwork(scheduler, CLOCK);
+        TownId closedTown = new TownId(1);
+        TownId openTown = new TownId(2);
+        List<String> receivedByOpenTown = new ArrayList<>();
+        clockwork.subscribeSink(closedTown, eventName -> {
+            throw new IOException("closed");
+        });
+        clockwork.subscribeSink(openTown, receivedByOpenTown::add);
+
+        scheduler.runPeriodicTick();
+        scheduler.runPeriodicTick();
+
+        assertThat(clockwork.subscriberCount(closedTown)).isZero();
+        assertThat(receivedByOpenTown).containsExactly("resources", "resources");
     }
 
     private static Town aTownWithAWarehouseFinishingIn(TownId townId, Duration remaining) {
