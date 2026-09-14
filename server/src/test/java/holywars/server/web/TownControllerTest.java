@@ -124,9 +124,10 @@ class TownControllerTest {
         mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("id=\"resource-bar\"")))
-                .andExpect(content().string(containsString("500")))
+                .andExpect(content().string(containsString("530")))
                 .andExpect(content().string(containsString("Madera")))
                 .andExpect(content().string(containsString("Vino")))
+                .andExpect(content().string(containsString("520")))
                 .andExpect(content().string(containsString("Oro")))
                 .andExpect(content().string(containsString("[2:2]")))
                 .andExpect(content().string(containsString("Mundo")))
@@ -176,7 +177,7 @@ class TownControllerTest {
     }
 
     private static CapitalHeaderView aCapitalHeader() {
-        ResourceBarView resourceBar = new ResourceBarView(500, 100, "Vino", "/img/resource-wine.svg", 500);
+        ResourceBarView resourceBar = new ResourceBarView(530, 110, "Vino", "/img/resource-wine.svg", 520);
         return new CapitalHeaderView("Atenas", "[2:2]", resourceBar, 3L, 1L);
     }
 
