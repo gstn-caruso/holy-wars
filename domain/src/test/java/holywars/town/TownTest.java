@@ -104,6 +104,18 @@ class TownTest {
     }
 
     @Test
+    void startingAConstructionWithoutEnoughResourcesLeavesTheTownUntouched() {
+        TownResources scarceResources = new TownResources(LuxuryResource.WINE, 0, 0, foundedAt);
+        Town town = new Town(id, "Atenas", ownerId, location, BuildingSlots.standard(1), scarceResources);
+
+        assertThatThrownBy(() -> town.startingConstruction(2, BuildingType.CARPENTER, foundedAt))
+                .isInstanceOf(NotEnoughResourcesException.class);
+
+        assertThat(town.slots()).isEqualTo(BuildingSlots.standard(1));
+        assertThat(town.resources()).isEqualTo(scarceResources);
+    }
+
+    @Test
     void townRejectsASlotListThatIsNotTheFourteenPositions() {
         List<BuildingSlot> thirteenSlots = BuildingSlots.standard(1).subList(0, 13);
         assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, thirteenSlots, resources))
