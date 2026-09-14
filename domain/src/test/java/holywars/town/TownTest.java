@@ -1,11 +1,14 @@
 package holywars.town;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import holywars.player.PlayerId;
 import holywars.world.IslandId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
@@ -55,5 +58,21 @@ class TownTest {
 
         List<Integer> freePositions = List.of(2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14);
         freePositions.forEach(position -> assertThat(statesByPosition.get(position)).isEqualTo(SlotState.FREE));
+    }
+
+    @Test
+    void townRejectsASlotListThatIsNotTheFourteenPositions() {
+        TownId id = new TownId(1);
+        PlayerId ownerId = new PlayerId(1);
+        PlotLocation location = new PlotLocation(new IslandId(3), 5);
+
+        List<BuildingSlot> thirteenSlots = BuildingSlots.standard(1).subList(0, 13);
+        assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, thirteenSlots))
+                .isInstanceOf(InvalidBuildingSlotCountException.class);
+
+        List<BuildingSlot> fourteenWithDuplicatePosition = new ArrayList<>(BuildingSlots.standard(1));
+        fourteenWithDuplicatePosition.set(1, new BuildingSlot(1, SlotKind.LAND, 1, Optional.empty()));
+        assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, fourteenWithDuplicatePosition))
+                .isInstanceOf(InvalidBuildingSlotCountException.class);
     }
 }
