@@ -1,10 +1,12 @@
 package holywars.server.web;
 
+import holywars.player.Player;
 import holywars.player.PlayerRepository;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
 import holywars.world.Island;
+import holywars.world.World;
 import holywars.world.WorldRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -20,23 +22,29 @@ class TownController {
     private final WorldRepository worldRepository;
     private final PlayerRepository playerRepository;
     private final TownSceneProperties townSceneLayout;
+    private final CapitalHeaders capitalHeaders;
 
     TownController(TownRepository townRepository, WorldRepository worldRepository,
-            PlayerRepository playerRepository, TownSceneProperties townSceneLayout) {
+            PlayerRepository playerRepository, TownSceneProperties townSceneLayout, CapitalHeaders capitalHeaders) {
         this.townRepository = townRepository;
         this.worldRepository = worldRepository;
         this.playerRepository = playerRepository;
         this.townSceneLayout = townSceneLayout;
+        this.capitalHeaders = capitalHeaders;
     }
 
     @GetMapping("/towns/{id}")
     String town(@PathVariable("id") long id, Model model) {
         Town town = townRepository.find(new TownId(id))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        String ownerName = playerRepository.find().orElseThrow().name();
-        Island island = worldRepository.find().orElseThrow().island(town.islandId());
-        model.addAttribute("town", TownView.of(town, ownerName, island.name()));
+        Player player = playerRepository.find().orElseThrow();
+        World world = worldRepository.find().orElseThrow();
+        Island island = world.island(town.islandId());
+
+        model.addAttribute("town", TownView.of(town, player.name(), island.name()));
         model.addAttribute("scene", TownSceneView.of(town, townSceneLayout));
+        model.addAttribute("header", capitalHeaders.forPlayer(world, player).orElseThrow());
+        model.addAttribute("breadcrumb", BreadcrumbView.upToTown(island, town));
         return "town";
     }
 }

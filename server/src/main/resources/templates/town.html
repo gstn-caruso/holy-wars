@@ -2,13 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head(title=${town.name})}"></head>
 <body>
-<header th:replace="~{fragments/layout :: header()}"></header>
-<main>
-<h1 th:text="${town.name}"></h1>
-<p th:text="'Dueño: ' + ${town.ownerName}"></p>
-<p>Isla: <a th:href="@{/islands/{id}(id=${town.islandId})}" th:text="${town.islandName}"></a></p>
-<p th:text="'Parcela: ' + ${town.plotNumber}"></p>
-<svg th:replace="~{fragments/townScene :: townScene(scene=${scene})}"></svg>
-</main>
+<div class="shell">
+    <header th:replace="~{fragments/layout :: topBar()}"></header>
+    <div class="shell-stage">
+        <svg th:replace="~{fragments/townScene :: townScene(scene=${scene})}"></svg>
+        <div th:replace="~{fragments/layout :: capitalHeader(header=${header})}"></div>
+        <nav th:replace="~{fragments/layout :: breadcrumb(breadcrumb=${breadcrumb})}"></nav>
+        <div th:replace="~{fragments/layout :: frieze()}"></div>
+        <div class="town-meta visually-hidden">
+            <h1 th:text="${town.name}"></h1>
+            <p th:text="'Dueño: ' + ${town.ownerName}"></p>
+            <p>Isla: <a th:href="@{/islands/{id}(id=${town.islandId})}" th:text="${town.islandName}"></a></p>
+            <p th:text="'Parcela: ' + ${town.plotNumber}"></p>
+        </div>
+    </div>
+    <footer th:replace="~{fragments/layout :: compassFooter(header=${header})}"></footer>
+</div>
 </body>
 </html>

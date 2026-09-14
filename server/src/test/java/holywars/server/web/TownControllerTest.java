@@ -2,7 +2,10 @@ package holywars.server.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,6 +51,9 @@ class TownControllerTest {
     @MockitoBean
     private PlayerRepository playerRepository;
 
+    @MockitoBean
+    private CapitalHeaders capitalHeaders;
+
     @Test
     void unknownTownReturns404() throws Exception {
         given(townRepository.find(new TownId(1))).willReturn(Optional.empty());
@@ -61,10 +67,11 @@ class TownControllerTest {
                 LuxuryResource.WINE, NOW);
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
         given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find())
-                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
+        given(playerRepository.find()).willReturn(Optional.of(player));
         given(worldRepository.find()).willReturn(Optional.of(world));
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
@@ -82,10 +89,11 @@ class TownControllerTest {
                 LuxuryResource.WINE, NOW);
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
         given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find())
-                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
+        given(playerRepository.find()).willReturn(Optional.of(player));
         given(worldRepository.find()).willReturn(Optional.of(world));
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         MvcResult result = mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
@@ -99,6 +107,78 @@ class TownControllerTest {
 
         String body = result.getResponse().getContentAsString();
         assertThat(countOccurrences(body, "<image")).isEqualTo(15);
+    }
+
+    @Test
+    void rendersTheCapitalHeaderTheBreadcrumbAndTheExactViewButtonTexts() throws Exception {
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        World world = new World(List.of(island));
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(playerRepository.find()).willReturn(Optional.of(player));
+        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
+
+        mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("id=\"resource-bar\"")))
+                .andExpect(content().string(containsString("530")))
+                .andExpect(content().string(containsString("Madera")))
+                .andExpect(content().string(containsString("Vino")))
+                .andExpect(content().string(containsString("520")))
+                .andExpect(content().string(containsString("Oro")))
+                .andExpect(content().string(containsString("[2:2]")))
+                .andExpect(content().string(containsString("Mundo")))
+                .andExpect(content().string(containsString("Naxos [2:2]")))
+                .andExpect(content().string(containsString("/islands/3")))
+                .andExpect(content().string(containsString("/towns/1")))
+                .andExpect(content().string(containsString("Mostrar mundo")))
+                .andExpect(content().string(containsString("Mostrar isla")))
+                .andExpect(content().string(containsString("Mostrar ciudad")));
+    }
+
+    @Test
+    void rendersTheCompassFooterWithThreeDistinctLinks() throws Exception {
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        World world = new World(List.of(island));
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(playerRepository.find()).willReturn(Optional.of(player));
+        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
+
+        mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("class=\"compass-globe\" href=\"/map\"")))
+                .andExpect(content().string(containsString("class=\"compass-island\" href=\"/islands/3\"")))
+                .andExpect(content().string(containsString("class=\"compass-town\" href=\"/towns/1\"")));
+    }
+
+    @Test
+    void viewingATownNeverPersistsTheAdvancedResources() throws Exception {
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        World world = new World(List.of(island));
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(playerRepository.find()).willReturn(Optional.of(player));
+        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
+
+        mockMvc.perform(get("/towns/1")).andExpect(status().isOk());
+
+        verify(townRepository, never()).save(any());
+        verify(playerRepository, never()).save(any());
+    }
+
+    private static CapitalHeaderView aCapitalHeader() {
+        ResourceBarView resourceBar = new ResourceBarView(530, 110, "Vino", "/img/resource-wine.svg", 520);
+        return new CapitalHeaderView("Atenas", "[2:2]", resourceBar, 3L, 1L);
     }
 
     private static int countOccurrences(String text, String token) {

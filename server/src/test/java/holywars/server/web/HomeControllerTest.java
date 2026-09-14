@@ -1,6 +1,7 @@
 package holywars.server.web;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -54,6 +55,17 @@ class HomeControllerTest {
                 .andExpect(content().string(
                         containsString("Fundá tu primera aldea y comenzá a construir tu imperio en el Egeo.")))
                 .andExpect(content().string(containsString("Nueva partida")));
+    }
+
+    @Test
+    void showsTheShellWithoutAResourceBarOrABreadcrumb() throws Exception {
+        given(playerRepository.find()).willReturn(Optional.empty());
+
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("shell-top-bar")))
+                .andExpect(content().string(not(containsString("id=\"resource-bar\""))))
+                .andExpect(content().string(not(containsString("class=\"breadcrumb\""))));
     }
 
     @Test

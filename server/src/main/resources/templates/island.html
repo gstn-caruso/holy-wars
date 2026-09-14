@@ -2,25 +2,36 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head(title=${island.name})}"></head>
 <body>
-<header th:replace="~{fragments/layout :: header()}"></header>
-<main>
-<h1 th:text="${island.name}"></h1>
-<p th:text="'Coordenada: (' + ${island.x} + ', ' + ${island.y} + ')'"></p>
-<p>
-    <img th:src="${island.luxuryIconPath}" alt=""/>
-    <span th:text="'Recurso de lujo: ' + ${island.luxuryResourceName}"></span>
-</p>
-<div class="plots-grid">
-    <div th:each="plot : ${island.plots}" class="plot" th:classappend="${plot.occupied} ? 'occupied' : ''">
-        <p th:text="'Parcela ' + ${plot.number}"></p>
-        <p th:if="${!plot.occupied}">Libre</p>
-        <p th:if="${plot.occupied}">
-            Ocupada:
-            <a th:href="@{/towns/{id}(id=${plot.townId})}" th:text="${plot.townName}"></a>
-            (<span th:text="${plot.ownerName}"></span>)
-        </p>
+<div class="shell">
+    <header th:replace="~{fragments/layout :: topBar()}"></header>
+    <div class="shell-stage island-stage">
+        <div class="island-content">
+            <div class="island-summary">
+                <h1 th:text="${island.name}"></h1>
+                <p th:text="'Coordenada: (' + ${island.x} + ', ' + ${island.y} + ')'"></p>
+                <p>
+                    <img th:src="${island.luxuryIconPath}" alt=""/>
+                    <span th:text="'Recurso de lujo: ' + ${island.luxuryResourceName}"></span>
+                </p>
+            </div>
+            <div class="plots-grid">
+                <div th:each="plot : ${island.plots}" class="plot"
+                     th:classappend="${plot.occupied} ? 'occupied' : ''">
+                    <p th:text="'Parcela ' + ${plot.number}"></p>
+                    <p th:if="${!plot.occupied}">Libre</p>
+                    <p th:if="${plot.occupied}">
+                        Ocupada:
+                        <a th:href="@{/towns/{id}(id=${plot.townId})}" th:text="${plot.townName}"></a>
+                        (<span th:text="${plot.ownerName}"></span>)
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div th:replace="~{fragments/layout :: capitalHeader(header=${header})}"></div>
+        <nav th:replace="~{fragments/layout :: breadcrumb(breadcrumb=${breadcrumb})}"></nav>
+        <div th:replace="~{fragments/layout :: frieze()}"></div>
     </div>
+    <footer th:replace="~{fragments/layout :: compassFooter(header=${header})}"></footer>
 </div>
-</main>
 </body>
 </html>

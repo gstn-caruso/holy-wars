@@ -1,42 +1,251 @@
 body {
     margin: 0;
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
     color: #2b2116;
-    background:
-        linear-gradient(#1b3a5c, #3d6f9c) top / 100% 120px no-repeat,
-        linear-gradient(#efe4c8, #d9c9a0) top / 100% 100% no-repeat;
-    min-height: 100vh;
 }
 
-header.marble {
-    height: 120px;
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.shell {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 2.5vh 1fr 8vh;
+    background: linear-gradient(#274a1f, #3f6b30);
+}
+
+.shell-no-footer {
+    grid-template-rows: 2.5vh 1fr;
+}
+
+.shell-top-bar {
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 32px;
-    background: linear-gradient(#eef0ee, #b9b6ad);
-    color: #1b3a5c;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    padding: 0 1vw;
+    background: #1b140c url(/img/ui-header-marble.svg) repeat-x center / auto 100%;
+    color: #f4e9c8;
+    font-size: 0.85rem;
 }
 
-header.marble .brand {
-    font-size: 1.75rem;
+.shell-top-bar .brand {
     font-weight: bold;
     letter-spacing: 0.05em;
 }
 
-header.marble nav {
+.shell-stage {
+    position: relative;
+    overflow: hidden;
+}
+
+.town-scene {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.map-stage,
+.island-stage,
+.index-stage {
     display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    box-sizing: border-box;
+    background: linear-gradient(#4a7ba7, #3a6791);
+}
+
+.map-stage,
+.island-stage {
+    padding-top: 24vh;
+}
+
+.island-stage {
+    background: linear-gradient(#d7e6c8, #c1d6ac);
+}
+
+.island-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 12px;
 }
 
-main {
-    padding: 24px 32px;
+.capital-header {
+    position: absolute;
+    top: 3vh;
+    left: 1vw;
+    width: 42vw;
+    height: 20vh;
+    box-sizing: border-box;
+    padding: 14px 20px;
+    background: #e9d8a6 url(/img/ui-panel-papyrus.svg) center / cover;
+    border-radius: 4px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-main > h1 {
-    color: #1b3a5c;
+.town-selector {
+    font-weight: bold;
+    color: #4a2f12;
+}
+
+.town-selector-coordinate {
+    margin-right: 8px;
+    color: #7a4a1f;
+}
+
+.resource-bar {
+    display: flex;
+    gap: 18px;
+}
+
+.resource {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.9rem;
+    color: #3a2a14;
+}
+
+.resource img {
+    width: 20px;
+    height: 20px;
+}
+
+.view-switch {
+    display: flex;
+    gap: 10px;
+}
+
+.view-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px;
+    background: #8a5a1f url(/img/ui-button-bronze.svg) center / cover;
+    color: #fff6e3;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.breadcrumb {
+    position: absolute;
+    top: 23vh;
+    left: 1vw;
+    height: 4vh;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 14px;
+    background: #5c1a1a;
+    color: #f4e9c8;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.crumb {
+    color: #f4e9c8;
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+.crumb:not(:last-child)::after {
+    content: " \203A";
+    margin-left: 6px;
+    color: #c9a227;
+}
+
+.councillor-frieze {
+    position: absolute;
+    top: 3vh;
+    right: 1vw;
+    width: 22vw;
+    height: 14vh;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.councillor {
+    flex: 1;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.councillor-portrait {
+    width: 100%;
+    flex: 1;
+    background: linear-gradient(#d9c9a0, #a9895a);
+    border: 1px solid #7a4a1f;
+    border-radius: 4px;
+}
+
+.councillor figcaption {
+    font-size: 0.7rem;
+    color: #f4e9c8;
+    text-align: center;
+    background: #1b140c;
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+.shell-footer {
+    position: relative;
+    background: #e9d8a6 url(/img/ui-panel-papyrus.svg) center / cover;
+    border-top: 1px solid #7a4a1f;
+}
+
+.compass {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, -50%);
+    width: 6vh;
+    height: 6vh;
+    border-radius: 50%;
+    background: radial-gradient(circle, #e0c060, #8a5a1f);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+}
+
+.compass-globe,
+.compass-island,
+.compass-town {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+
+.compass-globe {
+    left: 0;
+    right: 66.6%;
+}
+
+.compass-island {
+    left: 33.3%;
+    right: 33.3%;
+}
+
+.compass-town {
+    left: 66.6%;
+    right: 0;
 }
 
 .panel,
@@ -49,13 +258,11 @@ main > h1 {
 }
 
 .panel.welcome {
-    max-width: 480px;
-    margin: 64px auto;
+    max-width: 420px;
     text-align: center;
 }
 
-.button-bronze,
-.nav-button {
+.button-bronze {
     display: inline-block;
     padding: 10px 24px;
     border: none;
@@ -67,11 +274,39 @@ main > h1 {
     cursor: pointer;
 }
 
+.island-summary {
+    text-align: center;
+}
+
+.island-summary h1 {
+    margin: 0 0 4px;
+    font-size: 1.6rem;
+}
+
+.island-summary p {
+    margin: 2px 0;
+    font-size: 0.9rem;
+}
+
+.island-summary img {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+}
+
 .plots-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 16px;
-    margin-top: 16px;
+    grid-template-columns: repeat(4, minmax(0, 150px));
+    gap: 8px;
+}
+
+.plots-grid .plot {
+    padding: 8px 12px;
+}
+
+.plots-grid .plot p {
+    margin: 4px 0;
+    font-size: 0.8rem;
 }
 
 .plot.occupied {
@@ -80,16 +315,20 @@ main > h1 {
 
 table {
     border-collapse: collapse;
-    margin-top: 16px;
+    table-layout: fixed;
+    width: 640px;
+    height: 640px;
 }
 
 td.sea,
 td.island {
-    width: 56px;
-    height: 56px;
+    width: 64px;
+    height: 64px;
+    padding: 0;
     text-align: center;
     vertical-align: middle;
     border: 1px solid #7fa8c9;
+    overflow: hidden;
 }
 
 td.sea {
@@ -101,7 +340,33 @@ td.island {
 }
 
 .island-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    height: 100%;
     color: #7a4a1f;
     text-decoration: none;
     font-weight: bold;
+    overflow: hidden;
+}
+
+.island-link img {
+    width: 18px;
+    height: 18px;
+}
+
+.island-link span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.6rem;
+}
+
+td.island > div {
+    font-size: 0.55rem;
+    color: #274a1f;
 }

@@ -2,15 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head(title='Holy Wars')}"></head>
 <body>
-<header th:replace="~{fragments/layout :: header()}"></header>
-<main>
-<div class="panel welcome">
-    <h1>Holy Wars</h1>
-    <p>Fundá tu primera aldea y comenzá a construir tu imperio en el Egeo.</p>
-    <form method="post" th:action="@{/world}">
-        <button class="button-bronze">Nueva partida</button>
-    </form>
+<div class="shell shell-no-footer">
+    <header th:replace="~{fragments/layout :: topBar()}"></header>
+    <div class="shell-stage index-stage">
+        <div class="panel welcome">
+            <h1>Holy Wars</h1>
+            <p>Fundá tu primera aldea y comenzá a construir tu imperio en el Egeo.</p>
+            <form method="post" th:action="@{/world}">
+                <button class="button-bronze">Nueva partida</button>
+            </form>
+        </div>
+    </div>
 </div>
-</main>
 </body>
 </html>
