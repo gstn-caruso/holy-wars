@@ -11,6 +11,7 @@ import holywars.world.IslandPlot;
 import holywars.world.World;
 import holywars.world.WorldGenerator;
 import holywars.world.WorldRepository;
+import java.time.Instant;
 import java.util.List;
 import java.util.Random;
 
@@ -34,7 +35,7 @@ public final class NewGame {
         this.worldGenerator = worldGenerator;
     }
 
-    public void start(long seed) {
+    public void start(long seed, Instant now) {
         if (worldRepository.find().isPresent()) {
             return;
         }
@@ -44,11 +45,12 @@ public final class NewGame {
         Island capitalIsland = world.randomIsland(random);
         IslandPlot capitalPlot = capitalIsland.firstFreePlot();
 
-        Player player = new Player(new PlayerId(1), "Jugador");
+        Player player = Player.starting(new PlayerId(1), "Jugador", now);
         TownId townId = new TownId(1);
         capitalPlot.occupy(townId.value());
         String townName = GREEK_TOWN_NAMES.get(random.nextInt(GREEK_TOWN_NAMES.size()));
-        Town capital = Town.founded(townId, player.id(), capitalIsland.id(), capitalPlot.number(), townName);
+        Town capital = Town.founded(townId, player.id(), capitalIsland.id(), capitalPlot.number(), townName,
+                capitalIsland.luxuryResource(), now);
 
         worldRepository.save(world);
         playerRepository.save(player);
