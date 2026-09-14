@@ -12,4 +12,8 @@ record MapCellView(boolean sea, Integer islandId, String islandName, String reso
         long townCount = island.plots().stream().filter(plot -> !plot.isFree()).count();
         return new MapCellView(false, island.id().value(), island.name(), island.resource().name(), (int) townCount);
     }
+
+    public String townsLabel() {
+        return townCount + (townCount == 1 ? " aldea" : " aldeas");
+    }
 }

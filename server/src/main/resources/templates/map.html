@@ -12,7 +12,7 @@
                th:href="@{/islands/{id}(id=${cell.islandId()})}"
                th:text="${cell.islandName() + ' (' + cell.resource() + ')'}">Isla</a>
             <span th:if="${!cell.sea() and cell.townCount() > 0}"
-                  th:text="${cell.townCount()} + (${cell.townCount()} == 1 ? ' aldea' : ' aldeas')">n aldeas</span>
+                  th:text="${cell.townsLabel()}">n aldeas</span>
         </td>
     </tr>
 </table>
