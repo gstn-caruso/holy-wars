@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class BuildingSlotTest {
 
@@ -19,5 +21,14 @@ class BuildingSlotTest {
         BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 2, Optional.empty());
 
         assertThat(slot.state(2)).isEqualTo(SlotState.FREE);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3, 4})
+    void slotUnlocksExactlyAtItsRequiredTownHallLevel(int requiredLevel) {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, requiredLevel, Optional.empty());
+
+        assertThat(slot.state(requiredLevel - 1)).isEqualTo(SlotState.LOCKED);
+        assertThat(slot.state(requiredLevel)).isEqualTo(SlotState.FREE);
     }
 }
