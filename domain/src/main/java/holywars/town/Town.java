@@ -13,6 +13,11 @@ public record Town(TownId id, String name, PlayerId ownerId, PlotLocation locati
         if (slots.size() != BuildingSlot.HIGHEST_POSITION || distinctPositions.size() != BuildingSlot.HIGHEST_POSITION) {
             throw new InvalidBuildingSlotCountException(slots.size());
         }
+        boolean hasOccupiedTownHall = slots.stream()
+                .anyMatch(slot -> slot.kind() == SlotKind.TOWN_HALL && slot.building().isPresent());
+        if (!hasOccupiedTownHall) {
+            throw new MissingTownHallException();
+        }
     }
 
     public static Town founded(TownId id, String name, PlayerId ownerId, PlotLocation location) {
@@ -25,6 +30,6 @@ public record Town(TownId id, String name, PlayerId ownerId, PlotLocation locati
                 .findFirst()
                 .flatMap(BuildingSlot::building)
                 .map(Building::level)
-                .orElseThrow();
+                .orElseThrow(MissingTownHallException::new);
     }
 }
