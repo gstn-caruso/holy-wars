@@ -146,6 +146,25 @@ class TownControllerTest {
     }
 
     @Test
+    void rendersTheCompassFooterWithThreeDistinctLinks() throws Exception {
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        World world = new World(List.of(island));
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(playerRepository.find())
+                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
+        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(townRepository.findByOwner(new PlayerId(1))).willReturn(Optional.of(town));
+
+        mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("class=\"compass-globe\" href=\"/map\"")))
+                .andExpect(content().string(containsString("class=\"compass-island\" href=\"/islands/3\"")))
+                .andExpect(content().string(containsString("class=\"compass-town\" href=\"/towns/1\"")));
+    }
+
+    @Test
     void viewingATownNeverPersistsTheAdvancedResources() throws Exception {
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",
