@@ -16,6 +16,11 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
         if (!hasExactlyTheRequiredDistinctPositions) {
             throw new InvalidBuildingSlotCountException(buildingSlots.size());
         }
+        boolean hasAnOccupiedTownHall = buildingSlots.stream()
+                .anyMatch(slot -> slot.kind() == BuildingSlotKind.TOWN_HALL && slot.isOccupied());
+        if (!hasAnOccupiedTownHall) {
+            throw new MissingTownHallException();
+        }
         buildingSlots = List.copyOf(buildingSlots);
     }
 

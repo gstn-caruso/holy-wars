@@ -43,4 +43,14 @@ class TownTest {
                 missingOnePosition))
                 .isInstanceOf(InvalidBuildingSlotCountException.class);
     }
+
+    @Test
+    void aTownWithoutAnOccupiedTownHallIsRejected() {
+        List<BuildingSlot> withoutAnOccupiedTownHall = new ArrayList<>(BuildingSlots.standard());
+        withoutAnOccupiedTownHall.set(0, new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1));
+
+        assertThatThrownBy(() -> new Town(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                withoutAnOccupiedTownHall))
+                .isInstanceOf(MissingTownHallException.class);
+    }
 }
