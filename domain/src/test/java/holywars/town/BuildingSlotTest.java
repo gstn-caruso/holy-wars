@@ -26,4 +26,11 @@ class BuildingSlotTest {
 
         assertThat(slot.state(3)).isEqualTo(BuildingSlotState.FREE);
     }
+
+    @Test
+    void aBuiltSlotIsOccupiedEvenBelowItsRequiredTownHallLevel() {
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2, BuildingSlotKind.LAND, 1);
+
+        assertThat(slot.state(1)).isEqualTo(BuildingSlotState.OCCUPIED);
+    }
 }
