@@ -37,7 +37,7 @@ class TownSceneViewTest {
                 LuxuryResource.WINE, NOW);
         TownSceneProperties layout = new TownSceneProperties(1200, 720, STANDARD_ANCHORS);
 
-        TownSceneView view = TownSceneView.of(town, layout);
+        TownSceneView view = TownSceneView.of(town, layout, NOW);
 
         assertThat(view.plots()).extracting(PlotSceneView::position)
                 .containsExactly(12, 9, 2, 5, 6, 1, 10, 11, 7, 8, 3, 4, 13, 14);
@@ -49,7 +49,7 @@ class TownSceneViewTest {
                 LuxuryResource.WINE, NOW);
         TownSceneProperties layout = new TownSceneProperties(1200, 720, STANDARD_ANCHORS);
 
-        TownSceneView view = TownSceneView.of(town, layout);
+        TownSceneView view = TownSceneView.of(town, layout, NOW);
 
         assertThat(view.width()).isEqualTo(1200);
         assertThat(view.height()).isEqualTo(720);

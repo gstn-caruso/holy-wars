@@ -22,9 +22,11 @@ import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import holywars.world.World;
 import holywars.world.WorldRepository;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -53,6 +55,14 @@ class TownControllerTest {
 
     @MockitoBean
     private CapitalHeaders capitalHeaders;
+
+    @MockitoBean
+    private Clock clock;
+
+    @BeforeEach
+    void stubTheClock() {
+        given(clock.instant()).willReturn(NOW);
+    }
 
     @Test
     void unknownTownReturns404() throws Exception {

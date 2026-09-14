@@ -8,6 +8,7 @@ import holywars.town.TownRepository;
 import holywars.world.Island;
 import holywars.world.World;
 import holywars.world.WorldRepository;
+import java.time.Clock;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,14 +24,17 @@ class TownController {
     private final PlayerRepository playerRepository;
     private final TownSceneProperties townSceneLayout;
     private final CapitalHeaders capitalHeaders;
+    private final Clock clock;
 
     TownController(TownRepository townRepository, WorldRepository worldRepository,
-            PlayerRepository playerRepository, TownSceneProperties townSceneLayout, CapitalHeaders capitalHeaders) {
+            PlayerRepository playerRepository, TownSceneProperties townSceneLayout, CapitalHeaders capitalHeaders,
+            Clock clock) {
         this.townRepository = townRepository;
         this.worldRepository = worldRepository;
         this.playerRepository = playerRepository;
         this.townSceneLayout = townSceneLayout;
         this.capitalHeaders = capitalHeaders;
+        this.clock = clock;
     }
 
     @GetMapping("/towns/{id}")
@@ -42,7 +46,7 @@ class TownController {
         Island island = world.island(town.islandId());
 
         model.addAttribute("town", TownView.of(town, player.name(), island.name()));
-        model.addAttribute("scene", TownSceneView.of(town, townSceneLayout));
+        model.addAttribute("scene", TownSceneView.of(town, townSceneLayout, clock.instant()));
         model.addAttribute("header", capitalHeaders.forPlayer(world, player).orElseThrow());
         model.addAttribute("breadcrumb", BreadcrumbView.upToTown(island, town));
         return "town";
