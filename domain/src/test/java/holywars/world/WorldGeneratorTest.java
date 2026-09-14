@@ -42,4 +42,14 @@ class WorldGeneratorTest {
 
         assertThat(first).isEqualTo(second);
     }
+
+    @Test
+    void differentSeedsProduceDifferentWorlds() {
+        WorldGenerationSettings settings = WorldGenerationSettings.standard();
+
+        World first = WorldGenerator.generate(1L, settings);
+        World second = WorldGenerator.generate(2L, settings);
+
+        assertThat(first).isNotEqualTo(second);
+    }
 }
