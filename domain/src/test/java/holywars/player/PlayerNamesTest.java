@@ -1,6 +1,7 @@
 package holywars.player;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.Random;
@@ -14,5 +15,11 @@ class PlayerNamesTest {
 
         assertThat(names).hasSize(5);
         assertThat(names).doesNotHaveDuplicates();
+    }
+
+    @Test
+    void rejectsPickingMoreNamesThanThePoolHas() {
+        assertThatThrownBy(() -> PlayerNames.pick(1000, new Random(42)))
+                .isInstanceOf(NotEnoughPlayerNamesException.class);
     }
 }

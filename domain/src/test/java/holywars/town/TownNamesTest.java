@@ -1,6 +1,7 @@
 package holywars.town;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.Random;
@@ -14,5 +15,11 @@ class TownNamesTest {
 
         assertThat(names).hasSize(5);
         assertThat(names).doesNotHaveDuplicates();
+    }
+
+    @Test
+    void rejectsPickingMoreNamesThanThePoolHas() {
+        assertThatThrownBy(() -> TownNames.pick(1000, new Random(42)))
+                .isInstanceOf(NotEnoughTownNamesException.class);
     }
 }
