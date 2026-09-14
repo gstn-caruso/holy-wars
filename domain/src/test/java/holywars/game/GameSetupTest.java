@@ -113,6 +113,16 @@ class GameSetupTest {
         assertThat(occupiedPlots).isEqualTo(newGame.towns().size());
     }
 
+    @Test
+    void everyFoundedTownStartsWithATownHallAtLevelOne() {
+        World world = worldWithIslands(5);
+        GameSetupSettings settings = new GameSetupSettings(3, 500);
+
+        NewGame newGame = GameSetup.start(world, new Random(42), settings);
+
+        assertThat(newGame.towns()).extracting(Town::townHallLevel).containsOnly(1);
+    }
+
     private World worldWithIslands(int count) {
         List<Island> islands = IntStream.rangeClosed(1, count)
                 .mapToObj(index -> Island.withFreePlots(
