@@ -1,6 +1,7 @@
 package holywars.town;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import holywars.world.LuxuryResource;
 import java.time.Duration;
@@ -63,5 +64,13 @@ class TownResourcesTest {
         TownResources inOneStep = resources.advancedTo(foundedAt.plusSeconds(141));
 
         assertThat(inThreeSteps).isEqualTo(inOneStep);
+    }
+
+    @Test
+    void advancingToAnInstantBeforeTheLastUpdateIsRejected() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        assertThatThrownBy(() -> resources.advancedTo(foundedAt.minusSeconds(1)))
+                .isInstanceOf(InvalidAdvanceInstantException.class);
     }
 }
