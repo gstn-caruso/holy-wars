@@ -111,6 +111,16 @@ class TownResourcesTest {
     }
 
     @Test
+    void spendingExactlyTheStockLeavesZeroWithoutRejecting() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        TownResources afterSpending = resources.spend(500, 100);
+
+        assertThat(afterSpending.wood()).isEqualTo(0);
+        assertThat(afterSpending.luxuryAmount()).isEqualTo(0);
+    }
+
+    @Test
     void theLuxuryProducedNeverChangesWhenAdvancing() {
         TownResources resources = TownResources.initial(LuxuryResource.MARBLE, foundedAt);
 
