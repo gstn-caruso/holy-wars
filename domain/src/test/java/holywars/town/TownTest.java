@@ -133,6 +133,17 @@ class TownTest {
     }
 
     @Test
+    void startingConstructionOfTheWrongKindLeavesResourcesIntact() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, FOUNDED_AT);
+
+        assertThatThrownBy(() -> town.startingConstruction(12, BuildingType.WAREHOUSE, FOUNDED_AT))
+                .isInstanceOf(MismatchedBuildingTypeException.class);
+        assertThat(town.resources().woodAmount()).isEqualTo(500);
+        assertThat(town.resources().luxuryAmount()).isEqualTo(100);
+    }
+
+    @Test
     void aTownWithoutAnOccupiedTownHallIsRejected() {
         List<BuildingSlot> withoutAnOccupiedTownHall = new ArrayList<>(BuildingSlots.standard());
         withoutAnOccupiedTownHall.set(0, new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1));
