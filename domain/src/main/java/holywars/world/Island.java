@@ -6,7 +6,7 @@ public record Island(IslandId id, Coordinate coordinate, String name, LuxuryReso
 
     public Island {
         plots = List.copyOf(plots);
-        if (plots.size() != 16) {
+        if (plots.size() != CityPlot.HIGHEST_NUMBER) {
             throw new InvalidIslandPlotCountException(plots.size());
         }
     }

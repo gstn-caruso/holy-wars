@@ -38,7 +38,7 @@ public final class WorldGenerator {
     }
 
     private static List<CityPlot> sixteenFreePlots() {
-        return IntStream.rangeClosed(1, 16)
+        return IntStream.rangeClosed(1, CityPlot.HIGHEST_NUMBER)
                 .mapToObj(CityPlot::free)
                 .toList();
     }
