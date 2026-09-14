@@ -22,4 +22,10 @@ class BuildingTypeAllowedForTest {
                         BuildingType.GLASSBLOWER,
                         BuildingType.ALCHEMIST);
     }
+
+    @Test
+    void allowedForWallIsOnlyWall() {
+        assertThat(BuildingType.allowedFor(BuildingSlotKind.WALL))
+                .containsExactly(BuildingType.WALL);
+    }
 }
