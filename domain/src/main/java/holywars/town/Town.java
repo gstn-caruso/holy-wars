@@ -14,7 +14,7 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
         boolean hasExactlyTheRequiredDistinctPositions = buildingSlots.size() == REQUIRED_BUILDING_SLOT_COUNT
                 && distinctPositions == REQUIRED_BUILDING_SLOT_COUNT;
         if (!hasExactlyTheRequiredDistinctPositions) {
-            throw new InvalidBuildingSlotCountException(buildingSlots.size());
+            throw new InvalidBuildingSlotCountException((int) distinctPositions);
         }
         boolean hasAnOccupiedTownHall = buildingSlots.stream()
                 .anyMatch(slot -> slot.kind() == BuildingSlotKind.TOWN_HALL && slot.isOccupied());

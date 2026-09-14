@@ -45,6 +45,17 @@ class TownTest {
     }
 
     @Test
+    void aTownWithARepeatedBuildingSlotPositionIsRejected() {
+        List<BuildingSlot> repeatedPosition = new ArrayList<>(BuildingSlots.standard());
+        repeatedPosition.set(13, new BuildingSlot(13, BuildingSlotKind.COAST, 1));
+
+        assertThatThrownBy(() -> new Town(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                repeatedPosition))
+                .isInstanceOf(InvalidBuildingSlotCountException.class)
+                .hasMessage("A town must have exactly 14 distinct building slot positions, got 13");
+    }
+
+    @Test
     void aTownWithoutAnOccupiedTownHallIsRejected() {
         List<BuildingSlot> withoutAnOccupiedTownHall = new ArrayList<>(BuildingSlots.standard());
         withoutAnOccupiedTownHall.set(0, new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1));
