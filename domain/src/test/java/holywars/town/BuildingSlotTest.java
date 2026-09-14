@@ -132,16 +132,25 @@ class BuildingSlotTest {
     }
 
     @Test
-    void advancingBeforeTheFinishKeepsTheConstructionAndAtOrAfterItPlacesTheLevelOneBuilding() {
+    void advancingBeforeTheFinishKeepsTheConstruction() {
         BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty())
                 .startingConstruction(BuildingType.CARPENTER, 1, now);
         Instant finishesAt = now.plus(BuildingType.CARPENTER.buildTime());
 
         BuildingSlot stillBuilding = slot.advancedTo(finishesAt.minusSeconds(1));
+
         assertThat(stillBuilding.state(1)).isEqualTo(SlotState.UNDER_CONSTRUCTION);
         assertThat(stillBuilding.construction()).isPresent();
+    }
+
+    @Test
+    void advancingExactlyAtTheFinishPlacesTheLevelOneBuilding() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty())
+                .startingConstruction(BuildingType.CARPENTER, 1, now);
+        Instant finishesAt = now.plus(BuildingType.CARPENTER.buildTime());
 
         BuildingSlot finished = slot.advancedTo(finishesAt);
+
         assertThat(finished.state(1)).isEqualTo(SlotState.OCCUPIED);
         assertThat(finished.building()).contains(new Building(BuildingType.CARPENTER, 1));
         assertThat(finished.construction()).isEmpty();
