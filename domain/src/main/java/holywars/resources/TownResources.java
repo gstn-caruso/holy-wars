@@ -25,6 +25,14 @@ public record TownResources(ResourceStock wood, ResourceStock luxury, LuxuryReso
         return new TownResources(wood.advancedTo(elapsed), luxury.advancedTo(elapsed), luxuryResource, now);
     }
 
+    public TownResources spend(int woodUnits, int luxuryUnits) {
+        ResourceStock remainingWood = wood.spend(woodUnits)
+                .orElseThrow(() -> new NotEnoughResourcesException("wood"));
+        ResourceStock remainingLuxury = luxury.spend(luxuryUnits)
+                .orElseThrow(() -> new NotEnoughResourcesException("luxury"));
+        return new TownResources(remainingWood, remainingLuxury, luxuryResource, lastUpdate);
+    }
+
     public int woodAmount() {
         return wood.amount();
     }

@@ -1,6 +1,7 @@
 package holywars.resources;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import holywars.world.LuxuryResource;
 import java.time.Duration;
@@ -20,5 +21,16 @@ class TownResourcesTest {
         assertThat(advanced.woodAmount()).isEqualTo(530);
         assertThat(advanced.luxuryAmount()).isEqualTo(110);
         assertThat(advanced.lastUpdate()).isEqualTo(anHourLater);
+    }
+
+    @Test
+    void spendingMoreWoodThanAvailableFailsWithoutTouchingLuxury() {
+        Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
+        TownResources resources = TownResources.starting(LuxuryResource.WINE, foundedAt);
+
+        assertThatThrownBy(() -> resources.spend(501, 0))
+                .isInstanceOf(NotEnoughResourcesException.class)
+                .hasMessageContaining("wood");
+        assertThat(resources.luxuryAmount()).isEqualTo(100);
     }
 }
