@@ -3,6 +3,7 @@ package holywars.town;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import holywars.world.LuxuryResource;
+import java.time.Duration;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
@@ -27,5 +28,15 @@ class TownResourcesTest {
 
         assertThat(advanced.wood()).isEqualTo(500);
         assertThat(advanced.luxuryAmount()).isEqualTo(100);
+    }
+
+    @Test
+    void advancingOneHourAddsExactlyTheHourlyRates() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        TownResources advanced = resources.advancedTo(foundedAt.plus(Duration.ofHours(1)));
+
+        assertThat(advanced.wood()).isEqualTo(530);
+        assertThat(advanced.luxuryAmount()).isEqualTo(110);
     }
 }
