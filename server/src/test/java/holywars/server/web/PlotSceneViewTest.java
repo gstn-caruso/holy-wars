@@ -6,6 +6,7 @@ import holywars.town.Building;
 import holywars.town.BuildingSlot;
 import holywars.town.BuildingSlotKind;
 import holywars.town.BuildingType;
+import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
 class PlotSceneViewTest {
@@ -52,5 +53,16 @@ class PlotSceneViewTest {
 
         assertThat(view.spriteHref()).isEqualTo("/img/plot-locked.svg");
         assertThat(view.label()).isEqualTo("Requiere ayuntamiento nivel 2");
+    }
+
+    @Test
+    void underConstructionSlotShowsTheUnderConstructionSpriteAndLabel() {
+        BuildingSlot slot = new BuildingSlot(2, BuildingSlotKind.LAND, 1)
+                .startingConstruction(BuildingType.WAREHOUSE, 1, Instant.parse("2026-01-01T00:00:00Z"));
+
+        PlotSceneView view = PlotSceneView.of(slot, 1, new PlotAnchor(600, 330, 140));
+
+        assertThat(view.spriteHref()).isEqualTo("/img/plot-under-construction.svg");
+        assertThat(view.label()).isEqualTo("En obra: Almacén");
     }
 }
