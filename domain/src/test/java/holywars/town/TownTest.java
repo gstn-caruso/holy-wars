@@ -111,6 +111,17 @@ class TownTest {
     }
 
     @Test
+    void startingConstructionAtANonExistentPositionChangesNothing() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, FOUNDED_AT);
+
+        assertThatThrownBy(() -> town.startingConstruction(15, BuildingType.WAREHOUSE, FOUNDED_AT))
+                .isInstanceOf(InvalidBuildingSlotPositionException.class);
+        assertThat(town.resources().woodAmount()).isEqualTo(500);
+        assertThat(town.buildingSlots()).isEqualTo(BuildingSlots.standard());
+    }
+
+    @Test
     void aTownWithoutAnOccupiedTownHallIsRejected() {
         List<BuildingSlot> withoutAnOccupiedTownHall = new ArrayList<>(BuildingSlots.standard());
         withoutAnOccupiedTownHall.set(0, new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1));
