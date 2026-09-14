@@ -58,6 +58,28 @@ class TownClockworkTest {
         assertThat(receivedBySecond).containsExactly("town", "resources");
     }
 
+    @Test
+    void scheduleFinishWithoutConstructionsSchedulesNothingAndReschedulingCancelsThePreviousTask() {
+        FakeScheduledExecutorService scheduler = new FakeScheduledExecutorService();
+        TownClockwork clockwork = new TownClockwork(scheduler, CLOCK);
+        TownId townId = new TownId(1);
+        Town idleTown = Town.founded(townId, new PlayerId(1), new IslandId(1), 1, "Atenas", LuxuryResource.WINE,
+                FOUNDED_AT);
+
+        clockwork.scheduleFinish(idleTown);
+
+        assertThat(scheduler.pendingOneShotTaskCount()).isZero();
+
+        clockwork.scheduleFinish(aTownWithAWarehouseFinishingIn(townId, Duration.ofMinutes(10)));
+
+        assertThat(scheduler.pendingOneShotTaskCount()).isEqualTo(1);
+
+        clockwork.scheduleFinish(aTownWithAWarehouseFinishingIn(townId, Duration.ofMinutes(3)));
+
+        assertThat(scheduler.pendingOneShotTaskCount()).isEqualTo(1);
+        assertThat(scheduler.lastScheduledDelayMillis()).isEqualTo(Duration.ofMinutes(3).toMillis());
+    }
+
     private static Town aTownWithAWarehouseFinishingIn(TownId townId, Duration remaining) {
         Town founded = Town.founded(townId, new PlayerId(1), new IslandId(1), 1, "Atenas", LuxuryResource.WINE,
                 FOUNDED_AT);
