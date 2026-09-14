@@ -90,6 +90,15 @@ class TownResourcesTest {
     }
 
     @Test
+    void spendingNothingLeavesTheStockUnchanged() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        TownResources afterSpending = resources.spend(0, 0);
+
+        assertThat(afterSpending).isEqualTo(resources);
+    }
+
+    @Test
     void theLuxuryProducedNeverChangesWhenAdvancing() {
         TownResources resources = TownResources.initial(LuxuryResource.MARBLE, foundedAt);
 

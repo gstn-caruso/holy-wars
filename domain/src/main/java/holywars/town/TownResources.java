@@ -24,6 +24,10 @@ public record TownResources(LuxuryResource luxury, long woodTicks, long luxuryTi
         return luxuryTicks / TICKS_PER_UNIT;
     }
 
+    public TownResources spend(int wood, int luxury) {
+        return this;
+    }
+
     public TownResources advancedTo(Instant now) {
         if (now.isBefore(lastUpdate)) {
             throw new InvalidAdvanceInstantException(lastUpdate, now);
