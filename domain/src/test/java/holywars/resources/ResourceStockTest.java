@@ -54,4 +54,14 @@ class ResourceStockTest {
         assertThat(spent).isPresent();
         assertThat(spent.get().amount()).isZero();
     }
+
+    @Test
+    void spendingMoreThanAvailableLeavesTheStockIntact() {
+        ResourceStock stock = ResourceStock.of(500, 30);
+
+        Optional<ResourceStock> spent = stock.spend(501);
+
+        assertThat(spent).isEmpty();
+        assertThat(stock.amount()).isEqualTo(500);
+    }
 }
