@@ -3,6 +3,8 @@ package holywars.town;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.Instant;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 class BuildingSlotTest {
@@ -33,6 +35,14 @@ class BuildingSlotTest {
         BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2, new Building(BuildingType.WAREHOUSE, 1));
 
         assertThat(slot.state(1)).isEqualTo(BuildingSlotState.OCCUPIED);
+    }
+
+    @Test
+    void aSlotWithAConstructionInProgressIsUnderConstruction() {
+        Construction construction = Construction.startingAt(BuildingType.WAREHOUSE, Instant.parse("2026-01-01T00:00:00Z"));
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2, Optional.empty(), Optional.of(construction));
+
+        assertThat(slot.state(1)).isEqualTo(BuildingSlotState.UNDER_CONSTRUCTION);
     }
 
     @Test
