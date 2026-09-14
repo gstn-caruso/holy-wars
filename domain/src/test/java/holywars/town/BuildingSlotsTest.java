@@ -26,4 +26,27 @@ class BuildingSlotsTest {
         assertThat(townHallSlot.building()).isEqualTo(Optional.of(new Building(BuildingType.TOWN_HALL, 3)));
         assertThat(townHallSlot.state(1)).isEqualTo(SlotState.OCCUPIED);
     }
+
+    @Test
+    void standardLayoutLeavesTheOtherThirteenSlotsEmptyWithTenLandTwoCoastAndOneWall() {
+        List<BuildingSlot> nonTownHallSlots = BuildingSlots.standard(1).subList(1, 14);
+
+        assertThat(nonTownHallSlots).allSatisfy(slot -> assertThat(slot.building()).isEmpty());
+
+        List<BuildingSlot> landSlots = nonTownHallSlots.stream()
+                .filter(slot -> slot.kind() == SlotKind.LAND)
+                .toList();
+        assertThat(landSlots).extracting(BuildingSlot::requiredTownHallLevel)
+                .containsExactly(1, 1, 1, 2, 2, 3, 3, 3, 4, 4);
+
+        List<BuildingSlot> wallSlots = nonTownHallSlots.stream()
+                .filter(slot -> slot.kind() == SlotKind.WALL)
+                .toList();
+        assertThat(wallSlots).extracting(BuildingSlot::requiredTownHallLevel).containsExactly(1);
+
+        List<BuildingSlot> coastSlots = nonTownHallSlots.stream()
+                .filter(slot -> slot.kind() == SlotKind.COAST)
+                .toList();
+        assertThat(coastSlots).extracting(BuildingSlot::requiredTownHallLevel).containsExactly(1, 1);
+    }
 }
