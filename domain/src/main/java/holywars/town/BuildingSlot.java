@@ -17,16 +17,14 @@ public record BuildingSlot(
         if (position < 1 || position > HIGHEST_POSITION) {
             throw new InvalidBuildingSlotPositionException(position);
         }
-        building.ifPresent(placedBuilding -> {
-            if (placedBuilding.type().kind() != kind) {
-                throw new MismatchedBuildingTypeException(kind, placedBuilding.type());
-            }
-        });
-        construction.ifPresent(activeConstruction -> {
-            if (activeConstruction.type().kind() != kind) {
-                throw new MismatchedBuildingTypeException(kind, activeConstruction.type());
-            }
-        });
+        building.ifPresent(placedBuilding -> requireMatchingKind(kind, placedBuilding.type()));
+        construction.ifPresent(activeConstruction -> requireMatchingKind(kind, activeConstruction.type()));
+    }
+
+    private static void requireMatchingKind(SlotKind kind, BuildingType type) {
+        if (type.kind() != kind) {
+            throw new MismatchedBuildingTypeException(kind, type);
+        }
     }
 
     public SlotState state(int townHallLevel) {
