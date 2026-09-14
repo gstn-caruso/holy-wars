@@ -26,7 +26,7 @@ mvn -pl server spring-boot:run
 
 El `install` deja `holy-wars-domain` en el repositorio local, así el segundo comando puede correr el
 módulo `server` solo. `spring-boot:run` levanta un Postgres 17 (usa el `compose.yaml` de la raíz) y guarda
-ahí el estado del juego entre reinicios; al cortarlo, para el contenedor solo. El jar empaquetado
+ahí el esquema y los datos entre reinicios; al cortarlo, para el contenedor solo. El jar empaquetado
 (`java -jar server/target/holy-wars-server-0.0.0-SNAPSHOT.jar`) y el `.deb` siempre usan H2 en memoria: el
 estado se pierde al cerrar el server. `docker compose down -v` borra los datos guardados en Postgres.
 
