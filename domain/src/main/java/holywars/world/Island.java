@@ -1,5 +1,6 @@
 package holywars.world;
 
+import holywars.town.TownId;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -22,5 +23,12 @@ public record Island(IslandId id, Coordinate coordinate, String name, LuxuryReso
 
     public Optional<CityPlot> firstFreePlot() {
         return plots.stream().filter(CityPlot::isFree).findFirst();
+    }
+
+    public Island foundCity(int plotNumber, TownId townId) {
+        List<CityPlot> updatedPlots = plots.stream()
+                .map(plot -> plot.number() == plotNumber ? plot.foundedBy(townId) : plot)
+                .toList();
+        return new Island(id, coordinate, name, resource, updatedPlots);
     }
 }

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import holywars.town.TownId;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 
@@ -41,5 +42,18 @@ class IslandTest {
 
         assertThat(island.firstFreePlot()).isPresent();
         assertThat(island.firstFreePlot().get().number()).isEqualTo(1);
+    }
+
+    @Test
+    void foundingACityOccupiesTheChosenPlotAndLeavesOthersFree() {
+        Island island = Island.withFreePlots(new IslandId(1), new Coordinate(0, 0), "Naxos", LuxuryResource.WINE);
+        TownId townId = new TownId(1);
+
+        Island founded = island.foundCity(3, townId);
+
+        CityPlot occupiedPlot = founded.plots().stream().filter(plot -> plot.number() == 3).findFirst().orElseThrow();
+        assertThat(occupiedPlot.isFree()).isFalse();
+        assertThat(occupiedPlot.town()).isEqualTo(Optional.of(townId));
+        assertThat(founded.plots().stream().filter(plot -> plot.number() != 3)).allSatisfy(plot -> assertThat(plot.isFree()).isTrue());
     }
 }
