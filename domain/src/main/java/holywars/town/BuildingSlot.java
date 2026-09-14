@@ -28,6 +28,9 @@ public final class BuildingSlot {
         if (requiredTownHallLevel < 1) {
             throw new InvalidBuildingLevelException(requiredTownHallLevel);
         }
+        if (builtLevel != null && builtLevel < 1) {
+            throw new InvalidBuildingLevelException(builtLevel);
+        }
         this.position = position;
         this.kind = kind;
         this.requiredTownHallLevel = requiredTownHallLevel;

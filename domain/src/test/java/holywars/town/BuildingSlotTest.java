@@ -46,4 +46,10 @@ class BuildingSlotTest {
         assertThatThrownBy(() -> new BuildingSlot(5, BuildingSlotKind.LAND, 0))
                 .isInstanceOf(InvalidBuildingLevelException.class);
     }
+
+    @Test
+    void aBuiltLevelBelowOneIsRejected() {
+        assertThatThrownBy(() -> new BuildingSlot(5, BuildingSlotKind.LAND, 1, BuildingSlotKind.LAND, 0))
+                .isInstanceOf(InvalidBuildingLevelException.class);
+    }
 }
