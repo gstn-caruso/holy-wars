@@ -45,4 +45,12 @@ class CityPlotTest {
         assertThatThrownBy(() -> CityPlot.free(invalidNumber))
                 .isInstanceOf(InvalidCityPlotNumberException.class);
     }
+
+    @Test
+    void foundingAnAlreadyOccupiedPlotIsRejected() {
+        CityPlot occupied = CityPlot.free(5).foundedBy(new TownId(1));
+
+        assertThatThrownBy(() -> occupied.foundedBy(new TownId(2)))
+                .isInstanceOf(PlotAlreadyOccupiedException.class);
+    }
 }

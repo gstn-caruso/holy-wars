@@ -22,6 +22,9 @@ public record CityPlot(int number, Optional<TownId> town) {
     }
 
     public CityPlot foundedBy(TownId townId) {
+        if (!isFree()) {
+            throw new PlotAlreadyOccupiedException(number);
+        }
         return new CityPlot(number, Optional.of(townId));
     }
 }
