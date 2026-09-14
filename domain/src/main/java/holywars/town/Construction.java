@@ -14,6 +14,7 @@ public record Construction(BuildingType type, Instant startedAt, Instant finishe
     }
 
     public Duration remaining(Instant now) {
-        return Duration.between(now, finishesAt);
+        Duration remaining = Duration.between(now, finishesAt);
+        return remaining.isNegative() ? Duration.ZERO : remaining;
     }
 }

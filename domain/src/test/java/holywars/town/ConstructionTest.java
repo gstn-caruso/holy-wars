@@ -39,4 +39,12 @@ class ConstructionTest {
 
         assertThat(construction.remaining(twoMinutesIn)).isEqualTo(Duration.ofMinutes(4));
     }
+
+    @Test
+    void remainingIsZeroOnceTheConstructionIsFinished() {
+        Construction construction = Construction.startingAt(BuildingType.WAREHOUSE, STARTED_AT);
+
+        assertThat(construction.remaining(construction.finishesAt())).isEqualTo(Duration.ZERO);
+        assertThat(construction.remaining(construction.finishesAt().plusSeconds(1))).isEqualTo(Duration.ZERO);
+    }
 }
