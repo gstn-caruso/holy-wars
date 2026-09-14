@@ -138,4 +138,12 @@ class BuildingSlotTest {
                 .isInstanceOf(SlotNotFreeException.class)
                 .hasMessageContaining("LOCKED");
     }
+
+    @Test
+    void startingConstructionWithATypeOfAnotherKindThanTheSlotIsRejected() {
+        BuildingSlot slot = new BuildingSlot(12, BuildingSlotKind.WALL, 1);
+
+        assertThatThrownBy(() -> slot.startingConstruction(BuildingType.WAREHOUSE, 1, Instant.parse("2026-01-01T00:00:00Z")))
+                .isInstanceOf(MismatchedBuildingTypeException.class);
+    }
 }
