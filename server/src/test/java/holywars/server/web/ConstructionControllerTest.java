@@ -26,17 +26,20 @@ import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(ConstructionController.class)
-@Import(TownSceneConfiguration.class)
+@Import({TownSceneConfiguration.class, ConstructionControllerTest.FixedClockConfiguration.class})
 class ConstructionControllerTest {
 
     private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
@@ -52,14 +55,6 @@ class ConstructionControllerTest {
 
     @MockitoBean
     private PlayerRepository playerRepository;
-
-    @MockitoBean
-    private Clock clock;
-
-    @BeforeEach
-    void stubTheClock() {
-        given(clock.instant()).willReturn(NOW);
-    }
 
     @Test
     void buildMenuEndpointRendersTheFreeSlotsAllowedOptionsWithAPostButtonPerType() throws Exception {
@@ -172,5 +167,15 @@ class ConstructionControllerTest {
 
         mockMvc.perform(post("/towns/404/slots/2/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isNotFound());
+    }
+
+    @TestConfiguration
+    static class FixedClockConfiguration {
+
+        @Bean
+        @Primary
+        Clock fixedClock() {
+            return Clock.fixed(NOW, ZoneOffset.UTC);
+        }
     }
 }

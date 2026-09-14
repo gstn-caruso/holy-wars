@@ -25,19 +25,22 @@ import holywars.world.World;
 import holywars.world.WorldRepository;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(TownController.class)
-@Import({TownSceneConfiguration.class, PlotAnchorConverter.class})
+@Import({TownSceneConfiguration.class, PlotAnchorConverter.class, TownControllerTest.FixedClockConfiguration.class})
 class TownControllerTest {
 
     private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
@@ -56,14 +59,6 @@ class TownControllerTest {
 
     @MockitoBean
     private CapitalHeaders capitalHeaders;
-
-    @MockitoBean
-    private Clock clock;
-
-    @BeforeEach
-    void stubTheClock() {
-        given(clock.instant()).willReturn(NOW);
-    }
 
     @Test
     void unknownTownReturns404() throws Exception {
@@ -252,5 +247,15 @@ class TownControllerTest {
             index += token.length();
         }
         return count;
+    }
+
+    @TestConfiguration
+    static class FixedClockConfiguration {
+
+        @Bean
+        @Primary
+        Clock fixedClock() {
+            return Clock.fixed(NOW, ZoneOffset.UTC);
+        }
     }
 }
