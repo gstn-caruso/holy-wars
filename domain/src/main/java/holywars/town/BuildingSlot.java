@@ -1,5 +1,6 @@
 package holywars.town;
 
+import java.util.Objects;
 import java.util.OptionalInt;
 
 public final class BuildingSlot {
@@ -65,5 +66,23 @@ public final class BuildingSlot {
             return BuildingSlotState.OCCUPIED;
         }
         return townHallLevel >= requiredTownHallLevel ? BuildingSlotState.FREE : BuildingSlotState.LOCKED;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof BuildingSlot that)) {
+            return false;
+        }
+        return position == that.position && kind == that.kind
+                && requiredTownHallLevel == that.requiredTownHallLevel
+                && Objects.equals(builtLevel, that.builtLevel);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(position, kind, requiredTownHallLevel, builtLevel);
     }
 }

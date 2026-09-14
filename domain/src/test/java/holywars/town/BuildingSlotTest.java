@@ -58,4 +58,16 @@ class BuildingSlotTest {
         assertThatThrownBy(() -> new BuildingSlot(12, BuildingSlotKind.WALL, 1, BuildingSlotKind.LAND, 1))
                 .isInstanceOf(MismatchedBuildingTypeException.class);
     }
+
+    @Test
+    void slotsWithTheSamePositionKindRequiredLevelAndBuiltLevelAreEqual() {
+        BuildingSlot vacant = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
+        BuildingSlot sameVacant = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
+        BuildingSlot built = new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1, BuildingSlotKind.TOWN_HALL, 1);
+        BuildingSlot sameBuilt = new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1, BuildingSlotKind.TOWN_HALL, 1);
+
+        assertThat(vacant).isEqualTo(sameVacant);
+        assertThat(built).isEqualTo(sameBuilt);
+        assertThat(vacant).isNotEqualTo(built);
+    }
 }
