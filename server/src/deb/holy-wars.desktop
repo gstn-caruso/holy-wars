@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Holy Wars
+GenericName=Game
+GenericName[es]=Juego
+Comment=A single-player Ikariam clone served in the browser
+Comment[es]=Un clon de Ikariam single-player servido en el navegador
+Exec=holy-wars
+Icon=holy-wars
+Terminal=false
+Categories=Game;

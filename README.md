@@ -1,14 +1,14 @@
 # Holy Wars
 
-Juego hecho con libGDX en Java 25.
+Clon de Ikariam single-player: server Spring Boot que sirve el juego en el browser, Java 25.
 
 ## Jugar
 
 ```
-mvn -q compile exec:exec
+mvn -B -pl server -am spring-boot:run
 ```
 
-Abre una ventana con el juego.
+Abrí `http://localhost:8080` en el navegador.
 
 ## Testear
 
@@ -28,4 +28,5 @@ en GitHub e instalalo:
 sudo apt install ./holy-wars_<versión>_all.deb
 ```
 
-Esto deja el comando `holy-wars` disponible y agrega Holy Wars al menú de aplicaciones.
+Esto deja el comando `holy-wars` disponible y agrega Holy Wars al menú de aplicaciones. Al ejecutarlo,
+levanta el server local y abre el navegador; los datos del juego quedan en `~/.local/share/holy-wars/holy-wars.db`.
