@@ -51,6 +51,18 @@ class GameSetupTest {
         assertThat(newGame.towns()).extracting(town -> town.location().island()).doesNotHaveDuplicates();
     }
 
+    @Test
+    void startWithSeveralAiPlayersAssignsEachToADifferentIsland() {
+        World world = worldWithIslands(5);
+        GameSetupSettings settings = new GameSetupSettings(3, 500);
+
+        NewGame newGame = GameSetup.start(world, new Random(42), settings);
+
+        assertThat(newGame.players()).hasSize(4);
+        assertThat(newGame.towns()).hasSize(4);
+        assertThat(newGame.towns()).extracting(town -> town.location().island()).doesNotHaveDuplicates();
+    }
+
     private World worldWithIslands(int count) {
         List<Island> islands = java.util.stream.IntStream.rangeClosed(1, count)
                 .mapToObj(index -> Island.withFreePlots(
