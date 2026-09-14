@@ -34,14 +34,9 @@ class TownJpaAdapter implements TownRepository {
 
     @Override
     public void save(Town town) {
-        TownResources resources = town.resources();
         TownEntity entity = townJpaRepository.findWithSlotsById(town.id().value())
-                .orElseGet(() -> new TownEntity(town.id().value(), town.ownerId().value(), town.islandId().value(),
-                        town.plotNumber(), town.name(), resources.wood().ticks(), resources.luxury().ticks(),
-                        resources.luxuryResource().name(), resources.lastUpdate()));
-        entity.updateFrom(town.ownerId().value(), town.islandId().value(), town.plotNumber(), town.name(),
-                resources.wood().ticks(), resources.luxury().ticks(), resources.luxuryResource().name(),
-                resources.lastUpdate());
+                .orElseGet(() -> new TownEntity(town));
+        entity.updateFrom(town);
         town.buildingSlots().forEach(entity::putSlot);
         townJpaRepository.save(entity);
     }

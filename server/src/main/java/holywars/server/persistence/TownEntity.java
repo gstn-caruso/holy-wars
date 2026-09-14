@@ -1,6 +1,8 @@
 package holywars.server.persistence;
 
+import holywars.resources.TownResources;
 import holywars.town.BuildingSlot;
+import holywars.town.Town;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -42,29 +44,21 @@ class TownEntity {
     protected TownEntity() {
     }
 
-    TownEntity(long id, long ownerId, long islandId, int plotNumber, String name, long woodTicks, long luxuryTicks,
-            String luxuryResource, Instant resourcesUpdatedAt) {
-        this.id = id;
-        this.ownerId = ownerId;
-        this.islandId = islandId;
-        this.plotNumber = plotNumber;
-        this.name = name;
-        this.woodTicks = woodTicks;
-        this.luxuryTicks = luxuryTicks;
-        this.luxuryResource = luxuryResource;
-        this.resourcesUpdatedAt = resourcesUpdatedAt;
+    TownEntity(Town town) {
+        this.id = town.id().value();
+        updateFrom(town);
     }
 
-    void updateFrom(long ownerId, long islandId, int plotNumber, String name, long woodTicks, long luxuryTicks,
-            String luxuryResource, Instant resourcesUpdatedAt) {
-        this.ownerId = ownerId;
-        this.islandId = islandId;
-        this.plotNumber = plotNumber;
-        this.name = name;
-        this.woodTicks = woodTicks;
-        this.luxuryTicks = luxuryTicks;
-        this.luxuryResource = luxuryResource;
-        this.resourcesUpdatedAt = resourcesUpdatedAt;
+    void updateFrom(Town town) {
+        TownResources resources = town.resources();
+        this.ownerId = town.ownerId().value();
+        this.islandId = town.islandId().value();
+        this.plotNumber = town.plotNumber();
+        this.name = town.name();
+        this.woodTicks = resources.wood().ticks();
+        this.luxuryTicks = resources.luxury().ticks();
+        this.luxuryResource = resources.luxuryResource().name();
+        this.resourcesUpdatedAt = resources.lastUpdate();
     }
 
     void putSlot(BuildingSlot slot) {

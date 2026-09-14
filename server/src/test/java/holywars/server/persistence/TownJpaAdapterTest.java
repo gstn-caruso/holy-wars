@@ -12,6 +12,7 @@ import holywars.town.TownId;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import jakarta.persistence.EntityManager;
+import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
 import org.hibernate.SessionFactory;
@@ -142,9 +143,10 @@ class TownJpaAdapterTest {
 
     @Test
     void reconstructsTheStandardLayoutForATownWithoutPersistedSlotsAndBackfillsOnSave() {
-        TownEntity legacyEntity = new TownEntity(8, 7, 3, 1, "Rodas", 500, 100, LuxuryResource.WINE.name(),
-                FOUNDED_AT);
-        townJpaRepository.save(legacyEntity);
+        jdbcTemplate.update(
+                "insert into town (id, island_id, luxury_resource, luxury_ticks, name, owner_id, plot_number, "
+                        + "resources_updated_at, wood_ticks) values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                8L, 3L, LuxuryResource.WINE.name(), 100L, "Rodas", 7L, 1, Timestamp.from(FOUNDED_AT), 500L);
 
         Town found = townJpaAdapter.find(new TownId(8)).orElseThrow();
         assertThat(found.buildingSlots()).isEqualTo(BuildingSlots.standard());
