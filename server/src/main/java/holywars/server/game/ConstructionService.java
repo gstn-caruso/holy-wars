@@ -1,5 +1,8 @@
 package holywars.server.game;
 
+import holywars.player.Player;
+import holywars.player.PlayerKind;
+import holywars.player.PlayerRepository;
 import holywars.town.BuildingType;
 import holywars.town.Town;
 import holywars.town.TownId;
@@ -14,10 +17,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class ConstructionService {
 
     private final TownRepository townRepository;
+    private final PlayerRepository playerRepository;
     private final Clock clock;
 
-    ConstructionService(TownRepository townRepository, Clock clock) {
+    ConstructionService(TownRepository townRepository, PlayerRepository playerRepository, Clock clock) {
         this.townRepository = townRepository;
+        this.playerRepository = playerRepository;
         this.clock = clock;
     }
 
@@ -25,6 +30,11 @@ public class ConstructionService {
     public void startConstruction(TownId townId, int position, BuildingType type) {
         Town town = townRepository.find(townId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Player owner = playerRepository.find(town.ownerId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if (owner.kind() != PlayerKind.HUMAN) {
+            throw new ForeignTownException(townId);
+        }
         Town updatedTown = town.startingConstruction(position, type, clock.instant());
         townRepository.save(updatedTown);
     }
