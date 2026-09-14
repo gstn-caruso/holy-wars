@@ -2,6 +2,8 @@ package holywars.world;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import holywars.town.PlotLocation;
+import holywars.town.TownId;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -49,6 +51,21 @@ class WorldTest {
         World world = new World(GRID, List.of(naxos));
 
         assertThat(world.islandAt(new Coordinate(9, 9))).isEqualTo(Optional.empty());
+    }
+
+    @Test
+    void foundingACityUpdatesOnlyTheTargetIsland() {
+        Island naxos = islandNamed(1, "Naxos");
+        Island ikaria = islandNamed(2, "Ikaria");
+        World world = new World(GRID, List.of(naxos, ikaria));
+        TownId townId = new TownId(1);
+
+        World updated = world.withCityFounded(new PlotLocation(new IslandId(2), 5), townId);
+
+        assertThat(updated.island(new IslandId(1))).contains(naxos);
+        Island updatedIkaria = updated.island(new IslandId(2)).orElseThrow();
+        assertThat(updatedIkaria.plots().stream().filter(plot -> plot.number() == 5).findFirst().orElseThrow().town())
+                .isEqualTo(Optional.of(townId));
     }
 
     private Island islandNamed(int id, String name) {
