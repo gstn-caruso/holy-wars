@@ -10,9 +10,9 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class WorldMapper {
+final class WorldMapper {
 
-    public World toDomain(List<IslandEntity> islandEntities) {
+    World toDomain(List<IslandEntity> islandEntities) {
         return new World(islandEntities.stream().map(this::toDomainIsland).toList());
     }
 
@@ -32,10 +32,6 @@ public final class WorldMapper {
             plot.occupy(islandPlotEntity.occupantTownId());
         }
         return plot;
-    }
-
-    public List<IslandEntity> toEntities(World world) {
-        return world.islands().stream().map(this::toEntity).toList();
     }
 
     IslandEntity toEntity(Island island) {

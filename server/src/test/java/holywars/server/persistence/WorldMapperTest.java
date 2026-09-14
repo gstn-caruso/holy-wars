@@ -79,15 +79,12 @@ class WorldMapperTest {
     }
 
     @Test
-    void mapsADomainWorldToItsPersistableIslandAndPlotEntities() {
+    void mapsADomainIslandToItsPersistableIslandAndPlotEntities() {
         Island naxos = Island.withFreePlots(new IslandId(4), new Coordinate(2, 6), "Naxos", LuxuryResource.CRYSTAL);
         naxos.firstFreePlot().occupy(9L);
-        World world = new World(List.of(naxos));
 
-        List<IslandEntity> islandEntities = worldMapper.toEntities(world);
+        IslandEntity islandEntity = worldMapper.toEntity(naxos);
 
-        assertThat(islandEntities).hasSize(1);
-        IslandEntity islandEntity = islandEntities.get(0);
         assertThat(islandEntity.id()).isEqualTo(4L);
         assertThat(islandEntity.x()).isEqualTo(2);
         assertThat(islandEntity.y()).isEqualTo(6);
