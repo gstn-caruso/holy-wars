@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.IntStream;
 
 public final class WorldGenerator {
 
@@ -26,7 +25,7 @@ public final class WorldGenerator {
             Coordinate coordinate = islandCoordinates.get(index);
             String name = names.get(index);
             LuxuryResource resource = randomResource(random);
-            islands.add(new Island(id, coordinate, name, resource, sixteenFreePlots()));
+            islands.add(Island.withFreePlots(id, coordinate, name, resource));
         }
 
         return new World(islands);
@@ -35,11 +34,5 @@ public final class WorldGenerator {
     private static LuxuryResource randomResource(Random random) {
         LuxuryResource[] resources = LuxuryResource.values();
         return resources[random.nextInt(resources.length)];
-    }
-
-    private static List<CityPlot> sixteenFreePlots() {
-        return IntStream.rangeClosed(1, CityPlot.HIGHEST_NUMBER)
-                .mapToObj(CityPlot::free)
-                .toList();
     }
 }

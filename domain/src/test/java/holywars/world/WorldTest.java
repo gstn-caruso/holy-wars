@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 
 class WorldTest {
@@ -35,9 +34,6 @@ class WorldTest {
     }
 
     private Island islandNamed(int id, String name) {
-        List<CityPlot> plots = IntStream.rangeClosed(1, 16)
-                .mapToObj(CityPlot::free)
-                .toList();
-        return new Island(new IslandId(id), new Coordinate(id, id), name, LuxuryResource.WINE, plots);
+        return Island.withFreePlots(new IslandId(id), new Coordinate(id, id), name, LuxuryResource.WINE);
     }
 }
