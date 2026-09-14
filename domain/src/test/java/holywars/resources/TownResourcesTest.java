@@ -33,4 +33,16 @@ class TownResourcesTest {
                 .hasMessageContaining("wood");
         assertThat(resources.luxuryAmount()).isEqualTo(100);
     }
+
+    @Test
+    void spendingMoreLuxuryThanAvailableFailsWithoutSpendingAnything() {
+        Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
+        TownResources resources = TownResources.starting(LuxuryResource.WINE, foundedAt);
+
+        assertThatThrownBy(() -> resources.spend(100, 101))
+                .isInstanceOf(NotEnoughResourcesException.class)
+                .hasMessageContaining("luxury");
+        assertThat(resources.woodAmount()).isEqualTo(500);
+        assertThat(resources.luxuryAmount()).isEqualTo(100);
+    }
 }
