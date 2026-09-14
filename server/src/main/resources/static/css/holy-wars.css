@@ -15,6 +15,7 @@
     --ink: #3a332a;
     --band-height: 120px;
     --page-bg: #eef2ea;
+    --page-gutter: 1.5rem;
 }
 
 * {
@@ -33,7 +34,7 @@ body {
     margin: 0;
     min-height: 100vh;
     max-width: 1280px;
-    padding: 0 1.5em 3em;
+    padding: 0 var(--page-gutter) 3em;
     margin-left: auto;
     margin-right: auto;
 }
@@ -49,18 +50,27 @@ a {
 
 body > h1 {
     background: var(--aegean-deep);
+    border-radius: 6px 6px 0 0;
     color: var(--marble-light);
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-    margin: 0 -1.5em;
-    padding: 0.8em 1.5em 0.4em;
+    margin: 0 calc(var(--page-gutter) * -1);
+    padding: 0.8em var(--page-gutter) 0.4em;
+}
+
+body > h1:has(+ :not(p)) {
+    border-radius: 6px;
 }
 
 body > p {
     background: var(--aegean-deep);
     color: var(--marble-light);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-    margin: 0 -1.5em;
-    padding: 0.4em 1.5em;
+    margin: 0 calc(var(--page-gutter) * -1);
+    padding: 0.4em var(--page-gutter);
+}
+
+body > p:has(+ :not(p)) {
+    border-radius: 0 0 6px 6px;
 }
 
 body > p a {
@@ -75,8 +85,8 @@ header.marble {
     background: linear-gradient(180deg, var(--marble-light) 0%, var(--marble-dark) 100%);
     border-bottom: 6px solid var(--marble-gold);
     border-radius: 0 0 10px 10px;
-    padding: 0.9em 1.5em;
-    margin: 0 -1.5em 1.5em;
+    padding: 0.9em var(--page-gutter);
+    margin: 0 calc(var(--page-gutter) * -1) 1.5em;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
 
