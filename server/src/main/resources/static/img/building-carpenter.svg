@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <ellipse cx="100" cy="180" rx="66" ry="9" fill="#1a1a1a" opacity="0.18"/>
+  <polygon points="130,104 142,109 142,164 130,159" fill="#6e4620"/>
+  <rect x="52" y="112" width="78" height="48" fill="#a87b45"/>
+  <g stroke="#8c5a2b" stroke-width="1.4">
+    <line x1="52" y1="128" x2="130" y2="128"/>
+    <line x1="52" y1="144" x2="130" y2="144"/>
+  </g>
+  <polygon points="90,84 46,112 136,112 130,106" fill="#8c5a2b"/>
+  <polygon points="90,84 130,106 136,112 90,112" fill="#6e4620"/>
+  <rect x="70" y="134" width="22" height="26" fill="#54350f"/>
+  <g stroke="#4a2f16" stroke-width="1.2">
+    <circle cx="150" cy="150" r="10" fill="#8c5a2b"/>
+    <circle cx="150" cy="150" r="6" fill="#a87b45"/>
+    <circle cx="150" cy="150" r="2.5" fill="#6e4620"/>
+    <circle cx="164" cy="158" r="10" fill="#a87b45"/>
+    <circle cx="164" cy="158" r="6" fill="#c79a5f"/>
+    <circle cx="164" cy="158" r="2.5" fill="#8c5a2b"/>
+  </g>
+  <g transform="translate(30 150) rotate(-18)">
+    <rect x="0" y="0" width="30" height="5" fill="#c3bda9"/>
+    <rect x="-6" y="-3" width="8" height="11" rx="2" fill="#6e4620"/>
+  </g>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <ellipse cx="100" cy="180" rx="58" ry="9" fill="#1a1a1a" opacity="0.18"/>
+  <polygon points="140,80 154,86 154,168 140,162" fill="#a9a38c"/>
+  <rect x="56" y="80" width="84" height="88" fill="#c3bda9"/>
+  <rect x="56" y="80" width="84" height="88" fill="none" stroke="#a9a38c" stroke-width="1"/>
+  <g fill="#8f8a73" stroke="#6f6a55" stroke-width="1">
+    <rect x="56" y="68" width="12" height="14"/>
+    <rect x="78" y="68" width="12" height="14"/>
+    <rect x="100" y="68" width="12" height="14"/>
+    <rect x="122" y="68" width="12" height="14"/>
+  </g>
+  <rect x="56" y="80" width="84" height="8" fill="#8f8a73"/>
+  <rect x="86" y="128" width="24" height="40" fill="#54350f"/>
+  <rect x="86" y="128" width="12" height="40" fill="#3f2809"/>
+  <g transform="translate(72 104)">
+    <circle r="13" fill="#c9a227" stroke="#7a5f12" stroke-width="2"/>
+    <path d="M-9 0 h18 M0 -9 v18" stroke="#7a5f12" stroke-width="2.5"/>
+  </g>
+  <g transform="translate(124 104)">
+    <circle r="13" fill="#c9a227" stroke="#7a5f12" stroke-width="2"/>
+    <path d="M-9 0 h18 M0 -9 v18" stroke="#7a5f12" stroke-width="2.5"/>
+  </g>
+  <g stroke="#c9b98a" stroke-width="4" stroke-linecap="round">
+    <line x1="60" y1="124" x2="40" y2="58"/>
+    <line x1="140" y1="124" x2="160" y2="58"/>
+  </g>
+  <g fill="#e9d8a6" stroke="#8a8468" stroke-width="1">
+    <polygon points="40,58 34,68 46,68"/>
+    <polygon points="160,58 154,68 166,68"/>
+  </g>
+  <g fill="#b5533c">
+    <polygon points="40,58 24,66 40,70"/>
+    <polygon points="160,58 176,66 160,70"/>
+  </g>
+</svg>

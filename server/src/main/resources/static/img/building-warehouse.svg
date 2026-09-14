@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <ellipse cx="100" cy="180" rx="68" ry="10" fill="#1a1a1a" opacity="0.18"/>
+  <polygon points="150,86 164,92 164,164 150,158" fill="#6e4620"/>
+  <rect x="40" y="98" width="110" height="60" fill="#8c5a2b"/>
+  <g stroke="#6e4620" stroke-width="1.5">
+    <line x1="40" y1="112" x2="150" y2="112"/>
+    <line x1="40" y1="126" x2="150" y2="126"/>
+    <line x1="40" y1="140" x2="150" y2="140"/>
+  </g>
+  <polygon points="95,58 34,98 156,98 150,92" fill="#b5533c"/>
+  <polygon points="95,58 150,92 156,98 95,98" fill="#943f2c"/>
+  <rect x="34" y="98" width="122" height="6" fill="#8a3c2a"/>
+  <rect x="88" y="126" width="26" height="32" fill="#54350f"/>
+  <rect x="88" y="126" width="13" height="32" fill="#3f2809"/>
+  <g transform="translate(24 148)">
+    <path d="M-10 12 h20 l2 -8 h-24 z" fill="#8c5a2b"/>
+    <path d="M-8 4 h16 c3 2 4 4 4 8 c0 6 -3 8 -3 12 c0 2 -2 4 -5 4 s-5 -2 -5 -4 c0 -4 -3 -6 -3 -12 c0 -4 1 -6 4 -8 z" fill="#d9734f"/>
+    <path d="M0 4 h8 c3 2 4 4 4 8 c0 6 -3 8 -3 12 c0 2 -2 4 -5 4 z" fill="#b5533c"/>
+  </g>
+  <g transform="translate(168 150)">
+    <path d="M-9 10 h18 l2 -7 h-22 z" fill="#8c5a2b"/>
+    <path d="M-7 3 h14 c3 2 3 4 3 7 c0 5 -3 7 -3 11 c0 2 -2 3 -4 3 s-4 -1 -4 -3 c0 -4 -3 -6 -3 -11 c0 -3 1 -5 3 -7 z" fill="#d9734f"/>
+  </g>
+</svg>
