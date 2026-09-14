@@ -1,9 +1,16 @@
 package holywars.server.persistence;
 
+import holywars.town.BuildingSlot;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "town")
@@ -28,6 +35,10 @@ class TownEntity {
 
     private Instant resourcesUpdatedAt;
 
+    @OneToMany(mappedBy = "town", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("position ASC")
+    private List<BuildingSlotEntity> slots = new ArrayList<>();
+
     protected TownEntity() {
     }
 
@@ -42,6 +53,29 @@ class TownEntity {
         this.luxuryTicks = luxuryTicks;
         this.luxuryResource = luxuryResource;
         this.resourcesUpdatedAt = resourcesUpdatedAt;
+    }
+
+    void updateFrom(long ownerId, long islandId, int plotNumber, String name, long woodTicks, long luxuryTicks,
+            String luxuryResource, Instant resourcesUpdatedAt) {
+        this.ownerId = ownerId;
+        this.islandId = islandId;
+        this.plotNumber = plotNumber;
+        this.name = name;
+        this.woodTicks = woodTicks;
+        this.luxuryTicks = luxuryTicks;
+        this.luxuryResource = luxuryResource;
+        this.resourcesUpdatedAt = resourcesUpdatedAt;
+    }
+
+    void putSlot(BuildingSlot slot) {
+        Optional<BuildingSlotEntity> existingSlot = slots.stream()
+                .filter(entity -> entity.position() == slot.position())
+                .findFirst();
+        if (existingSlot.isPresent()) {
+            existingSlot.get().updateFrom(slot);
+        } else {
+            slots.add(new BuildingSlotEntity(this, slot));
+        }
     }
 
     long id() {
@@ -78,5 +112,9 @@ class TownEntity {
 
     Instant resourcesUpdatedAt() {
         return resourcesUpdatedAt;
+    }
+
+    List<BuildingSlotEntity> slots() {
+        return List.copyOf(slots);
     }
 }

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @DataJpaTest
 class TownJpaAdapterTest {
@@ -21,6 +22,9 @@ class TownJpaAdapterTest {
 
     @Autowired
     private TownJpaRepository townJpaRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private TownJpaAdapter townJpaAdapter;
 
@@ -49,5 +53,22 @@ class TownJpaAdapterTest {
         townJpaAdapter.save(town);
 
         assertThat(townJpaAdapter.find(new TownId(2))).contains(town);
+    }
+
+    @Test
+    void savesAFoundedTownWithAllFourteenBuildingSlotsPersisted() {
+        Town town = Town.founded(new TownId(3), new PlayerId(7), new IslandId(3), 1, "Corinto",
+                LuxuryResource.SULFUR, FOUNDED_AT);
+
+        townJpaAdapter.save(town);
+
+        assertThat(townJpaAdapter.find(new TownId(3))).contains(town);
+        assertThat(countBuildingSlotRowsFor(3L)).isEqualTo(14L);
+    }
+
+    private long countBuildingSlotRowsFor(long townId) {
+        Long count = jdbcTemplate.queryForObject(
+                "select count(*) from building_slot where town_id = ?", Long.class, townId);
+        return count == null ? 0 : count;
     }
 }
