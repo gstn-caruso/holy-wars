@@ -1,6 +1,7 @@
 package holywars.town;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -38,5 +39,16 @@ class BuildingSlotTest {
         BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 4, Optional.of(academy));
 
         assertThat(slot.state(1)).isEqualTo(SlotState.OCCUPIED);
+    }
+
+    @Test
+    void slotRejectsABuildingOfATypeThatDoesNotBelongToItsKind() {
+        Building wall = new Building(BuildingType.WALL, 1);
+        assertThatThrownBy(() -> new BuildingSlot(5, SlotKind.LAND, 1, Optional.of(wall)))
+                .isInstanceOf(MismatchedBuildingTypeException.class);
+
+        Building academy = new Building(BuildingType.ACADEMY, 1);
+        assertThatThrownBy(() -> new BuildingSlot(13, SlotKind.COAST, 1, Optional.of(academy)))
+                .isInstanceOf(MismatchedBuildingTypeException.class);
     }
 }
