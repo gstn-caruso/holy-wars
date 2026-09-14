@@ -35,6 +35,22 @@ class GameSetupTest {
         assertThat(capital.ownerId()).isEqualTo(human.id());
     }
 
+    @Test
+    void startWithOneAiPlayerCreatesTwoDistinctPlayersOnDistinctIslands() {
+        World world = worldWithIslands(3);
+        GameSetupSettings settings = new GameSetupSettings(1, 500);
+
+        NewGame newGame = GameSetup.start(world, new Random(42), settings);
+
+        assertThat(newGame.players()).hasSize(2);
+        assertThat(newGame.players()).extracting(Player::kind)
+                .containsExactlyInAnyOrder(PlayerKind.HUMAN, PlayerKind.AI);
+        assertThat(newGame.players()).extracting(Player::id).doesNotHaveDuplicates();
+
+        assertThat(newGame.towns()).hasSize(2);
+        assertThat(newGame.towns()).extracting(town -> town.location().island()).doesNotHaveDuplicates();
+    }
+
     private World worldWithIslands(int count) {
         List<Island> islands = java.util.stream.IntStream.rangeClosed(1, count)
                 .mapToObj(index -> Island.withFreePlots(
