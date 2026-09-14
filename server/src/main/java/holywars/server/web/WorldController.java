@@ -3,6 +3,7 @@ package holywars.server.web;
 import holywars.player.PlayerRepository;
 import holywars.town.TownRepository;
 import holywars.world.Island;
+import holywars.world.IslandId;
 import holywars.world.World;
 import holywars.world.WorldRepository;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 @Controller
@@ -35,6 +37,14 @@ class WorldController {
         World world = findWorldOrThrow();
         model.addAttribute("rows", mapRows(world));
         return "map";
+    }
+
+    @GetMapping("/islands/{id}")
+    String island(@PathVariable("id") long id, Model model) {
+        World world = findWorldOrThrow();
+        Island island = world.island(new IslandId(id));
+        model.addAttribute("island", IslandView.of(island, null, null));
+        return "island";
     }
 
     private World findWorldOrThrow() {

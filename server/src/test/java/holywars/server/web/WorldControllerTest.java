@@ -59,4 +59,12 @@ class WorldControllerTest {
                 .andExpect(content().string(containsString("/img/resource-wine.svg")))
                 .andExpect(content().string(containsString("1 aldea")));
     }
+
+    @Test
+    void unknownIslandReturns404ViaTheAdvice() throws Exception {
+        World world = new World(List.of());
+        given(worldRepository.find()).willReturn(Optional.of(world));
+
+        mockMvc.perform(get("/islands/99")).andExpect(status().isNotFound());
+    }
 }
