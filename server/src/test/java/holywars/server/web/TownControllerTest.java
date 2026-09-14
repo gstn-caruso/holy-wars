@@ -188,6 +188,26 @@ class TownControllerTest {
     }
 
     @Test
+    void validTownIncludesTheHtmxScriptClickablePlotsAndABuildPanel() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        World world = new World(List.of(island));
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(playerRepository.find()).willReturn(Optional.of(player));
+        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(capitalHeaders.forPlayer(world, player)).willReturn(aCapitalHeader());
+
+        mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("<script src=\"/js/htmx.min.js\"")))
+                .andExpect(content().string(containsString("id=\"build-panel\"")))
+                .andExpect(content().string(containsString("hx-get=\"/towns/1/slots/1/build-menu\"")))
+                .andExpect(content().string(containsString("hx-target=\"#build-panel\"")));
+    }
+
+    @Test
     void sceneEndpointRendersOnlyTheTownSceneSvg() throws Exception {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
