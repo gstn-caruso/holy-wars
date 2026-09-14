@@ -8,6 +8,7 @@ import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
+import java.time.Duration;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
@@ -53,6 +54,20 @@ class BuildMenuViewTest {
         BuildMenuView menu = BuildMenuView.of(town, 1, NOW);
 
         assertThat(menu.statusText()).isEqualTo("Ayuntamiento nivel 1");
+        assertThat(menu.options()).isEmpty();
+    }
+
+    @Test
+    void underConstructionSlotShowsTheRemainingMinutesRoundedUp() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, NOW)
+                .startingConstruction(2, BuildingType.WAREHOUSE, NOW);
+        Instant fiveMinutesAndAMillisecondBeforeFinishing = NOW.plus(BuildingType.WAREHOUSE.buildTime())
+                .minus(Duration.ofMinutes(5)).minusMillis(1);
+
+        BuildMenuView menu = BuildMenuView.of(town, 2, fiveMinutesAndAMillisecondBeforeFinishing);
+
+        assertThat(menu.statusText()).isEqualTo("En obra: Almacén · faltan 6 min");
         assertThat(menu.options()).isEmpty();
     }
 }
