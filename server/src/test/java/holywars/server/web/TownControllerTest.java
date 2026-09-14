@@ -78,11 +78,13 @@ class TownControllerTest {
 
     @Test
     void validTownRendersTheTownSceneSvgWithFourteenPlots() throws Exception {
-        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas");
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
         given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find()).willReturn(Optional.of(new Player(new PlayerId(1), "Jugador")));
+        given(playerRepository.find())
+                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
         given(worldRepository.find()).willReturn(Optional.of(world));
 
         MvcResult result = mockMvc.perform(get("/towns/1"))
