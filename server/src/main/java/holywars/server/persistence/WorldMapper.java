@@ -7,7 +7,9 @@ import holywars.world.IslandPlot;
 import holywars.world.LuxuryResource;
 import holywars.world.World;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
+@Component
 public final class WorldMapper {
 
     public World toDomain(List<IslandEntity> islandEntities) {
