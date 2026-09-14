@@ -129,4 +129,13 @@ class BuildingSlotTest {
                 .contains(Construction.startingAt(BuildingType.WAREHOUSE, startedAt));
         assertThat(underConstruction.building()).isEmpty();
     }
+
+    @Test
+    void startingConstructionOnALockedSlotIsRejectedWithItsStateInTheMessage() {
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
+
+        assertThatThrownBy(() -> slot.startingConstruction(BuildingType.WAREHOUSE, 1, Instant.parse("2026-01-01T00:00:00Z")))
+                .isInstanceOf(SlotNotFreeException.class)
+                .hasMessageContaining("LOCKED");
+    }
 }
