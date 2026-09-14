@@ -13,6 +13,10 @@ public record Player(PlayerId id, String name, ResourceStock gold, Instant lastU
         return new Player(id, name, ResourceStock.of(STARTING_GOLD, GOLD_PER_HOUR), now);
     }
 
+    public static Player reconstituted(PlayerId id, String name, long goldTicks, Instant lastUpdate) {
+        return new Player(id, name, new ResourceStock(goldTicks, GOLD_PER_HOUR), lastUpdate);
+    }
+
     public Player advancedTo(Instant now) {
         return new Player(id, name, gold.advancedTo(Elapsed.since(lastUpdate, now)), now);
     }
