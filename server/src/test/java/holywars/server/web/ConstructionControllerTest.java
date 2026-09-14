@@ -95,6 +95,30 @@ class ConstructionControllerTest {
         assertThat(body).contains("plot-free.svg");
     }
 
+    @Test
+    void buildingOnALockedPlotOrWithTheWrongTypeShowsTheRejection() throws Exception {
+        foundEspartaAt(FOUNDED_AT);
+
+        MvcResult lockedResult = mockMvc.perform(post("/towns/1/slots/5/build").param("type", "ACADEMY"))
+                .andExpect(status().is3xxRedirection())
+                .andReturn();
+        String lockedBody = mockMvc.perform(get("/towns/1").session((MockHttpSession) lockedResult.getRequest().getSession()))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertThat(lockedBody).contains("La parcela no está libre");
+
+        MvcResult mismatchedResult = mockMvc.perform(post("/towns/1/slots/2/build").param("type", "SHIPYARD"))
+                .andExpect(status().is3xxRedirection())
+                .andReturn();
+        String mismatchedBody = mockMvc.perform(
+                        get("/towns/1").session((MockHttpSession) mismatchedResult.getRequest().getSession()))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertThat(mismatchedBody).contains("Ese edificio no va en esa parcela");
+    }
+
     private void foundEspartaAt(Instant foundedAt) {
         World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
         clock.set(foundedAt);
