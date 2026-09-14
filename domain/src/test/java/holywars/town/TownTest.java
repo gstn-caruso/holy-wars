@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import holywars.player.PlayerId;
 import holywars.world.IslandId;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class TownTest {
@@ -30,5 +32,15 @@ class TownTest {
 
         assertThatThrownBy(() -> town.slot(15))
                 .isInstanceOf(InvalidBuildingSlotPositionException.class);
+    }
+
+    @Test
+    void aTownWithoutExactlyItsFourteenDistinctPositionsIsRejected() {
+        List<BuildingSlot> missingOnePosition = new ArrayList<>(BuildingSlots.standard());
+        missingOnePosition.remove(missingOnePosition.size() - 1);
+
+        assertThatThrownBy(() -> new Town(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                missingOnePosition))
+                .isInstanceOf(InvalidBuildingSlotCountException.class);
     }
 }
