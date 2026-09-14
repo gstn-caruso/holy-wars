@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import holywars.player.PlayerId;
 import holywars.world.IslandId;
+import holywars.world.LuxuryResource;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +19,12 @@ class TownTest {
     private final TownId id = new TownId(1);
     private final PlayerId ownerId = new PlayerId(1);
     private final PlotLocation location = new PlotLocation(new IslandId(3), 5);
+    private final Instant foundedAt = Instant.parse("2024-01-01T00:00:00Z");
+    private final TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
 
     @Test
     void townKnowsItsNameOwnerAndLocation() {
-        Town town = Town.founded(id, "Atenas", ownerId, location);
+        Town town = Town.founded(id, "Atenas", ownerId, location, LuxuryResource.WINE, foundedAt);
 
         assertThat(town.id()).isEqualTo(id);
         assertThat(town.name()).isEqualTo("Atenas");
@@ -30,15 +34,24 @@ class TownTest {
 
     @Test
     void foundedTownHasATownHallAtLevelOne() {
-        Town town = Town.founded(id, "Atenas", ownerId, location);
+        Town town = Town.founded(id, "Atenas", ownerId, location, LuxuryResource.WINE, foundedAt);
 
         assertThat(town.townHallLevel()).isEqualTo(1);
         assertThat(town.slots()).hasSize(14);
     }
 
     @Test
+    void foundedTownStartsWithItsIslandLuxuryAndTheInitialStockAtFoundation() {
+        Town town = Town.founded(id, "Atenas", ownerId, location, LuxuryResource.MARBLE, foundedAt);
+
+        assertThat(town.resources().luxury()).isEqualTo(LuxuryResource.MARBLE);
+        assertThat(town.resources().wood()).isEqualTo(500);
+        assertThat(town.resources().luxuryAmount()).isEqualTo(100);
+    }
+
+    @Test
     void townWithTownHallAtLevelThreeReportsThatLevelAndUnlocksSlotsUpToIt() {
-        Town town = new Town(id, "Atenas", ownerId, location, BuildingSlots.standard(3));
+        Town town = new Town(id, "Atenas", ownerId, location, BuildingSlots.standard(3), resources);
 
         assertThat(town.townHallLevel()).isEqualTo(3);
 
@@ -56,12 +69,12 @@ class TownTest {
     @Test
     void townRejectsASlotListThatIsNotTheFourteenPositions() {
         List<BuildingSlot> thirteenSlots = BuildingSlots.standard(1).subList(0, 13);
-        assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, thirteenSlots))
+        assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, thirteenSlots, resources))
                 .isInstanceOf(InvalidBuildingSlotCountException.class);
 
         List<BuildingSlot> fourteenWithDuplicatePosition = new ArrayList<>(BuildingSlots.standard(1));
         fourteenWithDuplicatePosition.set(1, new BuildingSlot(1, SlotKind.LAND, 1, Optional.empty()));
-        assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, fourteenWithDuplicatePosition))
+        assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, fourteenWithDuplicatePosition, resources))
                 .isInstanceOf(InvalidBuildingSlotCountException.class);
     }
 
@@ -72,7 +85,7 @@ class TownTest {
         slotsWithASecondOccupiedTownHall.set(
                 1, new BuildingSlot(2, SlotKind.TOWN_HALL, 1, Optional.of(new Building(BuildingType.TOWN_HALL, 1))));
 
-        assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, slotsWithASecondOccupiedTownHall))
+        assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, slotsWithASecondOccupiedTownHall, resources))
                 .isInstanceOf(MissingTownHallException.class);
     }
 
@@ -81,7 +94,7 @@ class TownTest {
         List<BuildingSlot> slotsWithEmptyTownHall = new ArrayList<>(BuildingSlots.standard(1));
         slotsWithEmptyTownHall.set(0, new BuildingSlot(1, SlotKind.TOWN_HALL, 1, Optional.empty()));
 
-        assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, slotsWithEmptyTownHall))
+        assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, slotsWithEmptyTownHall, resources))
                 .isInstanceOf(MissingTownHallException.class);
     }
 }

@@ -10,6 +10,7 @@ import holywars.town.TownNames;
 import holywars.world.CityPlot;
 import holywars.world.Island;
 import holywars.world.World;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +23,7 @@ public final class GameSetup {
     private GameSetup() {
     }
 
-    public static NewGame start(World world, Random random, GameSetupSettings settings) {
+    public static NewGame start(World world, Random random, GameSetupSettings settings, Instant startedAt) {
         int playerCount = 1 + settings.aiPlayers();
         List<Island> assignedIslands = pickDistinctIslands(world, playerCount, random);
         List<String> aiNames = PlayerNames.pick(settings.aiPlayers(), random);
@@ -40,7 +41,7 @@ public final class GameSetup {
             Island island = assignedIslands.get(index);
             CityPlot capitalPlot = island.firstFreePlot().orElseThrow();
             PlotLocation location = new PlotLocation(island.id(), capitalPlot.number());
-            Town town = Town.founded(townId, townNames.get(index), playerId, location);
+            Town town = Town.founded(townId, townNames.get(index), playerId, location, island.resource(), startedAt);
 
             updatedWorld = updatedWorld.withCityFounded(location, townId);
             players.add(player);

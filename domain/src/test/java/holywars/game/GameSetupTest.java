@@ -14,6 +14,7 @@ import holywars.world.Island;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import holywars.world.World;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -22,12 +23,14 @@ import org.junit.jupiter.api.Test;
 
 class GameSetupTest {
 
+    private final Instant startedAt = Instant.parse("2024-01-01T00:00:00Z");
+
     @Test
     void startWithZeroAiPlayersCreatesOnlyTheHumanAndTheirCapital() {
         World world = worldWithIslands(3);
         GameSetupSettings settings = new GameSetupSettings(0, 500);
 
-        NewGame newGame = GameSetup.start(world, new Random(42), settings);
+        NewGame newGame = GameSetup.start(world, new Random(42), settings, startedAt);
 
         assertThat(newGame.players()).hasSize(1);
         Player human = newGame.players().get(0);
@@ -47,7 +50,7 @@ class GameSetupTest {
         World world = worldWithIslands(3);
         GameSetupSettings settings = new GameSetupSettings(1, 500);
 
-        NewGame newGame = GameSetup.start(world, new Random(42), settings);
+        NewGame newGame = GameSetup.start(world, new Random(42), settings, startedAt);
 
         assertThat(newGame.players()).hasSize(2);
         assertThat(newGame.players()).extracting(Player::kind)
@@ -63,7 +66,7 @@ class GameSetupTest {
         World world = worldWithIslands(5);
         GameSetupSettings settings = new GameSetupSettings(3, 500);
 
-        NewGame newGame = GameSetup.start(world, new Random(42), settings);
+        NewGame newGame = GameSetup.start(world, new Random(42), settings, startedAt);
 
         assertThat(newGame.players()).hasSize(4);
         assertThat(newGame.towns()).hasSize(4);
@@ -75,8 +78,8 @@ class GameSetupTest {
         World world = worldWithIslands(5);
         GameSetupSettings settings = new GameSetupSettings(3, 500);
 
-        NewGame first = GameSetup.start(world, new Random(42), settings);
-        NewGame second = GameSetup.start(world, new Random(42), settings);
+        NewGame first = GameSetup.start(world, new Random(42), settings, startedAt);
+        NewGame second = GameSetup.start(world, new Random(42), settings, startedAt);
 
         assertThat(first).isEqualTo(second);
     }
@@ -86,7 +89,7 @@ class GameSetupTest {
         World world = worldWithIslands(3);
         GameSetupSettings settings = new GameSetupSettings(5, 500);
 
-        assertThatThrownBy(() -> GameSetup.start(world, new Random(42), settings))
+        assertThatThrownBy(() -> GameSetup.start(world, new Random(42), settings, startedAt))
                 .isInstanceOf(NotEnoughIslandsForPlayersException.class);
     }
 
@@ -95,7 +98,7 @@ class GameSetupTest {
         World world = worldWithIslands(5);
         GameSetupSettings settings = GameSetupSettings.standard();
 
-        NewGame newGame = GameSetup.start(world, new Random(42), settings);
+        NewGame newGame = GameSetup.start(world, new Random(42), settings, startedAt);
 
         for (Town town : newGame.towns()) {
             Island island = newGame.world().island(town.location().island()).orElseThrow();
@@ -118,7 +121,7 @@ class GameSetupTest {
         World world = worldWithIslands(5);
         GameSetupSettings settings = new GameSetupSettings(3, 500);
 
-        NewGame newGame = GameSetup.start(world, new Random(42), settings);
+        NewGame newGame = GameSetup.start(world, new Random(42), settings, startedAt);
 
         assertThat(newGame.towns()).extracting(Town::townHallLevel).containsOnly(1);
     }
