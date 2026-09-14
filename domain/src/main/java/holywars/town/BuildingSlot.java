@@ -64,4 +64,13 @@ public record BuildingSlot(int position, BuildingSlotKind kind, int requiredTown
         return new BuildingSlot(position, kind, requiredTownHallLevel, Optional.empty(),
                 Optional.of(Construction.startingAt(type, startedAt)));
     }
+
+    public BuildingSlot advancedTo(Instant now) {
+        if (construction.isPresent() && construction.get().isFinishedBy(now)) {
+            Building finishedBuilding = new Building(construction.get().type(), 1);
+            return new BuildingSlot(position, kind, requiredTownHallLevel, Optional.of(finishedBuilding),
+                    Optional.empty());
+        }
+        return this;
+    }
 }

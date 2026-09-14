@@ -146,4 +146,16 @@ class BuildingSlotTest {
         assertThatThrownBy(() -> slot.startingConstruction(BuildingType.WAREHOUSE, 1, Instant.parse("2026-01-01T00:00:00Z")))
                 .isInstanceOf(MismatchedBuildingTypeException.class);
     }
+
+    @Test
+    void advancedToCompletesAnOverdueConstructionAsALevelOneBuilding() {
+        Instant startedAt = Instant.parse("2026-01-01T00:00:00Z");
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2).startingConstruction(BuildingType.WAREHOUSE,
+                2, startedAt);
+
+        BuildingSlot advanced = slot.advancedTo(startedAt.plus(BuildingType.WAREHOUSE.buildTime()));
+
+        assertThat(advanced.building()).contains(new Building(BuildingType.WAREHOUSE, 1));
+        assertThat(advanced.construction()).isEmpty();
+    }
 }
