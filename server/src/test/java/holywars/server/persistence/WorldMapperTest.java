@@ -76,6 +76,35 @@ class WorldMapperTest {
         assertThat(lastPlot.isFree()).isTrue();
     }
 
+    @Test
+    void mapsADomainWorldToItsPersistableIslandAndPlotEntities() {
+        Island naxos = Island.withFreePlots(new IslandId(4), new Coordinate(2, 6), "Naxos", LuxuryResource.CRYSTAL);
+        naxos.firstFreePlot().occupy(9L);
+        World world = new World(List.of(naxos));
+
+        List<IslandEntity> islandEntities = worldMapper.toEntities(world);
+
+        assertThat(islandEntities).hasSize(1);
+        IslandEntity islandEntity = islandEntities.get(0);
+        assertThat(islandEntity.id()).isEqualTo(4L);
+        assertThat(islandEntity.x()).isEqualTo(2);
+        assertThat(islandEntity.y()).isEqualTo(6);
+        assertThat(islandEntity.name()).isEqualTo("Naxos");
+        assertThat(islandEntity.luxuryResource()).isEqualTo("CRYSTAL");
+        assertThat(islandEntity.plots()).hasSize(16);
+        IslandPlotEntity firstPlotEntity = islandEntity.plots().stream()
+                .filter(plot -> plot.number() == 1)
+                .findFirst()
+                .orElseThrow();
+        assertThat(firstPlotEntity.island()).isSameAs(islandEntity);
+        assertThat(firstPlotEntity.occupantTownId()).isEqualTo(9L);
+        IslandPlotEntity secondPlotEntity = islandEntity.plots().stream()
+                .filter(plot -> plot.number() == 2)
+                .findFirst()
+                .orElseThrow();
+        assertThat(secondPlotEntity.occupantTownId()).isNull();
+    }
+
     private IslandEntity anIslandEntityWithFreePlots(long id, int x, int y, String name, String luxuryResource) {
         IslandEntity islandEntity = new IslandEntity(id, x, y, name, luxuryResource);
         for (int number = 1; number <= 16; number++) {

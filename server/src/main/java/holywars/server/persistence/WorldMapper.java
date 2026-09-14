@@ -33,6 +33,22 @@ public final class WorldMapper {
     }
 
     public List<IslandEntity> toEntities(World world) {
-        throw new UnsupportedOperationException();
+        return world.islands().stream().map(this::toEntity).toList();
+    }
+
+    private IslandEntity toEntity(Island island) {
+        IslandEntity islandEntity = new IslandEntity(
+                island.id().value(),
+                island.coordinate().x(),
+                island.coordinate().y(),
+                island.name(),
+                island.luxuryResource().name());
+        island.plots().forEach(plot -> islandEntity.addPlot(toEntity(plot, islandEntity)));
+        return islandEntity;
+    }
+
+    private IslandPlotEntity toEntity(IslandPlot plot, IslandEntity islandEntity) {
+        Long occupantTownId = plot.occupant().isPresent() ? plot.occupant().getAsLong() : null;
+        return new IslandPlotEntity(islandEntity, plot.number(), occupantTownId);
     }
 }
