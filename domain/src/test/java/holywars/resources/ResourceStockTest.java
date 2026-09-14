@@ -3,6 +3,7 @@ package holywars.resources;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 class ResourceStockTest {
@@ -42,5 +43,15 @@ class ResourceStockTest {
         ResourceStock advanced = stock.advancedTo(Duration.ofMinutes(1));
 
         assertThat(advanced.amount()).isZero();
+    }
+
+    @Test
+    void spendingExactlyTheAvailableAmountLeavesZero() {
+        ResourceStock stock = ResourceStock.of(500, 30);
+
+        Optional<ResourceStock> spent = stock.spend(500);
+
+        assertThat(spent).isPresent();
+        assertThat(spent.get().amount()).isZero();
     }
 }
