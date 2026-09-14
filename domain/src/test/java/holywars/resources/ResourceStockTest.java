@@ -24,4 +24,14 @@ class ResourceStockTest {
 
         assertThat(advanced.amount()).isEqualTo(530);
     }
+
+    @Test
+    void twoHalfSecondAdvancesEqualOneOneSecondAdvance() {
+        ResourceStock stock = ResourceStock.of(500, 30);
+
+        ResourceStock steppedTwice = stock.advancedTo(Duration.ofMillis(500)).advancedTo(Duration.ofMillis(500));
+        ResourceStock steppedOnce = stock.advancedTo(Duration.ofSeconds(1));
+
+        assertThat(steppedTwice).isEqualTo(steppedOnce);
+    }
 }
