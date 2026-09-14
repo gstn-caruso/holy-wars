@@ -28,4 +28,14 @@ class MapCellViewTest {
         assertThat(cell.islandName()).isEqualTo("Naxos");
         assertThat(cell.villageCountLabel()).isNull();
     }
+
+    @Test
+    void islandCellWithOneOccupiedPlotSaysOneVillage() {
+        Island island = Island.withFreePlots(new IslandId(1), new Coordinate(2, 3), "Naxos", LuxuryResource.WINE);
+        island.plots().get(0).occupy(99L);
+
+        MapCellView cell = MapCellView.of(island);
+
+        assertThat(cell.villageCountLabel()).isEqualTo("1 aldea");
+    }
 }
