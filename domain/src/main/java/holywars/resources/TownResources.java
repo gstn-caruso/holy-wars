@@ -31,7 +31,8 @@ public record TownResources(ResourceStock wood, ResourceStock luxury, LuxuryReso
 
     public TownResources advancedTo(Instant now) {
         Duration elapsed = Elapsed.since(lastUpdate, now);
-        return new TownResources(wood.advancedTo(elapsed), luxury.advancedTo(elapsed), luxuryResource, now);
+        return new TownResources(wood.advancedTo(elapsed), luxury.advancedTo(elapsed), luxuryResource,
+                lastUpdate.plus(elapsed));
     }
 
     public TownResources spend(int woodUnits, int luxuryUnits) {

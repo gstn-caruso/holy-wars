@@ -12,6 +12,6 @@ public final class Elapsed {
         if (now.isBefore(previous)) {
             throw new InvalidAdvanceInstantException(previous, now);
         }
-        return Duration.between(previous, now);
+        return Duration.ofSeconds(Duration.between(previous, now).getSeconds());
     }
 }

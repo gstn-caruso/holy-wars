@@ -25,4 +25,17 @@ class PlayerTest {
 
         assertThat(advanced.goldAmount()).isEqualTo(520);
     }
+
+    @Test
+    void advancingInThreeIrregularStepsProducesTheSameGoldAsOneStep() {
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+
+        Player steppedThreeTimes = player
+                .advancedTo(NOW.plusMillis(999))
+                .advancedTo(NOW.plusMillis(1998))
+                .advancedTo(NOW.plusMillis(2997));
+        Player steppedOnce = player.advancedTo(NOW.plusMillis(2997));
+
+        assertThat(steppedThreeTimes.gold()).isEqualTo(steppedOnce.gold());
+    }
 }

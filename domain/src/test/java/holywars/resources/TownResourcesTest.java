@@ -24,6 +24,20 @@ class TownResourcesTest {
     }
 
     @Test
+    void advancingInThreeIrregularStepsProducesTheSameWoodAsOneStep() {
+        Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
+        TownResources resources = TownResources.starting(LuxuryResource.WINE, foundedAt);
+
+        TownResources steppedThreeTimes = resources
+                .advancedTo(foundedAt.plusMillis(999))
+                .advancedTo(foundedAt.plusMillis(1998))
+                .advancedTo(foundedAt.plusMillis(2997));
+        TownResources steppedOnce = resources.advancedTo(foundedAt.plusMillis(2997));
+
+        assertThat(steppedThreeTimes.wood()).isEqualTo(steppedOnce.wood());
+    }
+
+    @Test
     void spendingMoreWoodThanAvailableFailsWithoutTouchingLuxury() {
         Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
         TownResources resources = TownResources.starting(LuxuryResource.WINE, foundedAt);

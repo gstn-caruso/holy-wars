@@ -2,6 +2,7 @@ package holywars.player;
 
 import holywars.resources.Elapsed;
 import holywars.resources.ResourceStock;
+import java.time.Duration;
 import java.time.Instant;
 
 public record Player(PlayerId id, String name, ResourceStock gold, Instant lastUpdate) {
@@ -18,7 +19,8 @@ public record Player(PlayerId id, String name, ResourceStock gold, Instant lastU
     }
 
     public Player advancedTo(Instant now) {
-        return new Player(id, name, gold.advancedTo(Elapsed.since(lastUpdate, now)), now);
+        Duration elapsed = Elapsed.since(lastUpdate, now);
+        return new Player(id, name, gold.advancedTo(elapsed), lastUpdate.plus(elapsed));
     }
 
     public int goldAmount() {
