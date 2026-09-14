@@ -96,7 +96,7 @@ class ConstructionControllerTest {
     }
 
     @Test
-    void buildingOnALockedPlotOrWithTheWrongTypeShowsTheRejection() throws Exception {
+    void buildingOnALockedPlotShowsTheRejection() throws Exception {
         foundEspartaAt(FOUNDED_AT);
 
         MvcResult lockedResult = mockMvc.perform(post("/towns/1/slots/5/build").param("type", "ACADEMY"))
@@ -107,6 +107,11 @@ class ConstructionControllerTest {
                 .getResponse()
                 .getContentAsString();
         assertThat(lockedBody).contains("La parcela no está libre");
+    }
+
+    @Test
+    void buildingWithAMismatchedTypeShowsTheRejection() throws Exception {
+        foundEspartaAt(FOUNDED_AT);
 
         MvcResult mismatchedResult = mockMvc.perform(post("/towns/1/slots/2/build").param("type", "SHIPYARD"))
                 .andExpect(status().is3xxRedirection())
