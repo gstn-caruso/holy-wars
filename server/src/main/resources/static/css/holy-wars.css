@@ -73,14 +73,18 @@ body {
     justify-content: center;
     height: 100%;
     box-sizing: border-box;
-    padding: 26vh 2vw 10vh;
     background: linear-gradient(#4a7ba7, #3a6791);
 }
 
 .island-stage {
-    flex-direction: column;
-    gap: 16px;
     background: linear-gradient(#d7e6c8, #c1d6ac);
+}
+
+.island-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
 }
 
 .capital-header {
@@ -258,10 +262,39 @@ body {
     cursor: pointer;
 }
 
+.island-summary {
+    text-align: center;
+}
+
+.island-summary h1 {
+    margin: 0 0 4px;
+    font-size: 1.6rem;
+}
+
+.island-summary p {
+    margin: 2px 0;
+    font-size: 0.9rem;
+}
+
+.island-summary img {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+}
+
 .plots-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 180px));
-    gap: 12px;
+    grid-template-columns: repeat(4, minmax(0, 150px));
+    gap: 8px;
+}
+
+.plots-grid .plot {
+    padding: 8px 12px;
+}
+
+.plots-grid .plot p {
+    margin: 4px 0;
+    font-size: 0.8rem;
 }
 
 .plot.occupied {
@@ -270,15 +303,20 @@ body {
 
 table {
     border-collapse: collapse;
+    table-layout: fixed;
+    width: 640px;
+    height: 640px;
 }
 
 td.sea,
 td.island {
-    width: 48px;
-    height: 48px;
+    width: 64px;
+    height: 64px;
+    padding: 0;
     text-align: center;
     vertical-align: middle;
     border: 1px solid #7fa8c9;
+    overflow: hidden;
 }
 
 td.sea {
@@ -290,7 +328,33 @@ td.island {
 }
 
 .island-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    height: 100%;
     color: #7a4a1f;
     text-decoration: none;
     font-weight: bold;
+    overflow: hidden;
+}
+
+.island-link img {
+    width: 18px;
+    height: 18px;
+}
+
+.island-link span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.6rem;
+}
+
+td.island > div {
+    font-size: 0.55rem;
+    color: #274a1f;
 }
