@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="buildMenu(menu)" class="build-menu">
+    <h2 th:text="${menu.title}"></h2>
+    <p class="error" th:if="${menu.error}" th:text="${menu.error}"></p>
+    <p class="build-menu-status" th:if="${menu.statusText}" th:text="${menu.statusText}"></p>
+    <form th:each="option : ${menu.options}" class="build-option"
+          th:attr="hx-post=@{/towns/{id}/slots/{position}/build(id=${menu.townId},position=${menu.position})}"
+          hx-target="#build-panel" hx-swap="innerHTML">
+        <input type="hidden" name="type" th:value="${option.type}"/>
+        <img th:src="${option.spriteHref}" alt=""/>
+        <span class="build-option-name" th:text="${option.name}"></span>
+        <span class="build-option-wood" th:text="${option.woodCost} + ' madera'"></span>
+        <span class="build-option-luxury" th:if="${option.luxuryCost} > 0"
+              th:text="${option.luxuryCost} + ' lujo'"></span>
+        <span class="build-option-minutes" th:text="${option.minutes} + ' min'"></span>
+        <button type="submit" class="button-bronze">¡Construir!</button>
+    </form>
+    <a class="build-menu-close" th:href="@{/towns/{id}(id=${menu.townId})}">Cerrar</a>
+</div>
+</body>
+</html>
