@@ -97,7 +97,7 @@ class TownClockworkTest {
         scheduler.runPeriodicTick();
         scheduler.runPeriodicTick();
 
-        assertThat(clockwork.subscriberCount(closedTown)).isZero();
+        assertThat(clockwork.isTracking(closedTown)).isFalse();
         assertThat(receivedByOpenTown).containsExactly("resources", "resources");
     }
 

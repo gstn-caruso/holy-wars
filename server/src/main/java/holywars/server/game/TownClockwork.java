@@ -68,6 +68,10 @@ public class TownClockwork {
         return sinksByTown.getOrDefault(townId, List.of()).size();
     }
 
+    boolean isTracking(TownId townId) {
+        return sinksByTown.containsKey(townId);
+    }
+
     private void onFinish(TownId townId) {
         finishTasksByTown.remove(townId);
         emit(townId, "town");
@@ -80,7 +84,8 @@ public class TownClockwork {
 
     private void emit(TownId townId, String eventName) {
         List<TownEventSink> sinks = sinksByTown.get(townId);
-        if (sinks == null) {
+        if (sinks == null || sinks.isEmpty()) {
+            sinksByTown.remove(townId, sinks);
             return;
         }
         LOG.info("Emitting {} to town {}", eventName, townId);
