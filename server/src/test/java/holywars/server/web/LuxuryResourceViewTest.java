@@ -1,14 +1,22 @@
 package holywars.server.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import holywars.world.LuxuryResource;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class LuxuryResourceViewTest {
+
+    @ParameterizedTest
+    @EnumSource(LuxuryResource.class)
+    void everyLuxuryResourceHasAView(LuxuryResource luxury) {
+        assertThatCode(() -> LuxuryResourceView.of(luxury)).doesNotThrowAnyException();
+    }
 
     @ParameterizedTest
     @MethodSource("luxuryResources")
