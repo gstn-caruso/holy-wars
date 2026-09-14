@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Holy Wars — Mapa</title>
+</head>
+<body>
+<h1>Mapa del mundo</h1>
+<table>
+    <tr th:each="row : ${rows}">
+        <td th:each="cell : ${row}" th:class="${cell.sea()} ? 'sea' : 'island'">
+            <a th:if="${!cell.sea()}"
+               th:href="@{/islands/{id}(id=${cell.islandId()})}"
+               th:text="${cell.islandName() + ' (' + cell.resource() + ')'}">Isla</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
