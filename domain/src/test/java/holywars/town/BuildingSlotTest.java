@@ -72,4 +72,14 @@ class BuildingSlotTest {
         assertThat(started.construction())
                 .contains(new Construction(BuildingType.ACADEMY, now, now.plus(BuildingType.ACADEMY.buildTime())));
     }
+
+    @Test
+    void startingAConstructionOfAnotherKindIsRejected() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty());
+
+        assertThatThrownBy(() -> slot.startingConstruction(BuildingType.WALL, 1, now))
+                .isInstanceOf(MismatchedBuildingTypeException.class);
+        assertThat(slot.construction()).isEmpty();
+        assertThat(slot.state(1)).isEqualTo(SlotState.FREE);
+    }
 }
