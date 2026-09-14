@@ -1,7 +1,6 @@
 package holywars.server.game;
 
 import holywars.player.Player;
-import holywars.player.PlayerKind;
 import holywars.player.PlayerRepository;
 import holywars.town.BuildingType;
 import holywars.town.Town;
@@ -32,7 +31,7 @@ public class ConstructionService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Player owner = playerRepository.find(town.ownerId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        if (owner.kind() != PlayerKind.HUMAN) {
+        if (!owner.isHuman()) {
             throw new ForeignTownException(townId);
         }
         Town updatedTown = town.startingConstruction(position, type, clock.instant());

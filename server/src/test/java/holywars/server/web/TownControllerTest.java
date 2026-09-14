@@ -135,6 +135,27 @@ class TownControllerTest {
     }
 
     @Test
+    void aRivalsTownShowsNoBuildForm() throws Exception {
+        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+        Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
+        clock.set(foundedAt);
+        worldRepository.save(world);
+        playerRepository.save(Player.ai(new PlayerId(2), "Rival", 500, foundedAt));
+        Town town = Town.founded(
+                new TownId(1), "Troya", new PlayerId(2), new PlotLocation(world.islands().get(0).id(), 1),
+                world.islands().get(0).resource(), foundedAt);
+        townRepository.save(town);
+
+        String body = mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertThat(occurrencesOf(body, "<form")).isEqualTo(0);
+    }
+
+    @Test
     void returnsNotFoundForAnUnknownTown() throws Exception {
         mockMvc.perform(get("/towns/999"))
                 .andExpect(status().isNotFound());

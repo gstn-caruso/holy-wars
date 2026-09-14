@@ -10,6 +10,7 @@ import holywars.world.World;
 import holywars.world.WorldRepository;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,7 +52,7 @@ class TownController {
 
         model.addAttribute("town", townViewOf(id, context, advancedTown, now));
         model.addAttribute("resourceBar", resourceBarOf(advancedTown, advancedOwner));
-        model.addAttribute("buildOptions", buildMenuAssembler.assemble(advancedTown));
+        model.addAttribute("buildOptions", buildOptionsFor(advancedOwner, advancedTown));
         return "town";
     }
 
@@ -76,6 +77,10 @@ class TownController {
                 context.island().id().value(),
                 advancedTown.location().plotNumber(),
                 townSceneAssembler.assemble(advancedTown, now));
+    }
+
+    private List<BuildOptionView> buildOptionsFor(Player advancedOwner, Town advancedTown) {
+        return advancedOwner.isHuman() ? buildMenuAssembler.assemble(advancedTown) : List.of();
     }
 
     private static ResourceBarView resourceBarOf(Town advancedTown, Player advancedOwner) {
