@@ -43,6 +43,20 @@ class PlayerTest {
     }
 
     @Test
+    void aPlayersGoldLosesNoProductionInSubSecondSteps() {
+        Player player = Player.human(new PlayerId(1), "Jugador", 100, startedAt);
+
+        Player advanced = player;
+        Instant instant = startedAt;
+        for (int i = 0; i < 3600; i++) {
+            instant = instant.plusMillis(500);
+            advanced = advanced.advancedTo(instant);
+        }
+
+        assertThat(advanced.gold()).isEqualTo(110);
+    }
+
+    @Test
     void aPlayerRejectsAdvancingIntoThePast() {
         Player player = Player.human(new PlayerId(1), "Jugador", 500, startedAt);
 

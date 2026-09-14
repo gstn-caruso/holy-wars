@@ -25,6 +25,7 @@ public record Player(PlayerId id, String name, PlayerKind kind, long goldTicks, 
             throw new InvalidAdvanceInstantException(lastUpdate, now);
         }
         long elapsedSeconds = Duration.between(lastUpdate, now).toSeconds();
-        return new Player(id, name, kind, goldTicks + GOLD_PER_HOUR * elapsedSeconds, now);
+        return new Player(
+                id, name, kind, goldTicks + GOLD_PER_HOUR * elapsedSeconds, lastUpdate.plusSeconds(elapsedSeconds));
     }
 }
