@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import holywars.player.PlayerId;
+import holywars.resources.NotEnoughResourcesException;
 import holywars.resources.TownResources;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
@@ -141,6 +142,16 @@ class TownTest {
                 .isInstanceOf(MismatchedBuildingTypeException.class);
         assertThat(town.resources().woodAmount()).isEqualTo(500);
         assertThat(town.resources().luxuryAmount()).isEqualTo(100);
+    }
+
+    @Test
+    void startingConstructionWithoutEnoughResourcesLeavesTheSlotFree() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, FOUNDED_AT).spend(450, 0);
+
+        assertThatThrownBy(() -> town.startingConstruction(2, BuildingType.BARRACKS, FOUNDED_AT))
+                .isInstanceOf(NotEnoughResourcesException.class);
+        assertThat(town.slot(2).state(town.townHallLevel())).isEqualTo(BuildingSlotState.FREE);
     }
 
     @Test
