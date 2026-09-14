@@ -51,6 +51,16 @@ class TownScenePropertiesTest {
                 .hasRootCauseInstanceOf(IncompleteTownSceneLayoutException.class);
     }
 
+    @Test
+    void invalidAnchorFormatFailsWithInvalidPlotAnchor() {
+        Map<String, String> invalid = new HashMap<>(STANDARD_LAYOUT);
+        invalid.put("holywars.town-scene.plots.13", "not-an-anchor");
+
+        assertThatThrownBy(() -> bind(invalid))
+                .isInstanceOf(BindException.class)
+                .hasRootCauseInstanceOf(InvalidPlotAnchorException.class);
+    }
+
     private TownSceneProperties bind(Map<String, String> properties) {
         DefaultConversionService conversionService = new DefaultConversionService();
         conversionService.addConverter(new PlotAnchorConverter());
