@@ -47,7 +47,7 @@ final class WorldEntityMapper {
     }
 
     private static CityPlotEntity toEntity(CityPlot plot) {
-        return new CityPlotEntity(plot.number(), plot.isFree());
+        return new CityPlotEntity(plot.number(), null);
     }
 
     private static CityPlot toDomain(CityPlotEntity entity) {

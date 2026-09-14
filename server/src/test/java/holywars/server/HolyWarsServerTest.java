@@ -51,4 +51,27 @@ class HolyWarsServerTest {
             assertThat(tableNames).containsExactlyInAnyOrder("world", "island", "city_plot");
         }
     }
+
+    @Test
+    void playersAndTownsMigrationCreatesTheirTablesAndReplacesFreeWithTownIdOnCityPlot() throws Exception {
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(
+                     "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('player', 'town')")) {
+            List<String> tableNames = new ArrayList<>();
+            while (resultSet.next()) {
+                tableNames.add(resultSet.getString("name"));
+            }
+            assertThat(tableNames).containsExactlyInAnyOrder("player", "town");
+        }
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("PRAGMA table_info(city_plot)")) {
+            List<String> columnNames = new ArrayList<>();
+            while (resultSet.next()) {
+                columnNames.add(resultSet.getString("name"));
+            }
+            assertThat(columnNames).contains("town_id").doesNotContain("free");
+        }
+    }
 }

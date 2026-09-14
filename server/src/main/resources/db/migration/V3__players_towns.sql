@@ -1,0 +1,4 @@
+CREATE TABLE player (id INTEGER PRIMARY KEY, name TEXT NOT NULL, kind TEXT NOT NULL CHECK (kind IN ('HUMAN', 'AI')), gold INTEGER NOT NULL);
+CREATE TABLE town (id INTEGER PRIMARY KEY, name TEXT NOT NULL, owner_id INTEGER NOT NULL REFERENCES player(id), island_id INTEGER NOT NULL REFERENCES island(id), plot_number INTEGER NOT NULL, UNIQUE (island_id, plot_number));
+ALTER TABLE city_plot ADD COLUMN town_id INTEGER;
+ALTER TABLE city_plot DROP COLUMN free;
