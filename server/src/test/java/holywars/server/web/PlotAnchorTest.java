@@ -20,4 +20,11 @@ class PlotAnchorTest {
 
         assertThat(anchor.height(BuildingSlotKind.WALL)).isEqualTo(111);
     }
+
+    @Test
+    void xIsCenteredOnCx() {
+        PlotAnchor anchor = new PlotAnchor(600, 330, 140);
+
+        assertThat(anchor.x()).isEqualTo(530);
+    }
 }
