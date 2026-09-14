@@ -31,4 +31,12 @@ class BuildingSlotTest {
         assertThat(slot.state(requiredLevel - 1)).isEqualTo(SlotState.LOCKED);
         assertThat(slot.state(requiredLevel)).isEqualTo(SlotState.FREE);
     }
+
+    @Test
+    void occupiedSlotStaysOccupiedEvenWhenItsRequirementExceedsTheTownHallLevel() {
+        Building academy = new Building(BuildingType.ACADEMY, 1);
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 4, Optional.of(academy));
+
+        assertThat(slot.state(1)).isEqualTo(SlotState.OCCUPIED);
+    }
 }
