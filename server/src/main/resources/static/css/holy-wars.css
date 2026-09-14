@@ -40,8 +40,7 @@ main > h1 {
 }
 
 .panel,
-.plot,
-.build-menu form {
+.plot {
     background: linear-gradient(#f4e9c8, #e3d1a1);
     border: 1px solid #b39a5e;
     border-radius: 8px;
