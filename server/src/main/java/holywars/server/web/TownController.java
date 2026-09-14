@@ -45,23 +45,27 @@ class TownController {
         Island island = world.island(town.location().island())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        Instant now = clock.instant();
-        Town advancedTown = town.advancedTo(now);
-        Player advancedOwner = owner.advancedTo(now);
-        LuxuryResourceView luxury = LuxuryResourceView.of(advancedTown.resources().luxury());
-
         model.addAttribute("town", new TownView(
                 town.name(),
                 owner.name(),
                 island.name(),
                 island.id().value(),
                 town.location().plotNumber()));
-        model.addAttribute("resourceBar", new ResourceBarView(
+        model.addAttribute("resourceBar", resourceBarAdvancedToNow(town, owner));
+        return "town";
+    }
+
+    private ResourceBarView resourceBarAdvancedToNow(Town town, Player owner) {
+        Instant now = clock.instant();
+        Town advancedTown = town.advancedTo(now);
+        Player advancedOwner = owner.advancedTo(now);
+        LuxuryResourceView luxury = LuxuryResourceView.of(advancedTown.resources().luxury());
+
+        return new ResourceBarView(
                 advancedTown.resources().wood(),
                 advancedTown.resources().luxuryAmount(),
                 luxury.spanishName(),
                 luxury.icon(),
-                advancedOwner.gold()));
-        return "town";
+                advancedOwner.gold());
     }
 }
