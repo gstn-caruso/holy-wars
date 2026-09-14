@@ -45,7 +45,8 @@ public record BuildingSlot(
         if (currentState != SlotState.FREE) {
             throw new SlotNotFreeException(position, currentState);
         }
-        return new BuildingSlot(position, kind, requiredTownHallLevel, building, Optional.of(Construction.of(type, now)));
+        return new BuildingSlot(
+                position, kind, requiredTownHallLevel, Optional.empty(), Optional.of(Construction.of(type, now)));
     }
 
     public BuildingSlot advancedTo(Instant now) {
