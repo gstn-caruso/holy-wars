@@ -63,6 +63,17 @@ class GameSetupTest {
         assertThat(newGame.towns()).extracting(town -> town.location().island()).doesNotHaveDuplicates();
     }
 
+    @Test
+    void sameSeedProducesTheSameAssignment() {
+        World world = worldWithIslands(5);
+        GameSetupSettings settings = new GameSetupSettings(3, 500);
+
+        NewGame first = GameSetup.start(world, new Random(42), settings);
+        NewGame second = GameSetup.start(world, new Random(42), settings);
+
+        assertThat(first).isEqualTo(second);
+    }
+
     private World worldWithIslands(int count) {
         List<Island> islands = java.util.stream.IntStream.rangeClosed(1, count)
                 .mapToObj(index -> Island.withFreePlots(
