@@ -36,7 +36,7 @@ public final class GameSetup {
         for (int index = 0; index < playerCount; index++) {
             PlayerId playerId = new PlayerId(index + 1);
             TownId townId = new TownId(index + 1);
-            Player player = playerAt(index, playerId, aiNames, settings);
+            Player player = playerAt(index, playerId, aiNames, settings, startedAt);
 
             Island island = assignedIslands.get(index);
             CityPlot capitalPlot = island.firstFreePlot().orElseThrow();
@@ -51,10 +51,11 @@ public final class GameSetup {
         return new NewGame(updatedWorld, players, towns);
     }
 
-    private static Player playerAt(int index, PlayerId playerId, List<String> aiNames, GameSetupSettings settings) {
+    private static Player playerAt(
+            int index, PlayerId playerId, List<String> aiNames, GameSetupSettings settings, Instant startedAt) {
         return index == 0
-                ? Player.human(playerId, HUMAN_NAME, settings.startingGold())
-                : Player.ai(playerId, aiNames.get(index - 1), settings.startingGold());
+                ? Player.human(playerId, HUMAN_NAME, settings.startingGold(), startedAt)
+                : Player.ai(playerId, aiNames.get(index - 1), settings.startingGold(), startedAt);
     }
 
     private static List<Island> pickDistinctIslands(World world, int playerCount, Random random) {
