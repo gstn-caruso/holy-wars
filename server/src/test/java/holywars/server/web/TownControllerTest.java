@@ -53,15 +53,7 @@ class TownControllerTest {
 
     @Test
     void showsTheTownNameOwnerIslandAndPlot() throws Exception {
-        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
-        Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
-        clock.set(foundedAt);
-        worldRepository.save(world);
-        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500, foundedAt));
-        Town town = Town.founded(
-                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(world.islands().get(0).id(), 1),
-                world.islands().get(0).resource(), foundedAt);
-        townRepository.save(town);
+        World world = foundEspartaAt(Instant.parse("2026-01-01T00:00:00Z"));
 
         MvcResult result = mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
@@ -76,15 +68,7 @@ class TownControllerTest {
 
     @Test
     void resourceBarShowsTheInitialAmountsRightAfterFounding() throws Exception {
-        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
-        Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
-        clock.set(foundedAt);
-        worldRepository.save(world);
-        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500, foundedAt));
-        Town town = Town.founded(
-                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(world.islands().get(0).id(), 1),
-                world.islands().get(0).resource(), foundedAt);
-        townRepository.save(town);
+        World world = foundEspartaAt(Instant.parse("2026-01-01T00:00:00Z"));
 
         String body = mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
@@ -103,15 +87,7 @@ class TownControllerTest {
 
     @Test
     void resourceBarShowsTheAmountsAdvancedOneHourLater() throws Exception {
-        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
-        Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
-        clock.set(foundedAt);
-        worldRepository.save(world);
-        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500, foundedAt));
-        Town town = Town.founded(
-                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(world.islands().get(0).id(), 1),
-                world.islands().get(0).resource(), foundedAt);
-        townRepository.save(town);
+        foundEspartaAt(Instant.parse("2026-01-01T00:00:00Z"));
 
         clock.advance(Duration.ofHours(1));
 
@@ -128,15 +104,8 @@ class TownControllerTest {
 
     @Test
     void showingTheTownDoesNotPersistTheAdvancedResources() throws Exception {
-        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
         Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
-        clock.set(foundedAt);
-        worldRepository.save(world);
-        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500, foundedAt));
-        Town town = Town.founded(
-                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(world.islands().get(0).id(), 1),
-                world.islands().get(0).resource(), foundedAt);
-        townRepository.save(town);
+        foundEspartaAt(foundedAt);
 
         clock.advance(Duration.ofHours(1));
 
@@ -153,5 +122,17 @@ class TownControllerTest {
     void returnsNotFoundForAnUnknownTown() throws Exception {
         mockMvc.perform(get("/towns/999"))
                 .andExpect(status().isNotFound());
+    }
+
+    private World foundEspartaAt(Instant foundedAt) {
+        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+        clock.set(foundedAt);
+        worldRepository.save(world);
+        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500, foundedAt));
+        Town town = Town.founded(
+                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(world.islands().get(0).id(), 1),
+                world.islands().get(0).resource(), foundedAt);
+        townRepository.save(town);
+        return world;
     }
 }
