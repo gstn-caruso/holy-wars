@@ -130,6 +130,15 @@ class TownResourcesTest {
     }
 
     @Test
+    void spendingMoreLuxuryThanAvailableIsRejectedEvenWhenWoodSuffices() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        assertThatThrownBy(() -> resources.spend(100, 101))
+                .isInstanceOf(NotEnoughResourcesException.class)
+                .hasMessageContaining("luxury");
+    }
+
+    @Test
     void theLuxuryProducedNeverChangesWhenAdvancing() {
         TownResources resources = TownResources.initial(LuxuryResource.MARBLE, foundedAt);
 
