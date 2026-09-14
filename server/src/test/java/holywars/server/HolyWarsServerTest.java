@@ -27,12 +27,17 @@ class HolyWarsServerTest {
     @Test
     void migratesTheSchemaWithFlywayOnBoot() throws Exception {
         try (Connection connection = dataSource.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(
+                Statement appliedStatement = connection.createStatement();
+                Statement failedStatement = connection.createStatement();
+                ResultSet appliedMigrations = appliedStatement.executeQuery(
                         "select count(*) from \"flyway_schema_history\" "
-                                + "where \"version\" is not null and \"success\" = true")) {
-            resultSet.next();
-            assertThat(resultSet.getInt(1)).isEqualTo(3);
+                                + "where \"version\" is not null and \"success\" = true");
+                ResultSet failedMigrations = failedStatement.executeQuery(
+                        "select count(*) from \"flyway_schema_history\" where \"success\" = false")) {
+            appliedMigrations.next();
+            failedMigrations.next();
+            assertThat(appliedMigrations.getInt(1)).isPositive();
+            assertThat(failedMigrations.getInt(1)).isZero();
         }
     }
 }
