@@ -5,9 +5,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import holywars.world.WorldGenerationSettings;
-import holywars.world.WorldGenerator;
-import holywars.world.WorldRepository;
+import holywars.player.Player;
+import holywars.player.PlayerId;
+import holywars.player.PlayerRepository;
+import holywars.town.PlotLocation;
+import holywars.town.Town;
+import holywars.town.TownId;
+import holywars.town.TownRepository;
+import holywars.world.IslandId;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +32,10 @@ class HomeControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private WorldRepository worldRepository;
+    private PlayerRepository playerRepository;
+
+    @Autowired
+    private TownRepository townRepository;
 
     @Test
     void offersANewGameWhenThereIsNoWorldYet() throws Exception {
@@ -40,11 +48,12 @@ class HomeControllerTest {
     }
 
     @Test
-    void redirectsToTheMapWhenAWorldAlreadyExists() throws Exception {
-        worldRepository.save(WorldGenerator.generate(1L, WorldGenerationSettings.standard()));
+    void redirectsToTheHumanCapitalWhenAGameIsInProgress() throws Exception {
+        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500));
+        townRepository.save(new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 1)));
 
         mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/map"));
+                .andExpect(redirectedUrl("/towns/1"));
     }
 }
