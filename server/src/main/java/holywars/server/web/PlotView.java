@@ -13,4 +13,8 @@ record PlotView(int number, boolean occupied, Integer townId, String townName, S
     public String occupantLabel() {
         return townName + " (" + ownerName + ")";
     }
+
+    public String cssClass() {
+        return occupied ? "plot occupied" : "plot";
+    }
 }

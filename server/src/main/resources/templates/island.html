@@ -11,16 +11,16 @@
     <img th:src="@{'/img/' + ${luxuryIcon}}" th:alt="${luxuryName}" class="luxury-icon">
     <span th:text="${luxuryName}">Vino</span>
 </p>
-<ul>
-    <li th:each="plot : ${plots}">
-        <span th:text="'Parcela ' + ${plot.number()} + ' — '">Parcela</span>
-        <span th:unless="${plot.occupied()}">Libre</span>
-        <span th:if="${plot.occupied()}">
+<div class="plots-grid">
+    <div th:each="plot : ${plots}" th:class="${plot.cssClass()}">
+        <span class="plot-number" th:text="'Parcela ' + ${plot.number()}">Parcela</span>
+        <span th:unless="${plot.occupied()}" class="plot-status">Libre</span>
+        <span th:if="${plot.occupied()}" class="plot-status">
             Ocupada:
             <a th:href="@{/towns/{id}(id=${plot.townId()})}"
                th:text="${plot.occupantLabel()}">Aldea</a>
         </span>
-    </li>
-</ul>
+    </div>
+</div>
 </body>
 </html>
