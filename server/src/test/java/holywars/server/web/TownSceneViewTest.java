@@ -3,6 +3,7 @@ package holywars.server.web;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import holywars.player.PlayerId;
+import holywars.town.BuildingType;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.world.IslandId;
@@ -53,5 +54,22 @@ class TownSceneViewTest {
 
         assertThat(view.width()).isEqualTo(1200);
         assertThat(view.height()).isEqualTo(720);
+    }
+
+    @Test
+    void aFinishedConstructionShowsAsTheBuiltBuildingInsteadOfStillUnderConstruction() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, NOW)
+                .startingConstruction(2, BuildingType.WAREHOUSE, NOW);
+        Instant afterFinishing = NOW.plus(BuildingType.WAREHOUSE.buildTime()).plusSeconds(1);
+        TownSceneProperties layout = new TownSceneProperties(1200, 720, STANDARD_ANCHORS);
+
+        TownSceneView view = TownSceneView.of(town, layout, afterFinishing);
+
+        PlotSceneView plotTwo = view.plots().stream()
+                .filter(plot -> plot.position() == 2)
+                .findFirst()
+                .orElseThrow();
+        assertThat(plotTwo.label()).isEqualTo("Almacén nivel 1");
     }
 }
