@@ -1,6 +1,7 @@
 package holywars.world;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 public record Island(IslandId id, Coordinate coordinate, String name, LuxuryResource resource, List<CityPlot> plots) {
@@ -17,5 +18,9 @@ public record Island(IslandId id, Coordinate coordinate, String name, LuxuryReso
                 .mapToObj(CityPlot::free)
                 .toList();
         return new Island(id, coordinate, name, resource, freePlots);
+    }
+
+    public Optional<CityPlot> firstFreePlot() {
+        return plots.stream().filter(CityPlot::isFree).findFirst();
     }
 }

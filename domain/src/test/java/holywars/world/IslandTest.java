@@ -3,6 +3,7 @@ package holywars.world;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import holywars.town.TownId;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
@@ -32,5 +33,13 @@ class IslandTest {
 
         assertThatThrownBy(() -> new Island(new IslandId(1), new Coordinate(0, 0), "Naxos", LuxuryResource.WINE, fifteenPlots))
                 .isInstanceOf(InvalidIslandPlotCountException.class);
+    }
+
+    @Test
+    void freshIslandsFirstFreePlotIsPlotNumberOne() {
+        Island island = Island.withFreePlots(new IslandId(1), new Coordinate(0, 0), "Naxos", LuxuryResource.WINE);
+
+        assertThat(island.firstFreePlot()).isPresent();
+        assertThat(island.firstFreePlot().get().number()).isEqualTo(1);
     }
 }
