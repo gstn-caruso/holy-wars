@@ -20,6 +20,15 @@ public record TownResources(ResourceStock wood, ResourceStock luxury, LuxuryReso
                 foundedAt);
     }
 
+    public static TownResources reconstituted(long woodTicks, long luxuryTicks, LuxuryResource luxuryResource,
+            Instant lastUpdate) {
+        return new TownResources(
+                new ResourceStock(woodTicks, WOOD_PER_HOUR),
+                new ResourceStock(luxuryTicks, LUXURY_PER_HOUR),
+                luxuryResource,
+                lastUpdate);
+    }
+
     public TownResources advancedTo(Instant now) {
         Duration elapsed = Elapsed.since(lastUpdate, now);
         return new TownResources(wood.advancedTo(elapsed), luxury.advancedTo(elapsed), luxuryResource, now);
