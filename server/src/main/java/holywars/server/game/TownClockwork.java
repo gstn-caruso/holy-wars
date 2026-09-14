@@ -47,16 +47,17 @@ public class TownClockwork {
     }
 
     public void scheduleFinish(Town town) {
-        ScheduledFuture<?> previous = finishTasksByTown.remove(town.id());
+        TownId townId = town.id();
+        ScheduledFuture<?> previous = finishTasksByTown.remove(townId);
         if (previous != null) {
             previous.cancel(false);
         }
         town.nextFinishAt().ifPresent(finishesAt -> {
             Duration delay = nonNegative(Duration.between(clock.instant(), finishesAt));
-            ScheduledFuture<?> task = scheduler.schedule(() -> onFinish(town.id()), delay.toMillis(),
+            ScheduledFuture<?> task = scheduler.schedule(() -> onFinish(townId), delay.toMillis(),
                     TimeUnit.MILLISECONDS);
-            finishTasksByTown.put(town.id(), task);
-            LOG.info("Scheduled finish for town {} in {}", town.id(), delay);
+            finishTasksByTown.put(townId, task);
+            LOG.info("Scheduled finish for town {} in {}", townId, delay);
         });
     }
 
