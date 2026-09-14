@@ -3,6 +3,8 @@ package holywars.server.persistence;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import holywars.player.PlayerId;
+import holywars.town.Building;
+import holywars.town.BuildingType;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.world.IslandId;
@@ -64,6 +66,20 @@ class TownJpaAdapterTest {
 
         assertThat(townJpaAdapter.find(new TownId(3))).contains(town);
         assertThat(countBuildingSlotRowsFor(3L)).isEqualTo(14L);
+    }
+
+    @Test
+    void savesATownWithASlotOccupiedByAnotherBuilding() {
+        Town town = Town.founded(new TownId(4), new PlayerId(7), new IslandId(3), 1, "Tebas",
+                LuxuryResource.WINE, FOUNDED_AT)
+                .startingConstruction(2, BuildingType.WAREHOUSE, FOUNDED_AT)
+                .advancedTo(FOUNDED_AT.plus(BuildingType.WAREHOUSE.buildTime()));
+
+        townJpaAdapter.save(town);
+
+        Town found = townJpaAdapter.find(new TownId(4)).orElseThrow();
+        assertThat(found).isEqualTo(town);
+        assertThat(found.slot(2).building()).contains(new Building(BuildingType.WAREHOUSE, 1));
     }
 
     private long countBuildingSlotRowsFor(long townId) {
