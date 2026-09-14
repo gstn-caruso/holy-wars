@@ -33,4 +33,15 @@ class BuildMenuViewTest {
         assertThat(warehouse.luxuryCost()).isEqualTo(0);
         assertThat(warehouse.minutes()).isEqualTo(6);
     }
+
+    @Test
+    void lockedSlotShowsTheRequiredTownHallLevel() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+
+        BuildMenuView menu = BuildMenuView.of(town, 5, NOW);
+
+        assertThat(menu.statusText()).isEqualTo("Requiere ayuntamiento nivel 2");
+        assertThat(menu.options()).isEmpty();
+    }
 }
