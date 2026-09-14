@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Holy Wars — Mapa</title>
+<head th:replace="~{fragments :: pageHead('Holy Wars — Mapa')}">
 </head>
 <body>
+<nav th:replace="~{fragments :: nav}"></nav>
 <h1>Mapa del mundo</h1>
 <table>
     <tr th:each="row : ${rows}">

@@ -1,0 +1,32 @@
+body {
+    background-color: #f4f1ea;
+    color: #3a332a;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+h1, h2, h3 {
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+nav a {
+    margin-right: 1em;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #cbb994;
+    text-align: center;
+}
+
+td.sea {
+    background-color: #2f6690;
+}
+
+td.island {
+    background-color: #e3c16f;
+}
