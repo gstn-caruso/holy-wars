@@ -3,13 +3,22 @@ package holywars.server.web;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import holywars.player.PlayerId;
+import holywars.town.Building;
+import holywars.town.BuildingSlot;
+import holywars.town.BuildingSlots;
+import holywars.town.BuildingType;
 import holywars.town.PlotLocation;
+import holywars.town.SlotKind;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.world.IslandId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 class TownSceneAssemblerTest {
 
@@ -54,6 +63,46 @@ class TownSceneAssemblerTest {
         assertThat(sprites)
                 .extracting(PlotSpriteView::x)
                 .containsExactly(1350, 1250, 1150, 1050, 950, 850, 750, 650, 550, 450, 350, 250, 150, 50);
+    }
+
+    @ParameterizedTest
+    @EnumSource(BuildingType.class)
+    void everyBuildingTypeHasALabelAndAnExistingSprite(BuildingType type) {
+        TownSceneAssembler assembler = new TownSceneAssembler(testProperties());
+        Town town = townOccupying(type);
+
+        List<PlotSpriteView> sprites = assembler.assemble(town).plots();
+
+        String expectedSprite = spriteFileFor(type);
+        PlotSpriteView spriteView = sprites.stream()
+                .filter(sprite -> sprite.sprite().equals(expectedSprite))
+                .findFirst()
+                .orElseThrow();
+        assertThat(spriteView.label()).doesNotContain("null");
+        assertThat(getClass().getResource("/static/img/" + spriteView.sprite())).isNotNull();
+    }
+
+    private static String spriteFileFor(BuildingType type) {
+        return "building-" + type.name().toLowerCase().replace('_', '-') + ".svg";
+    }
+
+    private static Town townOccupying(BuildingType type) {
+        List<BuildingSlot> slots = new ArrayList<>(BuildingSlots.standard(1));
+        int position = positionFor(type.kind());
+        BuildingSlot original = slots.get(position - 1);
+        slots.set(
+                position - 1,
+                new BuildingSlot(position, original.kind(), original.requiredTownHallLevel(), Optional.of(new Building(type, 1))));
+        return new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), slots);
+    }
+
+    private static int positionFor(SlotKind kind) {
+        return switch (kind) {
+            case TOWN_HALL -> 1;
+            case LAND -> 2;
+            case WALL -> 12;
+            case COAST -> 13;
+        };
     }
 
     private static TownSceneProperties reversedCyProperties() {
