@@ -23,14 +23,23 @@ class WorldGeneratorTest {
         List<Coordinate> coordinates = islands.stream().map(Island::coordinate).distinct().toList();
         assertThat(coordinates).hasSize(settings.islandCount());
         assertThat(coordinates).allSatisfy(coordinate -> {
-            assertThat(coordinate.x()).isBetween(0, settings.gridWidth() - 1);
-            assertThat(coordinate.y()).isBetween(0, settings.gridHeight() - 1);
+            assertThat(coordinate.x()).isBetween(0, settings.grid().width() - 1);
+            assertThat(coordinate.y()).isBetween(0, settings.grid().height() - 1);
         });
 
         assertThat(islands).allSatisfy(island -> {
             assertThat(island.plots()).hasSize(16);
             assertThat(island.plots()).allSatisfy(plot -> assertThat(plot.isFree()).isTrue());
         });
+    }
+
+    @Test
+    void theGeneratedWorldHasTheGridFromTheSettings() {
+        WorldGenerationSettings settings = WorldGenerationSettings.standard();
+
+        World world = WorldGenerator.generate(42L, settings);
+
+        assertThat(world.grid()).isEqualTo(settings.grid());
     }
 
     @Test

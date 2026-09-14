@@ -13,7 +13,7 @@ public final class WorldGenerator {
     public static World generate(long seed, WorldGenerationSettings settings) {
         Random random = new Random(seed);
 
-        List<Coordinate> coordinates = settings.allCoordinates();
+        List<Coordinate> coordinates = settings.grid().allCoordinates();
         Collections.shuffle(coordinates, random);
         List<Coordinate> islandCoordinates = coordinates.subList(0, settings.islandCount());
 
@@ -28,7 +28,7 @@ public final class WorldGenerator {
             islands.add(Island.withFreePlots(id, coordinate, name, resource));
         }
 
-        return new World(islands);
+        return new World(settings.grid(), islands);
     }
 
     private static LuxuryResource randomResource(Random random) {
