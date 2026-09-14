@@ -1,0 +1,20 @@
+#!/bin/bash
+set -euo pipefail
+
+DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/holy-wars"
+mkdir -p "$DATA_DIR"
+
+PORT=8080
+
+(
+  # /dev/tcp is a bash-only pseudo-device; it lets us probe the port without curl/nc.
+  for _ in $(seq 1 30); do
+    if (echo > /dev/tcp/127.0.0.1/$PORT) 2>/dev/null; then
+      xdg-open http://localhost:$PORT
+      exit 0
+    fi
+    sleep 1
+  done
+) &
+
+exec java -jar /usr/share/holy-wars/holy-wars-server.jar --holywars.db="$DATA_DIR/holy-wars.db" --server.port="$PORT"
