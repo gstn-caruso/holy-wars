@@ -117,18 +117,16 @@ class TownEntity {
         slots.add(slot);
     }
 
-    void update(
-            String name, int ownerId, int islandId, int plotNumber, LuxuryResource luxuryResource, long woodTicks,
-            long luxuryTicks, Instant resourcesUpdatedAt, List<BuildingSlotEntity> desiredSlots) {
-        this.name = name;
-        this.ownerId = ownerId;
-        this.islandId = islandId;
-        this.plotNumber = plotNumber;
-        this.luxuryResource = luxuryResource;
-        this.woodTicks = woodTicks;
-        this.luxuryTicks = luxuryTicks;
-        this.resourcesUpdatedAt = resourcesUpdatedAt;
-        desiredSlots.forEach(desired -> slotAt(desired.getPosition()).updateFrom(desired));
+    void updateFrom(TownEntity desired) {
+        this.name = desired.name;
+        this.ownerId = desired.ownerId;
+        this.islandId = desired.islandId;
+        this.plotNumber = desired.plotNumber;
+        this.luxuryResource = desired.luxuryResource;
+        this.woodTicks = desired.woodTicks;
+        this.luxuryTicks = desired.luxuryTicks;
+        this.resourcesUpdatedAt = desired.resourcesUpdatedAt;
+        desired.slots.forEach(slot -> slotAt(slot.getPosition()).updateFrom(slot));
     }
 
     private BuildingSlotEntity slotAt(int position) {
