@@ -34,6 +34,16 @@ class WorldGeneratorTest {
     }
 
     @Test
+    void everyGeneratedIslandHasADistinctNameAndALuxuryResource() {
+        WorldGenerationSettings settings = WorldGenerationSettings.standard();
+
+        World world = WorldGenerator.generate(42L, settings);
+
+        assertThat(world.islands()).extracting(Island::name).doesNotHaveDuplicates();
+        assertThat(world.islands()).extracting(Island::resource).doesNotContainNull();
+    }
+
+    @Test
     void theSameSeedProducesEqualWorlds() {
         WorldGenerationSettings settings = WorldGenerationSettings.standard();
 
