@@ -17,13 +17,6 @@ class CityPlotTest {
 
         assertThat(plot.number()).isEqualTo(5);
         assertThat(plot.isFree()).isTrue();
-    }
-
-    @Test
-    void freePlotIsFreeAndHasNoTown() {
-        CityPlot plot = CityPlot.free(5);
-
-        assertThat(plot.isFree()).isTrue();
         assertThat(plot.town()).isEqualTo(Optional.empty());
     }
 
