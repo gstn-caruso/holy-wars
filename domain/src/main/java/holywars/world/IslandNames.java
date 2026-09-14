@@ -18,6 +18,9 @@ public final class IslandNames {
     }
 
     public static List<String> pick(int n, Random random) {
+        if (n > POOL.size()) {
+            throw new NotEnoughIslandNamesException(n, POOL.size());
+        }
         List<String> shuffled = new ArrayList<>(POOL);
         Collections.shuffle(shuffled, random);
         return List.copyOf(shuffled.subList(0, n));
