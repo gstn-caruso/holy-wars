@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import holywars.player.Player;
 import holywars.player.PlayerKind;
 import holywars.town.Town;
+import holywars.world.CityPlot;
 import holywars.world.Coordinate;
 import holywars.world.GridSize;
 import holywars.world.Island;
@@ -13,7 +14,9 @@ import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import holywars.world.World;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 
 class GameSetupTest {
@@ -84,8 +87,31 @@ class GameSetupTest {
                 .isInstanceOf(NotEnoughIslandsForPlayersException.class);
     }
 
+    @Test
+    void startProducesAWorldWithEveryCapitalPlotOccupied() {
+        World world = worldWithIslands(5);
+        GameSetupSettings settings = GameSetupSettings.standard();
+
+        NewGame newGame = GameSetup.start(world, new Random(42), settings);
+
+        for (Town town : newGame.towns()) {
+            Island island = newGame.world().island(town.location().island()).orElseThrow();
+            CityPlot capitalPlot = island.plots().stream()
+                    .filter(plot -> plot.number() == town.location().plotNumber())
+                    .findFirst()
+                    .orElseThrow();
+            assertThat(capitalPlot.town()).isEqualTo(Optional.of(town.id()));
+        }
+
+        long occupiedPlots = newGame.world().islands().stream()
+                .flatMap(island -> island.plots().stream())
+                .filter(plot -> !plot.isFree())
+                .count();
+        assertThat(occupiedPlots).isEqualTo(newGame.towns().size());
+    }
+
     private World worldWithIslands(int count) {
-        List<Island> islands = java.util.stream.IntStream.rangeClosed(1, count)
+        List<Island> islands = IntStream.rangeClosed(1, count)
                 .mapToObj(index -> Island.withFreePlots(
                         new IslandId(index), new Coordinate(index, index), "Island" + index, LuxuryResource.WINE))
                 .toList();
