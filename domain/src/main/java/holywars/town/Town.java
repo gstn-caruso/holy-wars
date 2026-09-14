@@ -64,9 +64,7 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
                 .filter(BuildingSlot::isOccupiedTownHall)
                 .findFirst()
                 .orElseThrow()
-                .building()
-                .orElseThrow()
-                .level();
+                .builtLevel();
     }
 
     public Optional<Instant> nextFinishAt() {

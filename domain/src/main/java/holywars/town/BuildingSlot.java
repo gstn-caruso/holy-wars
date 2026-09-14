@@ -44,6 +44,10 @@ public record BuildingSlot(int position, BuildingSlotKind kind, int requiredTown
         return kind == BuildingSlotKind.TOWN_HALL && isOccupied();
     }
 
+    public int builtLevel() {
+        return building.orElseThrow().level();
+    }
+
     public BuildingSlotState state(int townHallLevel) {
         if (construction.isPresent()) {
             return BuildingSlotState.UNDER_CONSTRUCTION;

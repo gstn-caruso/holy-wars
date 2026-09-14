@@ -105,6 +105,13 @@ class BuildingSlotTest {
     }
 
     @Test
+    void builtLevelReturnsTheLevelOfTheBuiltBuilding() {
+        BuildingSlot slot = new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1, new Building(BuildingType.TOWN_HALL, 3));
+
+        assertThat(slot.builtLevel()).isEqualTo(3);
+    }
+
+    @Test
     void slotsWithTheSamePositionKindRequiredLevelAndBuildingAreEqual() {
         BuildingSlot vacant = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
         BuildingSlot sameVacant = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
