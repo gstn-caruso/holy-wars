@@ -1,8 +1,11 @@
 package holywars.server.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import holywars.player.Player;
 import holywars.player.PlayerId;
@@ -45,5 +48,18 @@ class CapitalHeadersTest {
         assertThat(header.townId()).isEqualTo(9L);
         assertThat(header.resourceBar().wood()).isEqualTo(500);
         assertThat(header.resourceBar().gold()).isEqualTo(500);
+    }
+
+    @Test
+    void readingTheCapitalHeaderNeverPersistsTheAdvancedResources() {
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        World world = new World(List.of(island));
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        Town capital = Town.founded(new TownId(9), player.id(), island.id(), 1, "Atenas", LuxuryResource.WINE, NOW);
+        given(townRepository.findByOwner(player.id())).willReturn(Optional.of(capital));
+
+        capitalHeaders.forPlayer(world, player);
+
+        verify(townRepository, never()).save(any());
     }
 }
