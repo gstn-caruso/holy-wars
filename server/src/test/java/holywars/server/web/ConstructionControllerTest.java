@@ -3,12 +3,15 @@ package holywars.server.web;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import holywars.player.Player;
 import holywars.player.PlayerId;
 import holywars.player.PlayerRepository;
 import holywars.server.game.ConstructionService;
+import holywars.town.BuildingType;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
@@ -65,5 +68,23 @@ class ConstructionControllerTest {
                 .andExpect(content().string(containsString("6 min")))
                 .andExpect(content().string(containsString("hx-post=\"/towns/1/slots/2/build\"")))
                 .andExpect(content().string(containsString("¡Construir!")));
+    }
+
+    @Test
+    void buildEndpointRendersTheUpdatedPanelAndOutOfBandSceneAndResourceBar() throws Exception {
+        Town updated = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW)
+                .startingConstruction(2, BuildingType.WAREHOUSE, NOW);
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        given(constructionService.start(new TownId(1), 2, BuildingType.WAREHOUSE)).willReturn(updated);
+        given(playerRepository.find()).willReturn(Optional.of(player));
+
+        mockMvc.perform(post("/towns/1/slots/2/build").param("type", "WAREHOUSE"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("En obra: Almacén · faltan 6 min")))
+                .andExpect(content().string(containsString("id=\"town-scene\"")))
+                .andExpect(content().string(containsString("hx-swap-oob=\"true\"")))
+                .andExpect(content().string(containsString("id=\"resource-bar\"")))
+                .andExpect(content().string(containsString("460")));
     }
 }

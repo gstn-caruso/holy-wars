@@ -10,5 +10,14 @@
         <title th:text="${plot.label}"></title>
     </image>
 </svg>
+<svg th:fragment="townSceneOob(scene)" xmlns="http://www.w3.org/2000/svg" class="town-scene" id="town-scene"
+     hx-swap-oob="true" preserveAspectRatio="xMidYMid slice"
+     th:attr="viewBox='0 0 ' + ${scene.width} + ' ' + ${scene.height}">
+    <image th:attr="href='/img/town-scene.svg',x=0,y=0,width=${scene.width},height=${scene.height}"/>
+    <image th:each="plot : ${scene.plots}"
+           th:attr="href=${plot.spriteHref},x=${plot.x},y=${plot.y},width=${plot.width},height=${plot.height}">
+        <title th:text="${plot.label}"></title>
+    </image>
+</svg>
 </body>
 </html>

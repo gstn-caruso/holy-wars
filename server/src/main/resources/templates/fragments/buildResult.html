@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="buildResult(menu, scene, bar)">
+    <div th:replace="~{fragments/buildMenu :: buildMenu(menu=${menu})}"></div>
+    <svg th:replace="~{fragments/townScene :: townSceneOob(scene=${scene})}"></svg>
+    <div th:replace="~{fragments/resourceBarOob :: resourceBarOob(bar=${bar})}"></div>
+</th:block>
+</body>
+</html>
