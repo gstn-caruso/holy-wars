@@ -1,10 +1,13 @@
 package holywars.server.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.context.properties.bind.BindException;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -36,6 +39,16 @@ class TownScenePropertiesTest {
         assertThat(layout.width()).isEqualTo(1200);
         assertThat(layout.height()).isEqualTo(720);
         assertThat(layout.anchorFor(12)).isEqualTo(new PlotAnchor(600, 117, 164));
+    }
+
+    @Test
+    void missingAPositionFailsWithIncompleteTownSceneLayout() {
+        Map<String, String> incomplete = new HashMap<>(STANDARD_LAYOUT);
+        incomplete.remove("holywars.town-scene.plots.13");
+
+        assertThatThrownBy(() -> bind(incomplete))
+                .isInstanceOf(BindException.class)
+                .hasRootCauseInstanceOf(IncompleteTownSceneLayoutException.class);
     }
 
     private TownSceneProperties bind(Map<String, String> properties) {
