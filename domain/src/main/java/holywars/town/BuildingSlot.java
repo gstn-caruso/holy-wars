@@ -35,6 +35,6 @@ public final class BuildingSlot {
     }
 
     public BuildingSlotState state(int townHallLevel) {
-        return townHallLevel == requiredTownHallLevel ? BuildingSlotState.FREE : BuildingSlotState.LOCKED;
+        return townHallLevel >= requiredTownHallLevel ? BuildingSlotState.FREE : BuildingSlotState.LOCKED;
     }
 }
