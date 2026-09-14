@@ -18,9 +18,11 @@ import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import holywars.world.World;
 import holywars.world.WorldRepository;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -44,6 +46,14 @@ class WorldControllerTest {
     @MockitoBean
     private PlayerRepository playerRepository;
 
+    @MockitoBean
+    private Clock clock;
+
+    @BeforeEach
+    void fixTheClockAtNow() {
+        given(clock.instant()).willReturn(NOW);
+    }
+
     @Test
     void mapWithoutAWorldReturns404() throws Exception {
         given(worldRepository.find()).willReturn(Optional.empty());
@@ -56,15 +66,38 @@ class WorldControllerTest {
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 4), "Naxos", LuxuryResource.WINE);
         island.plots().get(0).occupy(9L);
         World world = new World(List.of(island));
+        Town capital = Town.founded(new TownId(9), new PlayerId(1), island.id(), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
         given(worldRepository.find()).willReturn(Optional.of(world));
+        given(playerRepository.find())
+                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
+        given(townRepository.findByOwner(new PlayerId(1))).willReturn(Optional.of(capital));
 
         mockMvc.perform(get("/map"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Mapa del mundo")))
                 .andExpect(content().string(containsString("/islands/3")))
                 .andExpect(content().string(containsString("Naxos")))
                 .andExpect(content().string(containsString("/img/resource-wine.svg")))
                 .andExpect(content().string(containsString("1 aldea")));
+    }
+
+    @Test
+    void mapRendersTheCapitalHeaderAndTheWorldOnlyBreadcrumb() throws Exception {
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 4), "Naxos", LuxuryResource.WINE);
+        World world = new World(List.of(island));
+        Town capital = Town.founded(new TownId(9), new PlayerId(1), island.id(), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(playerRepository.find())
+                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
+        given(townRepository.findByOwner(new PlayerId(1))).willReturn(Optional.of(capital));
+
+        mockMvc.perform(get("/map"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("id=\"resource-bar\"")))
+                .andExpect(content().string(containsString("Atenas")))
+                .andExpect(content().string(containsString("[2:4]")))
+                .andExpect(content().string(containsString("Mundo")));
     }
 
     @Test
@@ -80,12 +113,13 @@ class WorldControllerTest {
         Island island = Island.withFreePlots(new IslandId(4), new Coordinate(1, 2), "Naxos", LuxuryResource.WINE);
         island.plots().get(0).occupy(11L);
         World world = new World(List.of(island));
+        Town occupant = Town.founded(new TownId(11L), new PlayerId(1), island.id(), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
         given(worldRepository.find()).willReturn(Optional.of(world));
-        given(townRepository.find(new TownId(11L))).willReturn(
-                Optional.of(Town.founded(new TownId(11L), new PlayerId(1), island.id(), 1, "Atenas",
-                        LuxuryResource.WINE, NOW)));
+        given(townRepository.find(new TownId(11L))).willReturn(Optional.of(occupant));
         given(playerRepository.find())
                 .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
+        given(townRepository.findByOwner(new PlayerId(1))).willReturn(Optional.of(occupant));
 
         mockMvc.perform(get("/islands/4"))
                 .andExpect(status().isOk())
@@ -98,5 +132,24 @@ class WorldControllerTest {
                 .andExpect(content().string(containsString("Atenas")))
                 .andExpect(content().string(containsString("Jugador")))
                 .andExpect(content().string(containsString("/towns/11")));
+    }
+
+    @Test
+    void islandRendersTheCapitalHeaderAndTheIslandBreadcrumb() throws Exception {
+        Island island = Island.withFreePlots(new IslandId(4), new Coordinate(1, 2), "Naxos", LuxuryResource.WINE);
+        World world = new World(List.of(island));
+        Town capital = Town.founded(new TownId(9), new PlayerId(1), island.id(), 1, "Esparta",
+                LuxuryResource.WINE, NOW);
+        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(playerRepository.find())
+                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
+        given(townRepository.findByOwner(new PlayerId(1))).willReturn(Optional.of(capital));
+
+        mockMvc.perform(get("/islands/4"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("id=\"resource-bar\"")))
+                .andExpect(content().string(containsString("Esparta")))
+                .andExpect(content().string(containsString("Mundo")))
+                .andExpect(content().string(containsString("Naxos [1:2]")));
     }
 }

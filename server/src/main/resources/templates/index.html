@@ -2,15 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head(title='Holy Wars')}"></head>
 <body>
-<header th:replace="~{fragments/layout :: header()}"></header>
-<main>
-<div class="panel welcome">
-    <h1>Holy Wars</h1>
-    <p>Fundá tu primera aldea y comenzá a construir tu imperio en el Egeo.</p>
-    <form method="post" th:action="@{/world}">
-        <button class="button-bronze">Nueva partida</button>
-    </form>
+<div class="shell">
+    <header th:replace="~{fragments/layout :: topBar()}"></header>
+    <div class="shell-stage index-stage">
+        <div class="panel welcome">
+            <h1>Holy Wars</h1>
+            <p>Fundá tu primera aldea y comenzá a construir tu imperio en el Egeo.</p>
+            <form method="post" th:action="@{/world}">
+                <button class="button-bronze">Nueva partida</button>
+            </form>
+        </div>
+        <th:block th:if="${header}">
+            <div th:replace="~{fragments/layout :: capitalHeader(header=${header})}"></div>
+        </th:block>
+        <th:block th:if="${breadcrumb}">
+            <nav th:replace="~{fragments/layout :: breadcrumb(breadcrumb=${breadcrumb})}"></nav>
+        </th:block>
+        <th:block th:if="${header}">
+            <div th:replace="~{fragments/layout :: frieze()}"></div>
+        </th:block>
+    </div>
+    <th:block th:if="${header}">
+        <footer th:replace="~{fragments/layout :: compassFooter(header=${header})}"></footer>
+    </th:block>
 </div>
-</main>
 </body>
 </html>

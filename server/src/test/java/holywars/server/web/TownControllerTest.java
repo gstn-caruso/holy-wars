@@ -19,9 +19,11 @@ import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import holywars.world.World;
 import holywars.world.WorldRepository;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -48,6 +50,14 @@ class TownControllerTest {
     @MockitoBean
     private PlayerRepository playerRepository;
 
+    @MockitoBean
+    private Clock clock;
+
+    @BeforeEach
+    void fixTheClockAtNow() {
+        given(clock.instant()).willReturn(NOW);
+    }
+
     @Test
     void unknownTownReturns404() throws Exception {
         given(townRepository.find(new TownId(1))).willReturn(Optional.empty());
@@ -65,6 +75,7 @@ class TownControllerTest {
         given(playerRepository.find())
                 .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
         given(worldRepository.find()).willReturn(Optional.of(world));
+        given(townRepository.findByOwner(new PlayerId(1))).willReturn(Optional.of(town));
 
         mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
@@ -86,6 +97,7 @@ class TownControllerTest {
         given(playerRepository.find())
                 .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
         given(worldRepository.find()).willReturn(Optional.of(world));
+        given(townRepository.findByOwner(new PlayerId(1))).willReturn(Optional.of(town));
 
         MvcResult result = mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
@@ -99,6 +111,35 @@ class TownControllerTest {
 
         String body = result.getResponse().getContentAsString();
         assertThat(countOccurrences(body, "<image")).isEqualTo(15);
+    }
+
+    @Test
+    void rendersTheCapitalHeaderTheBreadcrumbAndTheExactViewButtonTexts() throws Exception {
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        World world = new World(List.of(island));
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(playerRepository.find())
+                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
+        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(townRepository.findByOwner(new PlayerId(1))).willReturn(Optional.of(town));
+
+        mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("id=\"resource-bar\"")))
+                .andExpect(content().string(containsString("500")))
+                .andExpect(content().string(containsString("Madera")))
+                .andExpect(content().string(containsString("Vino")))
+                .andExpect(content().string(containsString("Oro")))
+                .andExpect(content().string(containsString("[2:2]")))
+                .andExpect(content().string(containsString("Mundo")))
+                .andExpect(content().string(containsString("Naxos [2:2]")))
+                .andExpect(content().string(containsString("/islands/3")))
+                .andExpect(content().string(containsString("/towns/1")))
+                .andExpect(content().string(containsString("Mostrar mundo")))
+                .andExpect(content().string(containsString("Mostrar isla")))
+                .andExpect(content().string(containsString("Mostrar ciudad")));
     }
 
     private static int countOccurrences(String text, String token) {

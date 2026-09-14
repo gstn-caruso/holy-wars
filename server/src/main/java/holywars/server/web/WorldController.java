@@ -2,6 +2,7 @@ package holywars.server.web;
 
 import holywars.player.Player;
 import holywars.player.PlayerRepository;
+import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
 import holywars.world.Island;
@@ -9,6 +10,7 @@ import holywars.world.IslandId;
 import holywars.world.IslandPlot;
 import holywars.world.World;
 import holywars.world.WorldRepository;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,18 +28,22 @@ class WorldController {
     private final WorldRepository worldRepository;
     private final TownRepository townRepository;
     private final PlayerRepository playerRepository;
+    private final Clock clock;
 
     WorldController(WorldRepository worldRepository, TownRepository townRepository,
-            PlayerRepository playerRepository) {
+            PlayerRepository playerRepository, Clock clock) {
         this.worldRepository = worldRepository;
         this.townRepository = townRepository;
         this.playerRepository = playerRepository;
+        this.clock = clock;
     }
 
     @GetMapping("/map")
     String map(Model model) {
         World world = findWorldOrThrow();
         model.addAttribute("rows", mapRows(world));
+        model.addAttribute("header", capitalHeader(world));
+        model.addAttribute("breadcrumb", BreadcrumbView.worldOnly());
         return "map";
     }
 
@@ -49,7 +55,17 @@ class WorldController {
         String occupiedTownName = occupiedPlot.map(this::townNameOf).orElse(null);
         String ownerName = occupiedPlot.map(plot -> ownerName()).orElse(null);
         model.addAttribute("island", IslandView.of(island, occupiedTownName, ownerName));
+        model.addAttribute("header", capitalHeader(world));
+        model.addAttribute("breadcrumb", BreadcrumbView.upToIsland(island));
         return "island";
+    }
+
+    private CapitalHeaderView capitalHeader(World world) {
+        Player player = playerRepository.find().orElseThrow();
+        Town capital = townRepository.findByOwner(player.id()).orElseThrow();
+        Island capitalIsland = world.island(capital.islandId());
+        ResourceBarView resourceBar = ResourceBarView.of(capital, player, clock.instant());
+        return CapitalHeaderView.of(capitalIsland, capital, resourceBar);
     }
 
     private Optional<IslandPlot> occupiedPlot(Island island) {
