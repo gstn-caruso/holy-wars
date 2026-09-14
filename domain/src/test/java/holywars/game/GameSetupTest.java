@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import holywars.player.Player;
+import holywars.player.PlayerId;
 import holywars.player.PlayerKind;
 import holywars.town.Town;
 import holywars.world.CityPlot;
@@ -31,12 +32,14 @@ class GameSetupTest {
         assertThat(newGame.players()).hasSize(1);
         Player human = newGame.players().get(0);
         assertThat(human.kind()).isEqualTo(PlayerKind.HUMAN);
+        assertThat(human.id()).isEqualTo(new PlayerId(1));
         assertThat(human.name()).isEqualTo("Jugador");
         assertThat(human.gold()).isEqualTo(500);
 
         assertThat(newGame.towns()).hasSize(1);
         Town capital = newGame.towns().get(0);
         assertThat(capital.ownerId()).isEqualTo(human.id());
+        assertThat(capital.location().plotNumber()).isEqualTo(1);
     }
 
     @Test
