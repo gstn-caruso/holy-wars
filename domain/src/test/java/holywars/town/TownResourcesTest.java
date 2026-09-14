@@ -18,4 +18,14 @@ class TownResourcesTest {
         assertThat(resources.luxuryAmount()).isEqualTo(100);
         assertThat(resources.luxury()).isEqualTo(LuxuryResource.WINE);
     }
+
+    @Test
+    void advancingZeroSecondsLeavesTheStockUnchanged() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        TownResources advanced = resources.advancedTo(foundedAt);
+
+        assertThat(advanced.wood()).isEqualTo(500);
+        assertThat(advanced.luxuryAmount()).isEqualTo(100);
+    }
 }
