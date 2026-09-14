@@ -1,6 +1,7 @@
 package holywars.world;
 
 import java.util.List;
+import java.util.Random;
 
 public final class World {
 
@@ -15,5 +16,9 @@ public final class World {
                 .filter(island -> island.id().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new UnknownIslandException(id));
+    }
+
+    public Island randomIsland(Random random) {
+        return islands.get(random.nextInt(islands.size()));
     }
 }
