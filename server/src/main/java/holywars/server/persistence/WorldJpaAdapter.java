@@ -48,17 +48,8 @@ class WorldJpaAdapter implements WorldRepository {
             return worldMapper.toEntity(island);
         }
 
-        Map<Integer, IslandPlotEntity> existingPlotEntitiesByNumber = existingIslandEntity.plots().stream()
-                .collect(Collectors.toMap(IslandPlotEntity::number, Function.identity()));
-
         for (IslandPlot plot : island.plots()) {
-            Long occupantTownId = plot.occupant().isPresent() ? plot.occupant().getAsLong() : null;
-            IslandPlotEntity existingPlotEntity = existingPlotEntitiesByNumber.get(plot.number());
-            if (existingPlotEntity == null) {
-                existingIslandEntity.addPlot(new IslandPlotEntity(existingIslandEntity, plot.number(), occupantTownId));
-            } else {
-                existingPlotEntity.updateOccupant(occupantTownId);
-            }
+            existingIslandEntity.putPlot(plot.number(), worldMapper.occupantTownIdOf(plot));
         }
 
         return existingIslandEntity;

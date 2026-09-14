@@ -8,6 +8,7 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "island")
@@ -43,6 +44,17 @@ class IslandEntity {
         plots.add(plot);
     }
 
+    void putPlot(int number, Long occupantTownId) {
+        Optional<IslandPlotEntity> existingPlot = plots.stream()
+                .filter(plot -> plot.number() == number)
+                .findFirst();
+        if (existingPlot.isPresent()) {
+            existingPlot.get().updateOccupant(occupantTownId);
+        } else {
+            addPlot(new IslandPlotEntity(this, number, occupantTownId));
+        }
+    }
+
     long id() {
         return id;
     }
@@ -64,6 +76,6 @@ class IslandEntity {
     }
 
     List<IslandPlotEntity> plots() {
-        return plots;
+        return List.copyOf(plots);
     }
 }

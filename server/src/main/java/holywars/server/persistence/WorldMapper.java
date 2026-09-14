@@ -46,7 +46,10 @@ final class WorldMapper {
     }
 
     private IslandPlotEntity toEntity(IslandPlot plot, IslandEntity islandEntity) {
-        Long occupantTownId = plot.occupant().isPresent() ? plot.occupant().getAsLong() : null;
-        return new IslandPlotEntity(islandEntity, plot.number(), occupantTownId);
+        return new IslandPlotEntity(islandEntity, plot.number(), occupantTownIdOf(plot));
+    }
+
+    Long occupantTownIdOf(IslandPlot plot) {
+        return plot.occupant().isPresent() ? plot.occupant().getAsLong() : null;
     }
 }
