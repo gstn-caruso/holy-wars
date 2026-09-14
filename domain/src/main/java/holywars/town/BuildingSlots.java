@@ -9,7 +9,7 @@ public final class BuildingSlots {
 
     public static List<BuildingSlot> standard() {
         return List.of(
-                new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1),
+                new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1, BuildingSlotKind.TOWN_HALL, 1),
                 new BuildingSlot(2, BuildingSlotKind.LAND, 1),
                 new BuildingSlot(3, BuildingSlotKind.LAND, 1),
                 new BuildingSlot(4, BuildingSlotKind.LAND, 1),

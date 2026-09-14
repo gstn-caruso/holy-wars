@@ -41,6 +41,16 @@ class BuildingSlotsTest {
             Map.entry(14, 1));
 
     @Test
+    void standardLayoutHasTheFirstSlotOccupiedByALevelOneTownHall() {
+        List<BuildingSlot> slots = BuildingSlots.standard();
+
+        BuildingSlot townHallSlot = slots.get(0);
+        assertThat(townHallSlot.position()).isEqualTo(1);
+        assertThat(townHallSlot.isOccupied()).isTrue();
+        assertThat(townHallSlot.builtLevel()).hasValue(1);
+    }
+
+    @Test
     void standardLayoutHasFourteenSlotsWithTheExactKindAndRequiredLevelFromTheTable() {
         List<BuildingSlot> slots = BuildingSlots.standard();
 
