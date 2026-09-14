@@ -1,8 +1,11 @@
 package holywars.server.web;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,5 +62,23 @@ class HomeControllerTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/towns/5"));
+    }
+
+    @Test
+    void startsANewGameWithARandomSeedWhenNoneIsGiven() throws Exception {
+        mockMvc.perform(post("/world"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+
+        verify(newGameService).start(anyLong());
+    }
+
+    @Test
+    void startsANewGameWithTheGivenSeed() throws Exception {
+        mockMvc.perform(post("/world").param("seed", "7"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+
+        verify(newGameService).start(7L);
     }
 }
