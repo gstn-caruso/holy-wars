@@ -12,6 +12,7 @@ import holywars.player.PlayerId;
 import holywars.player.PlayerRepository;
 import holywars.resources.NotEnoughResourcesException;
 import holywars.server.game.ConstructionService;
+import holywars.server.game.UnknownTownException;
 import holywars.town.BuildingSlotKind;
 import holywars.town.BuildingSlotState;
 import holywars.town.BuildingType;
@@ -144,5 +145,21 @@ class ConstructionControllerTest {
         mockMvc.perform(post("/towns/1/slots/2/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("La parcela no existe")));
+    }
+
+    @Test
+    void buildMenuForAnUnknownTownReturns404() throws Exception {
+        given(townRepository.find(new TownId(404))).willReturn(Optional.empty());
+
+        mockMvc.perform(get("/towns/404/slots/2/build-menu")).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void buildForAnUnknownTownReturns404() throws Exception {
+        given(constructionService.start(new TownId(404), 2, BuildingType.WAREHOUSE))
+                .willThrow(new UnknownTownException(new TownId(404)));
+
+        mockMvc.perform(post("/towns/404/slots/2/build").param("type", "WAREHOUSE"))
+                .andExpect(status().isNotFound());
     }
 }
