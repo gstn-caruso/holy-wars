@@ -35,6 +35,10 @@ public record BuildingSlot(int position, BuildingSlotKind kind, int requiredTown
         return builtLevel.isPresent();
     }
 
+    public boolean isOccupiedTownHall() {
+        return kind == BuildingSlotKind.TOWN_HALL && isOccupied();
+    }
+
     public BuildingSlotState state(int townHallLevel) {
         if (isOccupied()) {
             return BuildingSlotState.OCCUPIED;

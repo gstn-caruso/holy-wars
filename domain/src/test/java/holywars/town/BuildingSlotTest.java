@@ -60,6 +60,27 @@ class BuildingSlotTest {
     }
 
     @Test
+    void anOccupiedTownHallSlotIsReportedAsAnOccupiedTownHall() {
+        BuildingSlot slot = new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1, BuildingSlotKind.TOWN_HALL, 1);
+
+        assertThat(slot.isOccupiedTownHall()).isTrue();
+    }
+
+    @Test
+    void aVacantTownHallSlotIsNotReportedAsAnOccupiedTownHall() {
+        BuildingSlot slot = new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1);
+
+        assertThat(slot.isOccupiedTownHall()).isFalse();
+    }
+
+    @Test
+    void anOccupiedLandSlotIsNotReportedAsAnOccupiedTownHall() {
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2, BuildingSlotKind.LAND, 1);
+
+        assertThat(slot.isOccupiedTownHall()).isFalse();
+    }
+
+    @Test
     void slotsWithTheSamePositionKindRequiredLevelAndBuiltLevelAreEqual() {
         BuildingSlot vacant = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
         BuildingSlot sameVacant = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
