@@ -30,7 +30,7 @@ class BuildingSlotTest {
 
     @Test
     void aBuiltSlotIsOccupiedEvenBelowItsRequiredTownHallLevel() {
-        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2, BuildingSlotKind.LAND, 1);
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2, new Building(BuildingType.WAREHOUSE, 1));
 
         assertThat(slot.state(1)).isEqualTo(BuildingSlotState.OCCUPIED);
     }
@@ -48,20 +48,15 @@ class BuildingSlotTest {
     }
 
     @Test
-    void aBuiltLevelBelowOneIsRejected() {
-        assertThatThrownBy(() -> new BuildingSlot(5, BuildingSlotKind.LAND, 1, BuildingSlotKind.LAND, 0))
-                .isInstanceOf(InvalidBuildingLevelException.class);
-    }
-
-    @Test
-    void aBuiltKindThatDoesNotMatchTheSlotKindIsRejected() {
-        assertThatThrownBy(() -> new BuildingSlot(12, BuildingSlotKind.WALL, 1, BuildingSlotKind.LAND, 1))
+    void aBuildingOfAnotherKindThanTheSlotIsRejected() {
+        assertThatThrownBy(
+                () -> new BuildingSlot(12, BuildingSlotKind.WALL, 1, new Building(BuildingType.WAREHOUSE, 1)))
                 .isInstanceOf(MismatchedBuildingTypeException.class);
     }
 
     @Test
     void anOccupiedTownHallSlotIsReportedAsAnOccupiedTownHall() {
-        BuildingSlot slot = new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1, BuildingSlotKind.TOWN_HALL, 1);
+        BuildingSlot slot = new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1, new Building(BuildingType.TOWN_HALL, 1));
 
         assertThat(slot.isOccupiedTownHall()).isTrue();
     }
@@ -75,17 +70,17 @@ class BuildingSlotTest {
 
     @Test
     void anOccupiedLandSlotIsNotReportedAsAnOccupiedTownHall() {
-        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2, BuildingSlotKind.LAND, 1);
+        BuildingSlot slot = new BuildingSlot(5, BuildingSlotKind.LAND, 2, new Building(BuildingType.WAREHOUSE, 1));
 
         assertThat(slot.isOccupiedTownHall()).isFalse();
     }
 
     @Test
-    void slotsWithTheSamePositionKindRequiredLevelAndBuiltLevelAreEqual() {
+    void slotsWithTheSamePositionKindRequiredLevelAndBuildingAreEqual() {
         BuildingSlot vacant = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
         BuildingSlot sameVacant = new BuildingSlot(5, BuildingSlotKind.LAND, 2);
-        BuildingSlot built = new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1, BuildingSlotKind.TOWN_HALL, 1);
-        BuildingSlot sameBuilt = new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1, BuildingSlotKind.TOWN_HALL, 1);
+        BuildingSlot built = new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1, new Building(BuildingType.TOWN_HALL, 1));
+        BuildingSlot sameBuilt = new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1, new Building(BuildingType.TOWN_HALL, 1));
 
         assertThat(vacant).isEqualTo(sameVacant);
         assertThat(vacant.hashCode()).isEqualTo(sameVacant.hashCode());

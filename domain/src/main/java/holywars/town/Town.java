@@ -50,8 +50,9 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
                 .filter(BuildingSlot::isOccupiedTownHall)
                 .findFirst()
                 .orElseThrow()
-                .builtLevel()
-                .orElseThrow();
+                .building()
+                .orElseThrow()
+                .level();
     }
 
     public BuildingSlot slot(int position) {
