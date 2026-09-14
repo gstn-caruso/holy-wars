@@ -65,6 +65,11 @@ body {
     background: linear-gradient(#4a7ba7, #3a6791);
 }
 
+.map-stage,
+.island-stage {
+    padding-top: 24vh;
+}
+
 .island-stage {
     background: linear-gradient(#d7e6c8, #c1d6ac);
 }
