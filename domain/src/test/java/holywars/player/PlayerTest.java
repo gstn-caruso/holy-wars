@@ -1,6 +1,7 @@
 package holywars.player;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -39,5 +40,13 @@ class PlayerTest {
 
         assertThat(afterOneHour.gold()).isEqualTo(520);
         assertThat(afterThirtyMinutes.gold()).isEqualTo(510);
+    }
+
+    @Test
+    void aPlayerRejectsAdvancingIntoThePast() {
+        Player player = Player.human(new PlayerId(1), "Jugador", 500, startedAt);
+
+        assertThatThrownBy(() -> player.advancedTo(startedAt.minusSeconds(1)))
+                .isInstanceOf(InvalidAdvanceInstantException.class);
     }
 }
