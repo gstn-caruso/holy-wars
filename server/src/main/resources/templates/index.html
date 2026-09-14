@@ -12,19 +12,7 @@
                 <button class="button-bronze">Nueva partida</button>
             </form>
         </div>
-        <th:block th:if="${header}">
-            <div th:replace="~{fragments/layout :: capitalHeader(header=${header})}"></div>
-        </th:block>
-        <th:block th:if="${breadcrumb}">
-            <nav th:replace="~{fragments/layout :: breadcrumb(breadcrumb=${breadcrumb})}"></nav>
-        </th:block>
-        <th:block th:if="${header}">
-            <div th:replace="~{fragments/layout :: frieze()}"></div>
-        </th:block>
     </div>
-    <th:block th:if="${header}">
-        <footer th:replace="~{fragments/layout :: compassFooter(header=${header})}"></footer>
-    </th:block>
 </div>
 </body>
 </html>
