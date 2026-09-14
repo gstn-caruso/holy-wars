@@ -2,6 +2,9 @@ package holywars.server.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import holywars.town.PlotLocation;
+import holywars.town.TownId;
+import holywars.world.Island;
 import holywars.world.World;
 import holywars.world.WorldGenerationSettings;
 import holywars.world.WorldGenerator;
@@ -27,6 +30,19 @@ class JpaWorldRepositoryTest {
     @Test
     void savedWorldIsFoundBackEqualToTheOriginal() {
         World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+
+        worldRepository.save(world);
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThat(worldRepository.find()).contains(world);
+    }
+
+    @Test
+    void savedWorldWithAFoundedCityPreservesTheTownIdOfTheOccupiedPlot() {
+        World generated = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+        Island island = generated.islands().get(0);
+        World world = generated.withCityFounded(new PlotLocation(island.id(), 1), new TownId(7));
 
         worldRepository.save(world);
         entityManager.flush();
