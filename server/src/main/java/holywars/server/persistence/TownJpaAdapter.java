@@ -38,7 +38,7 @@ class TownJpaAdapter implements TownRepository {
     }
 
     private Town toDomain(TownEntity entity) {
-        return new Town(
+        return Town.founded(
                 new TownId(entity.id()),
                 new PlayerId(entity.ownerId()),
                 new IslandId(entity.islandId()),
