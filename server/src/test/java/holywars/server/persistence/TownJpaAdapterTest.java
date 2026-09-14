@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import holywars.player.PlayerId;
 import holywars.town.Building;
 import holywars.town.BuildingType;
+import holywars.town.Construction;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.world.IslandId;
@@ -80,6 +81,23 @@ class TownJpaAdapterTest {
         Town found = townJpaAdapter.find(new TownId(4)).orElseThrow();
         assertThat(found).isEqualTo(town);
         assertThat(found.slot(2).building()).contains(new Building(BuildingType.WAREHOUSE, 1));
+    }
+
+    @Test
+    void savesATownWithASlotUnderConstructionAndKeepsMillisecondPrecision() {
+        Instant startedAt = Instant.parse("2026-01-01T00:00:00.123Z");
+        Town town = Town.founded(new TownId(5), new PlayerId(7), new IslandId(3), 1, "Delfos",
+                LuxuryResource.MARBLE, startedAt)
+                .startingConstruction(2, BuildingType.WAREHOUSE, startedAt);
+
+        townJpaAdapter.save(town);
+
+        Town found = townJpaAdapter.find(new TownId(5)).orElseThrow();
+        assertThat(found).isEqualTo(town);
+        assertThat(found.slot(2).construction()).contains(Construction.startingAt(BuildingType.WAREHOUSE, startedAt));
+        assertThat(found.slot(2).construction().orElseThrow().startedAt()).isEqualTo(startedAt);
+        assertThat(found.slot(2).construction().orElseThrow().finishesAt())
+                .isEqualTo(startedAt.plus(BuildingType.WAREHOUSE.buildTime()));
     }
 
     private long countBuildingSlotRowsFor(long townId) {
