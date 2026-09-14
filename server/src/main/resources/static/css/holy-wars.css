@@ -200,8 +200,11 @@ body {
 
 .councillor figcaption {
     font-size: 0.7rem;
-    color: #1b3a5c;
+    color: #f4e9c8;
     text-align: center;
+    background: #1b140c;
+    padding: 2px 4px;
+    border-radius: 2px;
 }
 
 .shell-footer {
