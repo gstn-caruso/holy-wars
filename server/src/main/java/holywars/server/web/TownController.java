@@ -51,4 +51,12 @@ class TownController {
         model.addAttribute("breadcrumb", BreadcrumbView.upToTown(island, town));
         return "town";
     }
+
+    @GetMapping("/towns/{id}/scene")
+    String scene(@PathVariable("id") long id, Model model) {
+        Town town = townRepository.find(new TownId(id))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        model.addAttribute("scene", TownSceneView.of(town, townSceneLayout, clock.instant()));
+        return "fragments/townScene :: townScene(scene=${scene})";
+    }
 }

@@ -2,6 +2,7 @@ package holywars.server.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
@@ -184,6 +185,21 @@ class TownControllerTest {
 
         verify(townRepository, never()).save(any());
         verify(playerRepository, never()).save(any());
+    }
+
+    @Test
+    void sceneEndpointRendersOnlyTheTownSceneSvg() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+
+        mockMvc.perform(get("/towns/1/scene"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("<svg")))
+                .andExpect(content().string(containsString("id=\"town-scene\"")))
+                .andExpect(content().string(containsString("Ayuntamiento nivel 1")))
+                .andExpect(content().string(not(containsString("<!DOCTYPE"))))
+                .andExpect(content().string(not(containsString("capital-header"))));
     }
 
     private static CapitalHeaderView aCapitalHeader() {
