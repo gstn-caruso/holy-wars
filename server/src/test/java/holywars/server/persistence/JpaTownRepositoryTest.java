@@ -79,4 +79,16 @@ class JpaTownRepositoryTest {
     void findByOwnerIsEmptyWhenThePlayerHasNoTowns() {
         assertThat(townRepository.findByOwner(new PlayerId(1))).isEmpty();
     }
+
+    @Test
+    void findByOwnerReturnsTownsOrderedById() {
+        Town higherId = new Town(new TownId(2), "Corinto", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
+        Town lowerId = new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(2), 4));
+        townRepository.save(higherId);
+        townRepository.save(lowerId);
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThat(townRepository.findByOwner(new PlayerId(1))).containsExactly(lowerId, higherId);
+    }
 }
