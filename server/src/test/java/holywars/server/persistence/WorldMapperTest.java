@@ -58,6 +58,24 @@ class WorldMapperTest {
         assertThat(mappedIkaria.plots()).allMatch(IslandPlot::isFree);
     }
 
+    @Test
+    void mapsAnOccupiedPlotWithItsOccupantTownId() {
+        IslandEntity naxos = new IslandEntity(1, 0, 0, "Naxos", "WINE");
+        naxos.addPlot(new IslandPlotEntity(naxos, 1, 7L));
+        for (int number = 2; number <= 16; number++) {
+            naxos.addPlot(new IslandPlotEntity(naxos, number, null));
+        }
+
+        World world = worldMapper.toDomain(List.of(naxos));
+
+        Island island = world.island(new IslandId(1));
+        IslandPlot firstPlot = island.plots().get(0);
+        IslandPlot lastPlot = island.plots().get(15);
+        assertThat(firstPlot.isFree()).isFalse();
+        assertThat(firstPlot.occupant()).hasValue(7L);
+        assertThat(lastPlot.isFree()).isTrue();
+    }
+
     private IslandEntity anIslandEntityWithFreePlots(long id, int x, int y, String name, String luxuryResource) {
         IslandEntity islandEntity = new IslandEntity(id, x, y, name, luxuryResource);
         for (int number = 1; number <= 16; number++) {
