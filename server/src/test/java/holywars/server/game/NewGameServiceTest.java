@@ -9,14 +9,22 @@ import holywars.town.TownRepository;
 import holywars.world.Island;
 import holywars.world.World;
 import holywars.world.WorldRepository;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @SpringBootTest
 class NewGameServiceTest {
+
+    private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
 
     @Autowired
     private NewGameService newGameService;
@@ -57,10 +65,23 @@ class NewGameServiceTest {
         World world = worldRepository.find().orElseThrow();
         Island capitalIsland = world.island(town.islandId());
         assertThat(capitalIsland.plots().get(0).occupant()).hasValue(town.id().value());
+
+        assertThat(player.goldAmount()).isEqualTo(500);
+        assertThat(town.resources().lastUpdate()).isEqualTo(NOW);
     }
 
     private int countRowsIn(String tableName) {
         Integer rowCount = jdbcTemplate.queryForObject("select count(*) from " + tableName, Integer.class);
         return rowCount == null ? 0 : rowCount;
+    }
+
+    @TestConfiguration
+    static class FixedClockConfiguration {
+
+        @Bean
+        @Primary
+        Clock fixedClock() {
+            return Clock.fixed(NOW, ZoneOffset.UTC);
+        }
     }
 }
