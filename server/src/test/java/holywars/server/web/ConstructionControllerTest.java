@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import holywars.player.Player;
 import holywars.player.PlayerId;
 import holywars.player.PlayerRepository;
+import holywars.resources.NotEnoughResourcesException;
 import holywars.server.game.ConstructionService;
 import holywars.town.BuildingType;
 import holywars.town.Town;
@@ -86,5 +87,18 @@ class ConstructionControllerTest {
                 .andExpect(content().string(containsString("hx-swap-oob=\"true\"")))
                 .andExpect(content().string(containsString("id=\"resource-bar\"")))
                 .andExpect(content().string(containsString("460")));
+    }
+
+    @Test
+    void buildEndpointShowsNotEnoughResourcesMessageInline() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        given(constructionService.start(new TownId(1), 2, BuildingType.WAREHOUSE))
+                .willThrow(new NotEnoughResourcesException("wood"));
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+
+        mockMvc.perform(post("/towns/1/slots/2/build").param("type", "WAREHOUSE"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("No alcanzan los recursos")));
     }
 }

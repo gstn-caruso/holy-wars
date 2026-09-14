@@ -2,9 +2,13 @@ package holywars.server.web;
 
 import holywars.player.Player;
 import holywars.player.PlayerRepository;
+import holywars.resources.NotEnoughResourcesException;
 import holywars.server.game.ConstructionService;
 import holywars.server.game.UnknownTownException;
 import holywars.town.BuildingType;
+import holywars.town.InvalidBuildingSlotPositionException;
+import holywars.town.MismatchedBuildingTypeException;
+import holywars.town.SlotNotFreeException;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
@@ -45,13 +49,21 @@ class ConstructionController {
     @PostMapping("/towns/{id}/slots/{position}/build")
     String build(@PathVariable("id") long id, @PathVariable("position") int position,
             @RequestParam("type") BuildingType type, Model model) {
-        Town updated = constructionService.start(new TownId(id), position, type);
-        Instant now = clock.instant();
-        Player player = playerRepository.find().orElseThrow();
-        model.addAttribute("menu", BuildMenuView.of(updated, position, now));
-        model.addAttribute("scene", TownSceneView.of(updated, townSceneLayout, now));
-        model.addAttribute("bar", ResourceBarView.of(updated, player, now));
-        return "fragments/buildResult :: buildResult(menu=${menu},scene=${scene},bar=${bar})";
+        try {
+            Town updated = constructionService.start(new TownId(id), position, type);
+            Instant now = clock.instant();
+            Player player = playerRepository.find().orElseThrow();
+            model.addAttribute("menu", BuildMenuView.of(updated, position, now));
+            model.addAttribute("scene", TownSceneView.of(updated, townSceneLayout, now));
+            model.addAttribute("bar", ResourceBarView.of(updated, player, now));
+            return "fragments/buildResult :: buildResult(menu=${menu},scene=${scene},bar=${bar})";
+        } catch (NotEnoughResourcesException | SlotNotFreeException | MismatchedBuildingTypeException
+                | InvalidBuildingSlotPositionException exception) {
+            Town town = findOrThrow(id);
+            String error = ConstructionErrorMessages.forException(exception);
+            model.addAttribute("menu", BuildMenuView.withError(town, position, clock.instant(), error));
+            return "fragments/buildMenu :: buildMenu(menu=${menu})";
+        }
     }
 
     private Town findOrThrow(long id) {
