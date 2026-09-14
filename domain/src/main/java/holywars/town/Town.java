@@ -16,8 +16,7 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
         if (!hasExactlyTheRequiredDistinctPositions) {
             throw new InvalidBuildingSlotCountException((int) distinctPositions);
         }
-        boolean hasAnOccupiedTownHall = buildingSlots.stream()
-                .anyMatch(slot -> slot.kind() == BuildingSlotKind.TOWN_HALL && slot.isOccupied());
+        boolean hasAnOccupiedTownHall = buildingSlots.stream().anyMatch(BuildingSlot::isOccupiedTownHall);
         if (!hasAnOccupiedTownHall) {
             throw new MissingTownHallException();
         }
@@ -30,7 +29,7 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
 
     public int townHallLevel() {
         return buildingSlots.stream()
-                .filter(slot -> slot.kind() == BuildingSlotKind.TOWN_HALL)
+                .filter(BuildingSlot::isOccupiedTownHall)
                 .findFirst()
                 .orElseThrow()
                 .builtLevel()
