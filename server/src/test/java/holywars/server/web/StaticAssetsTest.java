@@ -20,4 +20,9 @@ class StaticAssetsTest {
     void servesTheVendoredHtmxScript() throws Exception {
         mockMvc.perform(get("/js/htmx.min.js")).andExpect(status().isOk());
     }
+
+    @Test
+    void servesTheLiveUpdatesScript() throws Exception {
+        mockMvc.perform(get("/js/holy-wars.js")).andExpect(status().isOk());
+    }
 }

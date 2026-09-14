@@ -2,6 +2,7 @@ package holywars.server.game;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
 
 import holywars.player.PlayerId;
 import holywars.town.BuildingSlotState;
@@ -23,6 +24,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest
 class ConstructionServiceTest {
@@ -37,6 +39,9 @@ class ConstructionServiceTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @MockitoBean
+    private TownClockwork clockwork;
 
     @BeforeEach
     void emptyTheSharedDatabase() {
@@ -58,6 +63,17 @@ class ConstructionServiceTest {
         Town found = townRepository.find(new TownId(1)).orElseThrow();
         assertThat(found.slot(2).state(1)).isEqualTo(BuildingSlotState.UNDER_CONSTRUCTION);
         assertThat(found.resources().woodAmount()).isEqualTo(500 - BuildingType.WAREHOUSE.woodCost());
+    }
+
+    @Test
+    void startingAConstructionSchedulesTheClockworkFinishForTheSavedTown() {
+        Town town = Town.founded(new TownId(3), new PlayerId(1), new IslandId(1), 1, "Corinto",
+                LuxuryResource.WINE, NOW);
+        townRepository.save(town);
+
+        Town updated = constructionService.start(new TownId(3), 2, BuildingType.WAREHOUSE);
+
+        verify(clockwork).scheduleFinish(updated);
     }
 
     @Test

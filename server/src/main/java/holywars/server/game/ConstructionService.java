@@ -13,10 +13,12 @@ public class ConstructionService {
 
     private final TownRepository townRepository;
     private final Clock clock;
+    private final TownClockwork clockwork;
 
-    public ConstructionService(TownRepository townRepository, Clock clock) {
+    public ConstructionService(TownRepository townRepository, Clock clock, TownClockwork clockwork) {
         this.townRepository = townRepository;
         this.clock = clock;
+        this.clockwork = clockwork;
     }
 
     @Transactional
@@ -24,6 +26,7 @@ public class ConstructionService {
         Town town = townRepository.find(townId).orElseThrow(() -> new UnknownTownException(townId));
         Town updated = town.startingConstruction(position, type, clock.instant());
         townRepository.save(updated);
+        clockwork.scheduleFinish(updated);
         return updated;
     }
 }

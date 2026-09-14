@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import holywars.player.Player;
 import holywars.player.PlayerId;
 import holywars.player.PlayerRepository;
+import holywars.town.BuildingType;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
@@ -24,6 +25,7 @@ import holywars.world.LuxuryResource;
 import holywars.world.World;
 import holywars.world.WorldRepository;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -203,6 +205,22 @@ class TownControllerTest {
     }
 
     @Test
+    void sceneEndpointShowsAFinishedConstructionWithoutPersistingIt() throws Exception {
+        Instant foundedAt = NOW.minus(BuildingType.WAREHOUSE.buildTime()).minus(Duration.ofDays(1));
+        Instant startedAt = NOW.minus(BuildingType.WAREHOUSE.buildTime());
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, foundedAt)
+                .startingConstruction(2, BuildingType.WAREHOUSE, startedAt);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+
+        mockMvc.perform(get("/towns/1/scene"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Almacén nivel 1")));
+
+        verify(townRepository, never()).save(any());
+    }
+
+    @Test
     void sceneEndpointRendersOnlyTheTownSceneSvg() throws Exception {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
@@ -234,8 +252,56 @@ class TownControllerTest {
                 .andExpect(content().string(not(containsString("capital-header"))));
     }
 
+    @Test
+    void validTownWiresUpLiveUpdatesViaHtmxAndSse() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        World world = new World(List.of(island));
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(playerRepository.find()).willReturn(Optional.of(player));
+        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
+
+        mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("<script src=\"/js/holy-wars.js\"")))
+                .andExpect(content().string(containsString("data-town-events=\"/towns/1/events\"")))
+                .andExpect(content().string(containsString(
+                        "hx-get=\"/towns/1/scene\" hx-trigger=\"town from:body\" hx-swap=\"outerHTML\"")))
+                .andExpect(content().string(containsString(
+                        "hx-get=\"/towns/1/resources\" hx-trigger=\"resources from:body\" hx-swap=\"outerHTML\"")));
+    }
+
+    @Test
+    void sceneFragmentKeepsItsLiveUpdateAttributesAfterAnOutOfBandSwap() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+
+        mockMvc.perform(get("/towns/1/scene"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(
+                        "hx-get=\"/towns/1/scene\" hx-trigger=\"town from:body\" hx-swap=\"outerHTML\"")));
+    }
+
+    @Test
+    void resourcesFragmentKeepsItsLiveUpdateAttributesAfterAnOutOfBandSwap() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(playerRepository.find()).willReturn(Optional.of(player));
+
+        mockMvc.perform(get("/towns/1/resources"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(
+                        "hx-get=\"/towns/1/resources\" hx-trigger=\"resources from:body\" hx-swap=\"outerHTML\"")));
+    }
+
     private static CapitalHeaderView aCapitalHeader() {
-        ResourceBarView resourceBar = new ResourceBarView(530, 110, "Vino", "/img/resource-wine.svg", 520);
+        ResourceBarView resourceBar = new ResourceBarView(1L, 530, 110, "Vino", "/img/resource-wine.svg", 520);
         return new CapitalHeaderView("Atenas", "[2:2]", resourceBar, 3L, 1L);
     }
 

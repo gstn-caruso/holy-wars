@@ -5,13 +5,16 @@
     <title th:text="${title}">Holy Wars</title>
     <link rel="stylesheet" href="/css/holy-wars.css"/>
     <script src="/js/htmx.min.js" defer></script>
+    <script src="/js/holy-wars.js" defer></script>
 </head>
 <body>
 <div class="shell-top-bar" th:fragment="topBar()">
     <span class="brand">Holy Wars</span>
 </div>
 <div class="resource-bar" id="resource-bar" th:fragment="resourceBar(bar, oob)"
-     th:attr="hx-swap-oob=${oob != null and oob} ? 'true' : null">
+     th:attr="hx-swap-oob=${oob != null and oob} ? 'true' : null,
+               hx-get='/towns/' + ${bar.townId} + '/resources',hx-trigger='resources from:body',
+               hx-swap='outerHTML'">
     <span class="resource">
         <img src="/img/resource-wood.svg" alt=""/>
         <span th:text="${bar.wood}"></span> Madera
