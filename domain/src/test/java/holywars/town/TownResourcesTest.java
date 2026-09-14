@@ -90,6 +90,55 @@ class TownResourcesTest {
     }
 
     @Test
+    void spendingNothingLeavesTheStockUnchanged() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        TownResources afterSpending = resources.spend(0, 0);
+
+        assertThat(afterSpending).isEqualTo(resources);
+    }
+
+    @Test
+    void spendingLessThanTheStockDiscountsExactlyThatAmount() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        TownResources afterSpending = resources.spend(100, 30);
+
+        assertThat(afterSpending.wood()).isEqualTo(400);
+        assertThat(afterSpending.luxuryAmount()).isEqualTo(70);
+        assertThat(afterSpending.lastUpdate()).isEqualTo(resources.lastUpdate());
+        assertThat(afterSpending.luxury()).isEqualTo(resources.luxury());
+    }
+
+    @Test
+    void spendingExactlyTheStockLeavesZeroWithoutRejecting() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        TownResources afterSpending = resources.spend(500, 100);
+
+        assertThat(afterSpending.wood()).isEqualTo(0);
+        assertThat(afterSpending.luxuryAmount()).isEqualTo(0);
+    }
+
+    @Test
+    void spendingMoreWoodThanAvailableIsRejected() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        assertThatThrownBy(() -> resources.spend(501, 0))
+                .isInstanceOf(NotEnoughResourcesException.class)
+                .hasMessageContaining("wood");
+    }
+
+    @Test
+    void spendingMoreLuxuryThanAvailableIsRejectedEvenWhenWoodSuffices() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        assertThatThrownBy(() -> resources.spend(100, 101))
+                .isInstanceOf(NotEnoughResourcesException.class)
+                .hasMessageContaining("luxury");
+    }
+
+    @Test
     void theLuxuryProducedNeverChangesWhenAdvancing() {
         TownResources resources = TownResources.initial(LuxuryResource.MARBLE, foundedAt);
 

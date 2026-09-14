@@ -82,6 +82,72 @@ class TownTest {
     }
 
     @Test
+    void startingAConstructionSpendsResourcesAndPutsThatSlotUnderConstruction() {
+        Town town = Town.founded(id, "Atenas", ownerId, location, LuxuryResource.WINE, foundedAt);
+
+        Town underConstruction = town.startingConstruction(2, BuildingType.CARPENTER, foundedAt);
+
+        assertThat(slotAt(underConstruction, 2).state(1)).isEqualTo(SlotState.UNDER_CONSTRUCTION);
+        assertThat(underConstruction.resources().wood()).isEqualTo(460);
+        assertThat(underConstruction.resources().luxuryAmount()).isEqualTo(100);
+        assertThat(underConstruction.id()).isEqualTo(town.id());
+        assertThat(underConstruction.name()).isEqualTo(town.name());
+        assertThat(underConstruction.ownerId()).isEqualTo(town.ownerId());
+        assertThat(underConstruction.location()).isEqualTo(town.location());
+
+        List<BuildingSlot> untouchedSlots = underConstruction.slots().stream()
+                .filter(slot -> slot.position() != 2)
+                .toList();
+        List<BuildingSlot> originalOtherSlots =
+                town.slots().stream().filter(slot -> slot.position() != 2).toList();
+        assertThat(untouchedSlots).isEqualTo(originalOtherSlots);
+    }
+
+    @Test
+    void startingAConstructionWithoutEnoughResourcesLeavesTheTownUntouched() {
+        TownResources scarceResources = new TownResources(LuxuryResource.WINE, 0, 0, foundedAt);
+        Town town = new Town(id, "Atenas", ownerId, location, BuildingSlots.standard(1), scarceResources);
+
+        assertThatThrownBy(() -> town.startingConstruction(2, BuildingType.CARPENTER, foundedAt))
+                .isInstanceOf(NotEnoughResourcesException.class);
+
+        assertThat(town.slots()).isEqualTo(BuildingSlots.standard(1));
+        assertThat(town.resources()).isEqualTo(scarceResources);
+    }
+
+    @Test
+    void startingAConstructionOnALockedSlotIsRejectedBeforeSpending() {
+        TownResources scarceResources = new TownResources(LuxuryResource.WINE, 0, 0, foundedAt);
+        Town town = new Town(id, "Atenas", ownerId, location, BuildingSlots.standard(1), scarceResources);
+
+        assertThatThrownBy(() -> town.startingConstruction(5, BuildingType.ACADEMY, foundedAt))
+                .isInstanceOf(SlotNotFreeException.class);
+
+        assertThat(town.resources()).isEqualTo(scarceResources);
+    }
+
+    @Test
+    void advancingATownCompletesDueConstructionsAndProducesResourcesAtOnce() {
+        Town town = Town.founded(id, "Atenas", ownerId, location, LuxuryResource.WINE, foundedAt);
+        Town underConstruction = town.startingConstruction(2, BuildingType.CARPENTER, foundedAt);
+
+        Town advanced = underConstruction.advancedTo(foundedAt.plus(Duration.ofHours(1)));
+
+        assertThat(slotAt(advanced, 2).state(1)).isEqualTo(SlotState.OCCUPIED);
+        assertThat(slotAt(advanced, 2).building()).contains(new Building(BuildingType.CARPENTER, 1));
+        assertThat(advanced.resources().wood()).isEqualTo(490);
+        assertThat(advanced.resources().luxuryAmount()).isEqualTo(110);
+    }
+
+    @Test
+    void startingAConstructionOnAnUnknownPositionIsRejected() {
+        Town town = Town.founded(id, "Atenas", ownerId, location, LuxuryResource.WINE, foundedAt);
+
+        assertThatThrownBy(() -> town.startingConstruction(15, BuildingType.CARPENTER, foundedAt))
+                .isInstanceOf(InvalidBuildingSlotPositionException.class);
+    }
+
+    @Test
     void townRejectsASlotListThatIsNotTheFourteenPositions() {
         List<BuildingSlot> thirteenSlots = BuildingSlots.standard(1).subList(0, 13);
         assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, thirteenSlots, resources))
@@ -111,5 +177,12 @@ class TownTest {
 
         assertThatThrownBy(() -> new Town(id, "Atenas", ownerId, location, slotsWithEmptyTownHall, resources))
                 .isInstanceOf(MissingTownHallException.class);
+    }
+
+    private static BuildingSlot slotAt(Town town, int position) {
+        return town.slots().stream()
+                .filter(slot -> slot.position() == position)
+                .findFirst()
+                .orElseThrow();
     }
 }

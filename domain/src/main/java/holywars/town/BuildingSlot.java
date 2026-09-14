@@ -1,23 +1,40 @@
 package holywars.town;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
-public record BuildingSlot(int position, SlotKind kind, int requiredTownHallLevel, Optional<Building> building) {
+public record BuildingSlot(
+        int position, SlotKind kind, int requiredTownHallLevel, Optional<Building> building,
+        Optional<Construction> construction) {
 
     public static final int HIGHEST_POSITION = 14;
+
+    public BuildingSlot(int position, SlotKind kind, int requiredTownHallLevel, Optional<Building> building) {
+        this(position, kind, requiredTownHallLevel, building, Optional.empty());
+    }
 
     public BuildingSlot {
         if (position < 1 || position > HIGHEST_POSITION) {
             throw new InvalidBuildingSlotPositionException(position);
         }
-        building.ifPresent(placedBuilding -> {
-            if (placedBuilding.type().kind() != kind) {
-                throw new MismatchedBuildingTypeException(kind, placedBuilding.type());
-            }
-        });
+        if (building.isPresent() && construction.isPresent()) {
+            throw new ConflictingSlotContentsException(position);
+        }
+        building.ifPresent(placedBuilding -> requireMatchingKind(kind, placedBuilding.type()));
+        construction.ifPresent(activeConstruction -> requireMatchingKind(kind, activeConstruction.type()));
+    }
+
+    private static void requireMatchingKind(SlotKind kind, BuildingType type) {
+        if (type.kind() != kind) {
+            throw new MismatchedBuildingTypeException(kind, type);
+        }
     }
 
     public SlotState state(int townHallLevel) {
+        if (construction.isPresent()) {
+            return SlotState.UNDER_CONSTRUCTION;
+        }
         if (building.isPresent()) {
             return SlotState.OCCUPIED;
         }
@@ -25,5 +42,31 @@ public record BuildingSlot(int position, SlotKind kind, int requiredTownHallLeve
             return SlotState.LOCKED;
         }
         return SlotState.FREE;
+    }
+
+    public List<BuildingType> allowedTypes(int townHallLevel) {
+        return state(townHallLevel) == SlotState.FREE ? BuildingType.forKind(kind) : List.of();
+    }
+
+    public BuildingSlot startingConstruction(BuildingType type, int townHallLevel, Instant now) {
+        SlotState currentState = state(townHallLevel);
+        if (currentState != SlotState.FREE) {
+            throw new SlotNotFreeException(position, currentState);
+        }
+        return new BuildingSlot(
+                position, kind, requiredTownHallLevel, Optional.empty(), Optional.of(Construction.of(type, now)));
+    }
+
+    public BuildingSlot advancedTo(Instant now) {
+        if (construction.isEmpty()) {
+            return this;
+        }
+        Construction activeConstruction = construction.get();
+        if (now.isBefore(activeConstruction.finishesAt())) {
+            return this;
+        }
+        return new BuildingSlot(
+                position, kind, requiredTownHallLevel,
+                Optional.of(new Building(activeConstruction.type(), 1)), Optional.empty());
     }
 }

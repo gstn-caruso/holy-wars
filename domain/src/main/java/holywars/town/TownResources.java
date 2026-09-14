@@ -24,6 +24,18 @@ public record TownResources(LuxuryResource luxury, long woodTicks, long luxuryTi
         return luxuryTicks / TICKS_PER_UNIT;
     }
 
+    public TownResources spend(int wood, int luxury) {
+        long woodTicksNeeded = wood * TICKS_PER_UNIT;
+        if (woodTicksNeeded > woodTicks) {
+            throw new NotEnoughResourcesException("wood", wood(), wood);
+        }
+        long luxuryTicksNeeded = luxury * TICKS_PER_UNIT;
+        if (luxuryTicksNeeded > luxuryTicks) {
+            throw new NotEnoughResourcesException("luxury", luxuryAmount(), luxury);
+        }
+        return new TownResources(this.luxury, woodTicks - woodTicksNeeded, luxuryTicks - luxuryTicksNeeded, lastUpdate);
+    }
+
     public TownResources advancedTo(Instant now) {
         if (now.isBefore(lastUpdate)) {
             throw new InvalidAdvanceInstantException(lastUpdate, now);

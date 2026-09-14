@@ -3,12 +3,15 @@ package holywars.town;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.Instant;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class BuildingSlotTest {
+
+    private final Instant now = Instant.parse("2024-01-01T00:00:00Z");
 
     @Test
     void emptySlotWhoseRequirementIsNotMetIsLocked() {
@@ -57,5 +60,120 @@ class BuildingSlotTest {
     void slotRejectsAPositionOutsideOneToFourteen(int invalidPosition) {
         assertThatThrownBy(() -> new BuildingSlot(invalidPosition, SlotKind.LAND, 1, Optional.empty()))
                 .isInstanceOf(InvalidBuildingSlotPositionException.class);
+    }
+
+    @Test
+    void aSlotCannotHoldABuildingAndAConstructionAtTheSameTime() {
+        Building academy = new Building(BuildingType.ACADEMY, 1);
+        Construction construction = Construction.of(BuildingType.ACADEMY, now);
+
+        assertThatThrownBy(() ->
+                        new BuildingSlot(5, SlotKind.LAND, 1, Optional.of(academy), Optional.of(construction)))
+                .isInstanceOf(ConflictingSlotContentsException.class);
+    }
+
+    @Test
+    void aFreeSlotThatStartsAConstructionBecomesUnderConstruction() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty());
+
+        BuildingSlot started = slot.startingConstruction(BuildingType.ACADEMY, 1, now);
+
+        assertThat(started.state(1)).isEqualTo(SlotState.UNDER_CONSTRUCTION);
+        assertThat(started.construction())
+                .contains(new Construction(BuildingType.ACADEMY, now, now.plus(BuildingType.ACADEMY.buildTime())));
+    }
+
+    @Test
+    void startingAConstructionOfAnotherKindIsRejected() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty());
+
+        assertThatThrownBy(() -> slot.startingConstruction(BuildingType.WALL, 1, now))
+                .isInstanceOf(MismatchedBuildingTypeException.class);
+        assertThat(slot.construction()).isEmpty();
+        assertThat(slot.state(1)).isEqualTo(SlotState.FREE);
+    }
+
+    @Test
+    void startingAConstructionOnALockedSlotIsRejected() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 2, Optional.empty());
+
+        assertThatThrownBy(() -> slot.startingConstruction(BuildingType.ACADEMY, 1, now))
+                .isInstanceOf(SlotNotFreeException.class)
+                .hasMessageContaining("LOCKED");
+    }
+
+    @Test
+    void startingAConstructionOnAnOccupiedSlotIsRejected() {
+        Building academy = new Building(BuildingType.ACADEMY, 1);
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.of(academy));
+
+        assertThatThrownBy(() -> slot.startingConstruction(BuildingType.TAVERN, 1, now))
+                .isInstanceOf(SlotNotFreeException.class)
+                .hasMessageContaining("OCCUPIED");
+    }
+
+    @Test
+    void startingAConstructionOnABusySlotIsRejected() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty());
+        BuildingSlot alreadyBusy = slot.startingConstruction(BuildingType.ACADEMY, 1, now);
+
+        assertThatThrownBy(() -> alreadyBusy.startingConstruction(BuildingType.TAVERN, 1, now))
+                .isInstanceOf(SlotNotFreeException.class)
+                .hasMessageContaining("UNDER_CONSTRUCTION");
+    }
+
+    @Test
+    void aFreeSlotAllowsEveryTypeOfItsKind() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty());
+
+        assertThat(slot.allowedTypes(1)).isEqualTo(BuildingType.forKind(SlotKind.LAND));
+    }
+
+    @Test
+    void aSlotThatIsNotFreeAllowsNothing() {
+        BuildingSlot locked = new BuildingSlot(5, SlotKind.LAND, 2, Optional.empty());
+        assertThat(locked.allowedTypes(1)).isEmpty();
+
+        Building academy = new Building(BuildingType.ACADEMY, 1);
+        BuildingSlot occupied = new BuildingSlot(5, SlotKind.LAND, 1, Optional.of(academy));
+        assertThat(occupied.allowedTypes(1)).isEmpty();
+
+        BuildingSlot underConstruction =
+                new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty()).startingConstruction(BuildingType.ACADEMY, 1, now);
+        assertThat(underConstruction.allowedTypes(1)).isEmpty();
+    }
+
+    @Test
+    void advancingASlotWithoutConstructionChangesNothing() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty());
+
+        BuildingSlot advanced = slot.advancedTo(now);
+
+        assertThat(advanced).isEqualTo(slot);
+    }
+
+    @Test
+    void advancingBeforeTheFinishKeepsTheConstruction() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty())
+                .startingConstruction(BuildingType.CARPENTER, 1, now);
+        Instant finishesAt = now.plus(BuildingType.CARPENTER.buildTime());
+
+        BuildingSlot stillBuilding = slot.advancedTo(finishesAt.minusSeconds(1));
+
+        assertThat(stillBuilding.state(1)).isEqualTo(SlotState.UNDER_CONSTRUCTION);
+        assertThat(stillBuilding.construction()).isPresent();
+    }
+
+    @Test
+    void advancingExactlyAtTheFinishPlacesTheLevelOneBuilding() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty())
+                .startingConstruction(BuildingType.CARPENTER, 1, now);
+        Instant finishesAt = now.plus(BuildingType.CARPENTER.buildTime());
+
+        BuildingSlot finished = slot.advancedTo(finishesAt);
+
+        assertThat(finished.state(1)).isEqualTo(SlotState.OCCUPIED);
+        assertThat(finished.building()).contains(new Building(BuildingType.CARPENTER, 1));
+        assertThat(finished.construction()).isEmpty();
     }
 }
