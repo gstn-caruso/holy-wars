@@ -45,9 +45,9 @@ class WorldController {
     String island(@PathVariable("id") long id, Model model) {
         World world = findWorldOrThrow();
         Island island = world.island(new IslandId(id));
-        Optional<Player> owner = playerRepository.find();
-        String ownerName = owner.map(Player::name).orElse(null);
-        String occupiedTownName = occupiedPlot(island).map(this::townNameOf).orElse(null);
+        Optional<IslandPlot> occupiedPlot = occupiedPlot(island);
+        String occupiedTownName = occupiedPlot.map(this::townNameOf).orElse(null);
+        String ownerName = occupiedPlot.map(plot -> ownerName()).orElse(null);
         model.addAttribute("island", IslandView.of(island, occupiedTownName, ownerName));
         return "island";
     }
@@ -59,6 +59,10 @@ class WorldController {
     private String townNameOf(IslandPlot plot) {
         long townId = plot.occupant().orElseThrow();
         return townRepository.find(new TownId(townId)).orElseThrow().name();
+    }
+
+    private String ownerName() {
+        return playerRepository.find().map(Player::name).orElse(null);
     }
 
     private World findWorldOrThrow() {
