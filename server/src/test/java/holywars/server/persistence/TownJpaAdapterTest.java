@@ -10,15 +10,20 @@ import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
+import jakarta.persistence.EntityManager;
 import java.time.Duration;
 import java.time.Instant;
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.TestPropertySource;
 
 @DataJpaTest
+@TestPropertySource(properties = "spring.jpa.properties.hibernate.generate_statistics=true")
 class TownJpaAdapterTest {
 
     private static final Instant FOUNDED_AT = Instant.parse("2026-01-01T00:00:00Z");
@@ -28,6 +33,9 @@ class TownJpaAdapterTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private EntityManager entityManager;
 
     private TownJpaAdapter townJpaAdapter;
 
@@ -111,6 +119,24 @@ class TownJpaAdapterTest {
 
         assertThat(townJpaAdapter.find(new TownId(6))).contains(underConstruction);
         assertThat(countBuildingSlotRowsFor(6L)).isEqualTo(14L);
+    }
+
+    @Test
+    void findsATownWithItsBuildingSlotsInASingleQuery() {
+        Town town = Town.founded(new TownId(7), new PlayerId(9), new IslandId(3), 1, "Cnosos",
+                LuxuryResource.WINE, FOUNDED_AT);
+        townJpaAdapter.save(town);
+        entityManager.flush();
+        entityManager.clear();
+        Statistics statistics = entityManager.getEntityManagerFactory().unwrap(SessionFactory.class).getStatistics();
+
+        statistics.clear();
+        assertThat(townJpaAdapter.find(new TownId(7))).contains(town);
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(1L);
+
+        statistics.clear();
+        assertThat(townJpaAdapter.findByOwner(new PlayerId(9))).contains(town);
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(1L);
     }
 
     private long countBuildingSlotRowsFor(long townId) {
