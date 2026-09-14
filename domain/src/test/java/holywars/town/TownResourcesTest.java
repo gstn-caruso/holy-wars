@@ -39,4 +39,16 @@ class TownResourcesTest {
         assertThat(advanced.wood()).isEqualTo(530);
         assertThat(advanced.luxuryAmount()).isEqualTo(110);
     }
+
+    @Test
+    void advancingTwoHalfHoursEqualsAdvancingOneHour() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        TownResources inTwoSteps = resources
+                .advancedTo(foundedAt.plus(Duration.ofMinutes(30)))
+                .advancedTo(foundedAt.plus(Duration.ofMinutes(60)));
+        TownResources inOneStep = resources.advancedTo(foundedAt.plus(Duration.ofHours(1)));
+
+        assertThat(inTwoSteps).isEqualTo(inOneStep);
+    }
 }
