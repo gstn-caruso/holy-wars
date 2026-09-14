@@ -45,6 +45,8 @@ class NewGameTest {
         Island capitalIsland = world.island(town.islandId());
         assertThat(capitalIsland.plots().get(0).isFree()).isFalse();
         assertThat(capitalIsland.plots().get(0).occupant()).hasValue(town.id().value());
+
+        assertThat(townRepository.findByOwner(player.id())).contains(town);
     }
 
     @Test
