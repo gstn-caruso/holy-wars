@@ -18,4 +18,15 @@ class PlotSceneViewTest {
         assertThat(view.spriteHref()).isEqualTo("/img/building-town-hall.svg");
         assertThat(view.label()).isEqualTo("Ayuntamiento nivel 1");
     }
+
+    @Test
+    void freeSlotShowsTheFreePlotSprite() {
+        BuildingSlot slot = new BuildingSlot(2, BuildingSlotKind.LAND, 1);
+        PlotAnchor anchor = new PlotAnchor(600, 180, 140);
+
+        PlotSceneView view = PlotSceneView.of(slot, 1, anchor);
+
+        assertThat(view.spriteHref()).isEqualTo("/img/plot-free.svg");
+        assertThat(view.label()).isEqualTo("Parcela libre");
+    }
 }
