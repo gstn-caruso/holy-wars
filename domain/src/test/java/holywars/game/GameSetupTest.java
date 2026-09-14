@@ -1,6 +1,7 @@
 package holywars.game;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import holywars.player.Player;
 import holywars.player.PlayerKind;
@@ -72,6 +73,15 @@ class GameSetupTest {
         NewGame second = GameSetup.start(world, new Random(42), settings);
 
         assertThat(first).isEqualTo(second);
+    }
+
+    @Test
+    void startRejectsWhenThereAreNotEnoughIslandsForAllPlayers() {
+        World world = worldWithIslands(3);
+        GameSetupSettings settings = new GameSetupSettings(5, 500);
+
+        assertThatThrownBy(() -> GameSetup.start(world, new Random(42), settings))
+                .isInstanceOf(NotEnoughIslandsForPlayersException.class);
     }
 
     private World worldWithIslands(int count) {
