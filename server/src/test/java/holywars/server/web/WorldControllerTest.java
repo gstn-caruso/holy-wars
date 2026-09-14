@@ -55,12 +55,13 @@ class WorldControllerTest {
     @Test
     void aSecondPostDoesNotDuplicateTheGame() throws Exception {
         mockMvc.perform(post("/world").param("seed", "42"));
+        List<Town> firstTowns = foundedTowns();
 
         mockMvc.perform(post("/world").param("seed", "99"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
 
-        assertThat(foundedTowns()).hasSize(4);
+        assertThat(foundedTowns()).isEqualTo(firstTowns);
     }
 
     private List<Town> foundedTowns() {
