@@ -198,6 +198,7 @@ header.marble nav {
     border-radius: 6px;
     display: flex;
     gap: 1.5em;
+    margin: 0 calc(var(--page-gutter) * -1);
     padding: 0.6em 1em;
 }
 
