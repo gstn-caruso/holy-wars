@@ -134,6 +134,12 @@ class ConstructionControllerTest {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    void buildingInAnUnknownTownIsNotFound() throws Exception {
+        mockMvc.perform(post("/towns/999/slots/2/build").param("type", "ACADEMY"))
+                .andExpect(status().isNotFound());
+    }
+
     private void foundEspartaAt(Instant foundedAt) {
         World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
         clock.set(foundedAt);

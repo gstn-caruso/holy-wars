@@ -7,10 +7,8 @@ import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
 import java.time.Clock;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ConstructionService {
@@ -28,9 +26,9 @@ public class ConstructionService {
     @Transactional
     public void startConstruction(TownId townId, int position, BuildingType type) {
         Town town = townRepository.find(townId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new UnknownTownException(townId));
         Player owner = playerRepository.find(town.ownerId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new UnknownTownException(townId));
         if (!owner.isHuman()) {
             throw new ForeignTownException(townId);
         }

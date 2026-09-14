@@ -1,16 +1,21 @@
 package holywars.server.web;
 
 import holywars.server.game.ConstructionService;
+import holywars.server.game.ForeignTownException;
+import holywars.server.game.UnknownTownException;
 import holywars.town.BuildingType;
 import holywars.town.InvalidBuildingSlotPositionException;
 import holywars.town.MismatchedBuildingTypeException;
 import holywars.town.NotEnoughResourcesException;
 import holywars.town.SlotNotFreeException;
 import holywars.town.TownId;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -40,5 +45,15 @@ class ConstructionController {
             redirectAttributes.addFlashAttribute("error", "La parcela no existe");
         }
         return "redirect:/towns/" + id;
+    }
+
+    @ExceptionHandler(ForeignTownException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    void handleForeignTown() {
+    }
+
+    @ExceptionHandler(UnknownTownException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    void handleUnknownTown() {
     }
 }
