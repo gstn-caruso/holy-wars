@@ -24,6 +24,9 @@ public final class IslandPlot {
     }
 
     public void occupy(long townId) {
+        if (!isFree()) {
+            throw new PlotAlreadyOccupiedException(number);
+        }
         occupantTownId = townId;
     }
 }
