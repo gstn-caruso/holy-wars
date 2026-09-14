@@ -145,6 +145,24 @@ class TownTest {
     }
 
     @Test
+    void startingConstructionOfTheWrongKindIsRejectedBeforeSpending() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, FOUNDED_AT).spend(480, 0);
+
+        assertThatThrownBy(() -> town.startingConstruction(2, BuildingType.WALL, FOUNDED_AT))
+                .isInstanceOf(MismatchedBuildingTypeException.class);
+    }
+
+    @Test
+    void startingConstructionOnALockedSlotIsRejectedBeforeSpending() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, FOUNDED_AT).spend(450, 0);
+
+        assertThatThrownBy(() -> town.startingConstruction(5, BuildingType.BARRACKS, FOUNDED_AT))
+                .isInstanceOf(SlotNotFreeException.class);
+    }
+
+    @Test
     void startingConstructionWithoutEnoughResourcesLeavesTheSlotFree() {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
                 LuxuryResource.WINE, FOUNDED_AT).spend(450, 0);
