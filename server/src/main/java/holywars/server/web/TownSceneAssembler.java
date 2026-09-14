@@ -36,13 +36,14 @@ class TownSceneAssembler {
         this.properties = properties;
     }
 
-    List<PlotSpriteView> assemble(Town town) {
+    TownSceneView assemble(Town town) {
         int townHallLevel = town.townHallLevel();
-        return town.slots().stream()
+        List<PlotSpriteView> sprites = town.slots().stream()
                 .map(slot -> new SlotWithAnchor(slot, properties.anchorFor(slot.position())))
                 .sorted(Comparator.comparingInt(slotWithAnchor -> slotWithAnchor.anchor().cy()))
                 .map(slotWithAnchor -> spriteFor(slotWithAnchor.slot(), slotWithAnchor.anchor(), townHallLevel))
                 .toList();
+        return new TownSceneView(properties.width(), properties.height(), sprites);
     }
 
     private PlotSpriteView spriteFor(BuildingSlot slot, PlotAnchor anchor, int townHallLevel) {

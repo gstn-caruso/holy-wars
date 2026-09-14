@@ -25,21 +25,18 @@ class TownController {
     private final WorldRepository worldRepository;
     private final Clock clock;
     private final TownSceneAssembler townSceneAssembler;
-    private final TownSceneProperties townSceneProperties;
 
     TownController(
             TownRepository townRepository,
             PlayerRepository playerRepository,
             WorldRepository worldRepository,
             Clock clock,
-            TownSceneAssembler townSceneAssembler,
-            TownSceneProperties townSceneProperties) {
+            TownSceneAssembler townSceneAssembler) {
         this.townRepository = townRepository;
         this.playerRepository = playerRepository;
         this.worldRepository = worldRepository;
         this.clock = clock;
         this.townSceneAssembler = townSceneAssembler;
-        this.townSceneProperties = townSceneProperties;
     }
 
     @GetMapping("/towns/{id}")
@@ -59,8 +56,6 @@ class TownController {
                 island.name(),
                 island.id().value(),
                 town.location().plotNumber(),
-                townSceneProperties.width(),
-                townSceneProperties.height(),
                 townSceneAssembler.assemble(town)));
         model.addAttribute("resourceBar", resourceBarAdvancedToNow(town, owner));
         return "town";

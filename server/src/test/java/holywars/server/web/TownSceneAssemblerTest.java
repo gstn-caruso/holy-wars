@@ -18,8 +18,11 @@ class TownSceneAssemblerTest {
         TownSceneAssembler assembler = new TownSceneAssembler(testProperties());
         Town town = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
 
-        List<PlotSpriteView> sprites = assembler.assemble(town);
+        TownSceneView scene = assembler.assemble(town);
 
+        assertThat(scene.width()).isEqualTo(1200);
+        assertThat(scene.height()).isEqualTo(720);
+        List<PlotSpriteView> sprites = scene.plots();
         assertThat(sprites).hasSize(14);
         assertThat(sprites)
                 .filteredOn(sprite -> sprite.sprite().equals("building-town-hall.svg"))
@@ -46,7 +49,7 @@ class TownSceneAssemblerTest {
         TownSceneAssembler assembler = new TownSceneAssembler(reversedCyProperties());
         Town town = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
 
-        List<PlotSpriteView> sprites = assembler.assemble(town);
+        List<PlotSpriteView> sprites = assembler.assemble(town).plots();
 
         assertThat(sprites)
                 .extracting(PlotSpriteView::x)
