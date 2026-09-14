@@ -44,4 +44,15 @@ class BuildMenuViewTest {
         assertThat(menu.statusText()).isEqualTo("Requiere ayuntamiento nivel 2");
         assertThat(menu.options()).isEmpty();
     }
+
+    @Test
+    void occupiedSlotShowsTheBuildingsSpanishNameAndLevel() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+
+        BuildMenuView menu = BuildMenuView.of(town, 1, NOW);
+
+        assertThat(menu.statusText()).isEqualTo("Ayuntamiento nivel 1");
+        assertThat(menu.options()).isEmpty();
+    }
 }
