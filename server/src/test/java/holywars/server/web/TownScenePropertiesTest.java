@@ -52,6 +52,16 @@ class TownScenePropertiesTest {
     }
 
     @Test
+    void extraPositionFailsWithIncompleteTownSceneLayout() {
+        Map<String, String> withExtra = new HashMap<>(STANDARD_LAYOUT);
+        withExtra.put("holywars.town-scene.plots.15", "0,0,10");
+
+        assertThatThrownBy(() -> bind(withExtra))
+                .isInstanceOf(BindException.class)
+                .hasRootCauseInstanceOf(IncompleteTownSceneLayoutException.class);
+    }
+
+    @Test
     void missingEveryPositionFailsWithIncompleteTownSceneLayout() {
         Map<String, String> noPlots = Map.of(
                 "holywars.town-scene.width", "1200",
