@@ -117,11 +117,17 @@ class TownEntity {
         slots.add(slot);
     }
 
-    void update(String name, int ownerId, int islandId, int plotNumber, List<BuildingSlotEntity> desiredSlots) {
+    void update(
+            String name, int ownerId, int islandId, int plotNumber, LuxuryResource luxuryResource, long woodTicks,
+            long luxuryTicks, Instant resourcesUpdatedAt, List<BuildingSlotEntity> desiredSlots) {
         this.name = name;
         this.ownerId = ownerId;
         this.islandId = islandId;
         this.plotNumber = plotNumber;
+        this.luxuryResource = luxuryResource;
+        this.woodTicks = woodTicks;
+        this.luxuryTicks = luxuryTicks;
+        this.resourcesUpdatedAt = resourcesUpdatedAt;
         desiredSlots.forEach(desired -> slotAt(desired.getPosition()).updateFrom(desired));
     }
 
