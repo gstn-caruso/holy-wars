@@ -53,23 +53,24 @@ class TownController {
         Island island = world.island(town.location().island())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        model.addAttribute("town", new TownView(
-                id,
-                town.name(),
-                owner.name(),
-                island.name(),
-                island.id().value(),
-                town.location().plotNumber(),
-                townSceneAssembler.assemble(town, clock.instant())));
-        model.addAttribute("resourceBar", resourceBarAdvancedToNow(town, owner));
-        model.addAttribute("buildOptions", buildMenuAssembler.assemble(town));
-        return "town";
-    }
-
-    private ResourceBarView resourceBarAdvancedToNow(Town town, Player owner) {
         Instant now = clock.instant();
         Town advancedTown = town.advancedTo(now);
         Player advancedOwner = owner.advancedTo(now);
+
+        model.addAttribute("town", new TownView(
+                id,
+                advancedTown.name(),
+                owner.name(),
+                island.name(),
+                island.id().value(),
+                advancedTown.location().plotNumber(),
+                townSceneAssembler.assemble(advancedTown, now)));
+        model.addAttribute("resourceBar", resourceBarOf(advancedTown, advancedOwner));
+        model.addAttribute("buildOptions", buildMenuAssembler.assemble(advancedTown));
+        return "town";
+    }
+
+    private static ResourceBarView resourceBarOf(Town advancedTown, Player advancedOwner) {
         LuxuryResourceView luxury = LuxuryResourceView.of(advancedTown.resources().luxury());
 
         return new ResourceBarView(

@@ -9,6 +9,7 @@ import holywars.player.PlayerId;
 import holywars.player.PlayerRepository;
 import holywars.server.MutableClock;
 import holywars.server.TestClockConfiguration;
+import holywars.town.BuildingType;
 import holywars.town.PlotLocation;
 import holywars.town.Town;
 import holywars.town.TownId;
@@ -159,6 +160,30 @@ class TownControllerTest {
         int levelFourLock = body.indexOf("Requiere ayuntamiento nivel 4");
         assertThat(firstLevelThreeLock).isLessThan(townHall);
         assertThat(townHall).isLessThan(levelFourLock);
+    }
+
+    @Test
+    void showsTheFinishedBuildingOnceTheClockPassesTheEnd() throws Exception {
+        Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
+        foundEspartaAt(foundedAt);
+        Town underConstruction = townRepository.find(new TownId(1)).orElseThrow()
+                .startingConstruction(2, BuildingType.ACADEMY, foundedAt);
+        townRepository.save(underConstruction);
+
+        clock.set(foundedAt.plus(BuildingType.ACADEMY.buildTime()).plusSeconds(1));
+
+        String body = mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertThat(body).contains("building-academy.svg");
+        assertThat(body).contains("Academia nivel 1");
+
+        Town persisted = townRepository.find(new TownId(1)).orElseThrow();
+        assertThat(persisted.slots().stream().filter(slot -> slot.position() == 2).findFirst().orElseThrow().construction())
+                .isPresent();
     }
 
     private static int occurrencesOf(String body, String needle) {
