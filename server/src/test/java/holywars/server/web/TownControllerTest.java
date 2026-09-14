@@ -86,6 +86,8 @@ class TownControllerTest {
                 .andExpect(content().string(containsString("Ayuntamiento nivel 1")))
                 .andExpect(content().string(containsString("Parcela libre")))
                 .andExpect(content().string(containsString("Requiere ayuntamiento nivel 2")))
+                .andExpect(content().string(containsString(
+                        "href=\"/img/building-town-hall.svg\" x=\"530\" y=\"274\" width=\"140\" height=\"113\"")))
                 .andReturn();
 
         String body = result.getResponse().getContentAsString();
