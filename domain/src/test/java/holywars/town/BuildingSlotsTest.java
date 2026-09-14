@@ -19,7 +19,7 @@ class BuildingSlotsTest {
         BuildingSlot townHallSlot = slots.get(0);
         assertThat(townHallSlot.position()).isEqualTo(1);
         assertThat(townHallSlot.isOccupied()).isTrue();
-        assertThat(townHallSlot.builtLevel()).hasValue(1);
+        assertThat(townHallSlot.building()).contains(new Building(BuildingType.TOWN_HALL, 1));
     }
 
     @Test

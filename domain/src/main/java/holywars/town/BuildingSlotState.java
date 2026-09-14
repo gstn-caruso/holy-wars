@@ -3,5 +3,6 @@ package holywars.town;
 public enum BuildingSlotState {
     LOCKED,
     FREE,
-    OCCUPIED
+    OCCUPIED,
+    UNDER_CONSTRUCTION
 }

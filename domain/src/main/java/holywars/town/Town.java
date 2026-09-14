@@ -6,6 +6,7 @@ import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumber, String name,
         List<BuildingSlot> buildingSlots, TownResources resources) {
@@ -38,11 +39,24 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
     }
 
     public Town advancedTo(Instant now) {
-        return new Town(id, ownerId, islandId, plotNumber, name, buildingSlots, resources.advancedTo(now));
+        List<BuildingSlot> advancedSlots = buildingSlots.stream().map(slot -> slot.advancedTo(now)).toList();
+        return new Town(id, ownerId, islandId, plotNumber, name, advancedSlots, resources.advancedTo(now));
     }
 
     public Town spend(int wood, int luxury) {
         return new Town(id, ownerId, islandId, plotNumber, name, buildingSlots, resources.spend(wood, luxury));
+    }
+
+    public Town startingConstruction(int position, BuildingType type, Instant now) {
+        Town advanced = advancedTo(now);
+        BuildingSlot slot = advanced.slot(position);
+        BuildingSlot underConstruction = slot.startingConstruction(type, advanced.townHallLevel(), now);
+        List<BuildingSlot> updatedSlots = advanced.buildingSlots.stream()
+                .map(existing -> existing.position() == position ? underConstruction : existing)
+                .toList();
+        TownResources spentResources = advanced.resources.spend(type.woodCost(), type.luxuryCost());
+        return new Town(advanced.id, advanced.ownerId, advanced.islandId, advanced.plotNumber, advanced.name,
+                updatedSlots, spentResources);
     }
 
     public int townHallLevel() {
@@ -50,8 +64,14 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
                 .filter(BuildingSlot::isOccupiedTownHall)
                 .findFirst()
                 .orElseThrow()
-                .builtLevel()
-                .orElseThrow();
+                .builtLevel();
+    }
+
+    public Optional<Instant> nextFinishAt() {
+        return buildingSlots.stream()
+                .map(BuildingSlot::finishesAt)
+                .flatMap(Optional::stream)
+                .min(Instant::compareTo);
     }
 
     public BuildingSlot slot(int position) {
