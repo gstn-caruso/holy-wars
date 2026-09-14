@@ -11,8 +11,10 @@ public final class WorldGenerator {
     }
 
     public static World generate(long seed, WorldGenerationSettings settings) {
-        Random random = new Random(seed);
+        return generate(new Random(seed), settings);
+    }
 
+    public static World generate(Random random, WorldGenerationSettings settings) {
         List<Coordinate> coordinates = settings.grid().allCoordinates();
         Collections.shuffle(coordinates, random);
         List<Coordinate> islandCoordinates = coordinates.subList(0, settings.islandCount());
