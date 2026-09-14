@@ -11,12 +11,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 
 @DataJpaTest
 class WorldJpaAdapterTest {
 
     @Autowired
     private IslandJpaRepository islandJpaRepository;
+
+    @Autowired
+    private TestEntityManager entityManager;
 
     private WorldJpaAdapter worldJpaAdapter;
 
@@ -42,5 +46,21 @@ class WorldJpaAdapterTest {
         World foundWorld = worldJpaAdapter.find().orElseThrow();
 
         assertThat(foundWorld).isEqualTo(generatedWorld);
+    }
+
+    @Test
+    void savingAnExistingWorldUpdatesInsteadOfDuplicating() {
+        World generatedWorld = new WorldGenerator().generate(new Random(1L));
+
+        worldJpaAdapter.save(generatedWorld);
+        entityManager.flush();
+        worldJpaAdapter.save(generatedWorld);
+        entityManager.flush();
+
+        assertThat(islandJpaRepository.count()).isEqualTo(20L);
+        long totalPlotCount = islandJpaRepository.findAllWithPlots().stream()
+                .mapToLong(islandEntity -> islandEntity.plots().size())
+                .sum();
+        assertThat(totalPlotCount).isEqualTo(320L);
     }
 }

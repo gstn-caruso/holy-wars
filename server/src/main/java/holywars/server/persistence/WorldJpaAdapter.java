@@ -1,9 +1,14 @@
 package holywars.server.persistence;
 
+import holywars.world.Island;
+import holywars.world.IslandPlot;
 import holywars.world.World;
 import holywars.world.WorldRepository;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -28,6 +33,34 @@ class WorldJpaAdapter implements WorldRepository {
 
     @Override
     public void save(World world) {
-        islandJpaRepository.saveAll(worldMapper.toEntities(world));
+        Map<Long, IslandEntity> existingIslandEntitiesById = islandJpaRepository.findAllWithPlots().stream()
+                .collect(Collectors.toMap(IslandEntity::id, Function.identity()));
+
+        List<IslandEntity> islandEntitiesToSave = world.islands().stream()
+                .map(island -> reconcile(island, existingIslandEntitiesById.get(island.id().value())))
+                .toList();
+
+        islandJpaRepository.saveAll(islandEntitiesToSave);
+    }
+
+    private IslandEntity reconcile(Island island, IslandEntity existingIslandEntity) {
+        if (existingIslandEntity == null) {
+            return worldMapper.toEntity(island);
+        }
+
+        Map<Integer, IslandPlotEntity> existingPlotEntitiesByNumber = existingIslandEntity.plots().stream()
+                .collect(Collectors.toMap(IslandPlotEntity::number, Function.identity()));
+
+        for (IslandPlot plot : island.plots()) {
+            Long occupantTownId = plot.occupant().isPresent() ? plot.occupant().getAsLong() : null;
+            IslandPlotEntity existingPlotEntity = existingPlotEntitiesByNumber.get(plot.number());
+            if (existingPlotEntity == null) {
+                existingIslandEntity.addPlot(new IslandPlotEntity(existingIslandEntity, plot.number(), occupantTownId));
+            } else {
+                existingPlotEntity.updateOccupant(occupantTownId);
+            }
+        }
+
+        return existingIslandEntity;
     }
 }

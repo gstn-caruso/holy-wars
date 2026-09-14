@@ -39,6 +39,10 @@ class IslandPlotEntity {
         return island;
     }
 
+    void updateOccupant(Long occupantTownId) {
+        this.occupantTownId = occupantTownId;
+    }
+
     int number() {
         return number;
     }

@@ -38,7 +38,7 @@ public final class WorldMapper {
         return world.islands().stream().map(this::toEntity).toList();
     }
 
-    private IslandEntity toEntity(Island island) {
+    IslandEntity toEntity(Island island) {
         IslandEntity islandEntity = new IslandEntity(
                 island.id().value(),
                 island.coordinate().x(),
