@@ -1,0 +1,47 @@
+package holywars.server.web;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
+import org.springframework.core.convert.support.DefaultConversionService;
+
+class TownScenePropertiesTest {
+
+    private static final Map<String, String> STANDARD_LAYOUT = Map.ofEntries(
+            Map.entry("holywars.town-scene.width", "1200"),
+            Map.entry("holywars.town-scene.height", "720"),
+            Map.entry("holywars.town-scene.plots.1", "600,330,140"),
+            Map.entry("holywars.town-scene.plots.2", "600,180,140"),
+            Map.entry("holywars.town-scene.plots.3", "520,520,140"),
+            Map.entry("holywars.town-scene.plots.4", "680,520,140"),
+            Map.entry("holywars.town-scene.plots.5", "400,250,140"),
+            Map.entry("holywars.town-scene.plots.6", "800,250,140"),
+            Map.entry("holywars.town-scene.plots.7", "380,420,140"),
+            Map.entry("holywars.town-scene.plots.8", "820,420,140"),
+            Map.entry("holywars.town-scene.plots.9", "715,118,140"),
+            Map.entry("holywars.town-scene.plots.10", "300,330,140"),
+            Map.entry("holywars.town-scene.plots.11", "900,330,140"),
+            Map.entry("holywars.town-scene.plots.12", "600,117,164"),
+            Map.entry("holywars.town-scene.plots.13", "250,560,140"),
+            Map.entry("holywars.town-scene.plots.14", "400,640,140"));
+
+    @Test
+    void bindsWidthHeightAndTheFourteenPlotAnchors() {
+        TownSceneProperties layout = bind(STANDARD_LAYOUT);
+
+        assertThat(layout.width()).isEqualTo(1200);
+        assertThat(layout.height()).isEqualTo(720);
+        assertThat(layout.anchorFor(12)).isEqualTo(new PlotAnchor(600, 117, 164));
+    }
+
+    private TownSceneProperties bind(Map<String, String> properties) {
+        DefaultConversionService conversionService = new DefaultConversionService();
+        conversionService.addConverter(new PlotAnchorConverter());
+        Binder binder = new Binder(List.of(new MapConfigurationPropertySource(properties)), null, conversionService);
+        return binder.bind("holywars.town-scene", TownSceneProperties.class).get();
+    }
+}
