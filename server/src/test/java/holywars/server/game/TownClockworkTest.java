@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -98,6 +99,26 @@ class TownClockworkTest {
 
         assertThat(clockwork.subscriberCount(closedTown)).isZero();
         assertThat(receivedByOpenTown).containsExactly("resources", "resources");
+    }
+
+    @Test
+    void aSinkThatFailsToSendIsDiscardedWithoutAffectingOthersForTheSameTown() {
+        FakeScheduledExecutorService scheduler = new FakeScheduledExecutorService();
+        TownClockwork clockwork = new TownClockwork(scheduler, CLOCK);
+        TownId townId = new TownId(1);
+        List<String> receivedByHealthySink = new ArrayList<>();
+        AtomicInteger failingSinkAttempts = new AtomicInteger();
+        clockwork.subscribeSink(townId, eventName -> {
+            failingSinkAttempts.incrementAndGet();
+            throw new IOException("broken pipe");
+        });
+        clockwork.subscribeSink(townId, receivedByHealthySink::add);
+
+        scheduler.runPeriodicTick();
+
+        assertThat(receivedByHealthySink).containsExactly("resources");
+        assertThat(failingSinkAttempts).hasValue(1);
+        assertThat(clockwork.subscriberCount(townId)).isEqualTo(1);
     }
 
     private static Town aTownWithAWarehouseFinishingIn(TownId townId, Duration remaining) {
