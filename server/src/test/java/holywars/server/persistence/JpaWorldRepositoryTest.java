@@ -28,4 +28,13 @@ class JpaWorldRepositoryTest {
 
         assertThat(worldRepository.find()).contains(world);
     }
+
+    @Test
+    void findIsEmptyUntilAWorldIsSaved() {
+        assertThat(worldRepository.find()).isEmpty();
+
+        worldRepository.save(WorldGenerator.generate(1L, WorldGenerationSettings.standard()));
+
+        assertThat(worldRepository.find()).isPresent();
+    }
 }
