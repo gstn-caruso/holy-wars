@@ -121,6 +121,23 @@ class TownClockworkTest {
         assertThat(clockwork.subscriberCount(townId)).isEqualTo(1);
     }
 
+    @Test
+    void aSinkThatThrowsAtRuntimeIsDiscardedAndTheTickKeepsRunning() {
+        FakeScheduledExecutorService scheduler = new FakeScheduledExecutorService();
+        TownClockwork clockwork = new TownClockwork(scheduler, CLOCK);
+        TownId townId = new TownId(1);
+        List<String> receivedByHealthySink = new ArrayList<>();
+        clockwork.subscribeSink(townId, eventName -> {
+            throw new IllegalStateException("completed");
+        });
+        clockwork.subscribeSink(townId, receivedByHealthySink::add);
+
+        scheduler.runPeriodicTick();
+        scheduler.runPeriodicTick();
+
+        assertThat(receivedByHealthySink).containsExactly("resources", "resources");
+    }
+
     private static Town aTownWithAWarehouseFinishingIn(TownId townId, Duration remaining) {
         Town founded = Town.founded(townId, new PlayerId(1), new IslandId(1), 1, "Atenas", LuxuryResource.WINE,
                 FOUNDED_AT);

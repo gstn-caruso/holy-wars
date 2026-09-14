@@ -87,7 +87,7 @@ public class TownClockwork {
         for (TownEventSink sink : sinks) {
             try {
                 sink.send(eventName);
-            } catch (IOException exception) {
+            } catch (IOException | RuntimeException exception) {
                 sinks.remove(sink);
             }
         }
