@@ -1,6 +1,7 @@
 package holywars.town;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 public record BuildingSlot(
@@ -41,6 +42,10 @@ public record BuildingSlot(
             return SlotState.LOCKED;
         }
         return SlotState.FREE;
+    }
+
+    public List<BuildingType> allowedTypes(int townHallLevel) {
+        return state(townHallLevel) == SlotState.FREE ? BuildingType.forKind(kind) : List.of();
     }
 
     public BuildingSlot startingConstruction(BuildingType type, int townHallLevel, Instant now) {

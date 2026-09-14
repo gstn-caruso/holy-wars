@@ -123,6 +123,27 @@ class BuildingSlotTest {
     }
 
     @Test
+    void aFreeSlotAllowsEveryTypeOfItsKind() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty());
+
+        assertThat(slot.allowedTypes(1)).isEqualTo(BuildingType.forKind(SlotKind.LAND));
+    }
+
+    @Test
+    void aSlotThatIsNotFreeAllowsNothing() {
+        BuildingSlot locked = new BuildingSlot(5, SlotKind.LAND, 2, Optional.empty());
+        assertThat(locked.allowedTypes(1)).isEmpty();
+
+        Building academy = new Building(BuildingType.ACADEMY, 1);
+        BuildingSlot occupied = new BuildingSlot(5, SlotKind.LAND, 1, Optional.of(academy));
+        assertThat(occupied.allowedTypes(1)).isEmpty();
+
+        BuildingSlot underConstruction =
+                new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty()).startingConstruction(BuildingType.ACADEMY, 1, now);
+        assertThat(underConstruction.allowedTypes(1)).isEmpty();
+    }
+
+    @Test
     void advancingASlotWithoutConstructionChangesNothing() {
         BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty());
 
