@@ -40,6 +40,24 @@ class WorldMapperTest {
                 .containsExactlyElementsOf(IntStream.rangeClosed(1, 16).boxed().toList());
     }
 
+    @Test
+    void mapsSeveralIslandEntitiesPreservingEachOnesIdentity() {
+        IslandEntity naxos = anIslandEntityWithFreePlots(1, 0, 0, "Naxos", "WINE");
+        IslandEntity ikaria = anIslandEntityWithFreePlots(2, 1, 1, "Ikaria", "MARBLE");
+
+        World world = worldMapper.toDomain(List.of(naxos, ikaria));
+
+        assertThat(world.islands()).hasSize(2);
+        Island mappedNaxos = world.island(new IslandId(1));
+        Island mappedIkaria = world.island(new IslandId(2));
+        assertThat(mappedNaxos.name()).isEqualTo("Naxos");
+        assertThat(mappedIkaria.name()).isEqualTo("Ikaria");
+        assertThat(mappedNaxos.plots()).hasSize(16);
+        assertThat(mappedIkaria.plots()).hasSize(16);
+        assertThat(mappedNaxos.plots()).allMatch(IslandPlot::isFree);
+        assertThat(mappedIkaria.plots()).allMatch(IslandPlot::isFree);
+    }
+
     private IslandEntity anIslandEntityWithFreePlots(long id, int x, int y, String name, String luxuryResource) {
         IslandEntity islandEntity = new IslandEntity(id, x, y, name, luxuryResource);
         for (int number = 1; number <= 16; number++) {
