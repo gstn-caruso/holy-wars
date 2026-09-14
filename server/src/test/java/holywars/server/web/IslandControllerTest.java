@@ -50,7 +50,7 @@ class IslandControllerTest {
         worldRepository.save(world);
         Island island = world.islands().get(0);
         playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500));
-        townRepository.save(new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(island.id(), 1)));
+        townRepository.save(Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(island.id(), 1)));
 
         MvcResult result = mockMvc.perform(get("/islands/" + island.id().value()))
                 .andExpect(status().isOk())

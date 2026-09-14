@@ -1,6 +1,7 @@
 package holywars.server.persistence;
 
 import holywars.player.PlayerId;
+import holywars.town.BuildingSlots;
 import holywars.town.PlotLocation;
 import holywars.town.Town;
 import holywars.town.TownId;
@@ -22,6 +23,11 @@ final class TownEntityMapper {
 
     static Town toDomain(TownEntity entity) {
         PlotLocation location = new PlotLocation(new IslandId(entity.getIslandId()), entity.getPlotNumber());
-        return new Town(new TownId(entity.getId()), entity.getName(), new PlayerId(entity.getOwnerId()), location);
+        return new Town(
+                new TownId(entity.getId()),
+                entity.getName(),
+                new PlayerId(entity.getOwnerId()),
+                location,
+                BuildingSlots.standard(1));
     }
 }

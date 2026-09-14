@@ -28,7 +28,7 @@ class JpaTownRepositoryTest {
 
     @Test
     void savedTownIsFoundBackEqualToTheOriginal() {
-        Town town = new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
+        Town town = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
 
         townRepository.save(town);
         entityManager.flush();
@@ -44,9 +44,9 @@ class JpaTownRepositoryTest {
 
     @Test
     void findByIslandReturnsTheTownsFoundedOnThatIsland() {
-        Town onIslandOne = new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
-        Town alsoOnIslandOne = new Town(new TownId(2), "Atenas", new PlayerId(2), new PlotLocation(new IslandId(1), 5));
-        Town onIslandTwo = new Town(new TownId(3), "Tebas", new PlayerId(3), new PlotLocation(new IslandId(2), 1));
+        Town onIslandOne = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
+        Town alsoOnIslandOne = Town.founded(new TownId(2), "Atenas", new PlayerId(2), new PlotLocation(new IslandId(1), 5));
+        Town onIslandTwo = Town.founded(new TownId(3), "Tebas", new PlayerId(3), new PlotLocation(new IslandId(2), 1));
         townRepository.save(onIslandOne);
         townRepository.save(alsoOnIslandOne);
         townRepository.save(onIslandTwo);
@@ -63,9 +63,9 @@ class JpaTownRepositoryTest {
 
     @Test
     void findByOwnerReturnsTheTownsFoundedByThatPlayer() {
-        Town first = new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
-        Town second = new Town(new TownId(2), "Corinto", new PlayerId(1), new PlotLocation(new IslandId(2), 4));
-        Town other = new Town(new TownId(3), "Tebas", new PlayerId(2), new PlotLocation(new IslandId(3), 1));
+        Town first = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
+        Town second = Town.founded(new TownId(2), "Corinto", new PlayerId(1), new PlotLocation(new IslandId(2), 4));
+        Town other = Town.founded(new TownId(3), "Tebas", new PlayerId(2), new PlotLocation(new IslandId(3), 1));
         townRepository.save(first);
         townRepository.save(second);
         townRepository.save(other);
@@ -82,8 +82,8 @@ class JpaTownRepositoryTest {
 
     @Test
     void findByOwnerReturnsTownsOrderedById() {
-        Town higherId = new Town(new TownId(2), "Corinto", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
-        Town lowerId = new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(2), 4));
+        Town higherId = Town.founded(new TownId(2), "Corinto", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
+        Town lowerId = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(2), 4));
         townRepository.save(higherId);
         townRepository.save(lowerId);
         entityManager.flush();

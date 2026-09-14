@@ -45,7 +45,7 @@ class IslandOccupancyTest {
     @Test
     void mapsAFoundedTownToItsPlotWithTheOwnerName() {
         playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500));
-        townRepository.save(new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3)));
+        townRepository.save(Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3)));
         entityManager.flush();
         entityManager.clear();
 
@@ -62,8 +62,8 @@ class IslandOccupancyTest {
     void mapsSeveralFoundedTownsOnTheSameIslandToTheirOwners() {
         playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500));
         playerRepository.save(Player.ai(new PlayerId(2), "Rival", 500));
-        townRepository.save(new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3)));
-        townRepository.save(new Town(new TownId(2), "Corinto", new PlayerId(2), new PlotLocation(new IslandId(1), 7)));
+        townRepository.save(Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3)));
+        townRepository.save(Town.founded(new TownId(2), "Corinto", new PlayerId(2), new PlotLocation(new IslandId(1), 7)));
         entityManager.flush();
         entityManager.clear();
 
@@ -76,7 +76,7 @@ class IslandOccupancyTest {
 
     @Test
     void throwsWhenATownsOwnerCannotBeFound() {
-        townRepository.save(new Town(new TownId(1), "Esparta", new PlayerId(99), new PlotLocation(new IslandId(1), 3)));
+        townRepository.save(Town.founded(new TownId(1), "Esparta", new PlayerId(99), new PlotLocation(new IslandId(1), 3)));
         entityManager.flush();
         entityManager.clear();
 

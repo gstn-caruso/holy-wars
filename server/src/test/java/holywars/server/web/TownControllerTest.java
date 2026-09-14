@@ -47,7 +47,7 @@ class TownControllerTest {
         World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
         worldRepository.save(world);
         playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500));
-        Town town = new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(world.islands().get(0).id(), 1));
+        Town town = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(world.islands().get(0).id(), 1));
         townRepository.save(town);
 
         MvcResult result = mockMvc.perform(get("/towns/1"))
