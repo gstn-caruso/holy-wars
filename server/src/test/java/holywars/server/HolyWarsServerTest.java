@@ -6,6 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,6 +21,23 @@ class HolyWarsServerTest {
     void startsTheContextOnAnInMemoryH2Database() throws Exception {
         try (Connection connection = dataSource.getConnection()) {
             assertThat(connection.getMetaData().getURL()).startsWith("jdbc:h2:mem:");
+        }
+    }
+
+    @Test
+    void migratesTheSchemaWithFlywayOnBoot() throws Exception {
+        try (Connection connection = dataSource.getConnection();
+                Statement appliedStatement = connection.createStatement();
+                Statement failedStatement = connection.createStatement();
+                ResultSet appliedMigrations = appliedStatement.executeQuery(
+                        "select count(*) from \"flyway_schema_history\" "
+                                + "where \"version\" is not null and \"success\" = true");
+                ResultSet failedMigrations = failedStatement.executeQuery(
+                        "select count(*) from \"flyway_schema_history\" where \"success\" = false")) {
+            appliedMigrations.next();
+            failedMigrations.next();
+            assertThat(appliedMigrations.getInt(1)).isPositive();
+            assertThat(failedMigrations.getInt(1)).isZero();
         }
     }
 }
