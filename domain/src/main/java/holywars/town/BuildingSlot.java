@@ -21,6 +21,9 @@ public record BuildingSlot(int position, BuildingSlotKind kind, int requiredTown
         if (construction.isPresent() && construction.get().type().kind() != kind) {
             throw new MismatchedBuildingTypeException(kind, construction.get().type());
         }
+        if (building.isPresent() && construction.isPresent()) {
+            throw new ConflictingSlotContentsException(position);
+        }
     }
 
     public BuildingSlot(int position, BuildingSlotKind kind, int requiredTownHallLevel) {

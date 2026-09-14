@@ -74,6 +74,16 @@ class BuildingSlotTest {
     }
 
     @Test
+    void aBuildingAndAConstructionAtTheSameTimeAreRejected() {
+        Construction construction = Construction.startingAt(BuildingType.WAREHOUSE, Instant.parse("2026-01-01T00:00:00Z"));
+        Building building = new Building(BuildingType.WAREHOUSE, 1);
+
+        assertThatThrownBy(() -> new BuildingSlot(5, BuildingSlotKind.LAND, 2, Optional.of(building),
+                Optional.of(construction)))
+                .isInstanceOf(ConflictingSlotContentsException.class);
+    }
+
+    @Test
     void anOccupiedTownHallSlotIsReportedAsAnOccupiedTownHall() {
         BuildingSlot slot = new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1, new Building(BuildingType.TOWN_HALL, 1));
 
