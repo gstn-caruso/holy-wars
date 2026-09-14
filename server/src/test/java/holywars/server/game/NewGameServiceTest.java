@@ -9,6 +9,7 @@ import holywars.town.TownRepository;
 import holywars.world.Island;
 import holywars.world.World;
 import holywars.world.WorldRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +32,14 @@ class NewGameServiceTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    void emptyTheSharedDatabase() {
+        jdbcTemplate.update("delete from town");
+        jdbcTemplate.update("delete from player");
+        jdbcTemplate.update("delete from island_plot");
+        jdbcTemplate.update("delete from island");
+    }
 
     @Test
     void startingTheGameTwiceLeavesOneWorldOnePlayerAndOneTown() {
