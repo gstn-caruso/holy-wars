@@ -1,5 +1,6 @@
 package holywars.world;
 
+import java.util.Objects;
 import java.util.OptionalLong;
 
 public final class IslandPlot {
@@ -28,5 +29,21 @@ public final class IslandPlot {
             throw new PlotAlreadyOccupiedException(number);
         }
         occupantTownId = townId;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof IslandPlot that)) {
+            return false;
+        }
+        return number == that.number && Objects.equals(occupantTownId, that.occupantTownId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(number, occupantTownId);
     }
 }

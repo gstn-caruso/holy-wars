@@ -1,6 +1,7 @@
 package holywars.world;
 
 import java.util.List;
+import java.util.Objects;
 
 public final class Island {
 
@@ -46,5 +47,22 @@ public final class Island {
 
     public IslandPlot firstFreePlot() {
         return plots.stream().filter(IslandPlot::isFree).findFirst().orElseThrow();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof Island that)) {
+            return false;
+        }
+        return id.equals(that.id) && coordinate.equals(that.coordinate) && name.equals(that.name)
+                && luxuryResource == that.luxuryResource && plots.equals(that.plots);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, coordinate, name, luxuryResource, plots);
     }
 }

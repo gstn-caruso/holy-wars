@@ -35,4 +35,14 @@ class WorldGeneratorTest {
             assertThat(island.luxuryResource()).isNotNull();
         });
     }
+
+    @Test
+    void generatingTwiceWithTheSameSeedProducesIdenticalWorlds() {
+        WorldGenerator generator = new WorldGenerator();
+
+        World first = generator.generate(new Random(7L));
+        World second = generator.generate(new Random(7L));
+
+        assertThat(first).isEqualTo(second);
+    }
 }

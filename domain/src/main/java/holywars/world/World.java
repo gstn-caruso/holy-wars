@@ -1,6 +1,7 @@
 package holywars.world;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public final class World {
@@ -24,5 +25,21 @@ public final class World {
 
     public Island randomIsland(Random random) {
         return islands.get(random.nextInt(islands.size()));
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof World that)) {
+            return false;
+        }
+        return islands.equals(that.islands);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(islands);
     }
 }
