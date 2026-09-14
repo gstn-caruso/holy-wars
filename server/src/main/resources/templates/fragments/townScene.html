@@ -4,7 +4,9 @@
 <svg th:fragment="townScene(scene, oob)" xmlns="http://www.w3.org/2000/svg" class="town-scene" id="town-scene"
      preserveAspectRatio="xMidYMid slice"
      th:attr="viewBox='0 0 ' + ${scene.width} + ' ' + ${scene.height},
-               hx-swap-oob=${oob != null and oob} ? 'true' : null">
+               hx-swap-oob=${oob != null and oob} ? 'true' : null,
+               hx-get='/towns/' + ${scene.townId} + '/scene',hx-trigger='town from:body',
+               hx-swap='outerHTML'">
     <image th:attr="href='/img/town-scene.svg',x=0,y=0,width=${scene.width},height=${scene.height}"/>
     <image th:each="plot : ${scene.plots}" class="scene-plot"
            th:attr="href=${plot.spriteHref},x=${plot.x},y=${plot.y},width=${plot.width},height=${plot.height},

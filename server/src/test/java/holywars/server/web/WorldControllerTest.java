@@ -166,7 +166,7 @@ class WorldControllerTest {
     }
 
     private static CapitalHeaderView aCapitalHeader() {
-        ResourceBarView resourceBar = new ResourceBarView(500, 100, "Vino", "/img/resource-wine.svg", 500);
+        ResourceBarView resourceBar = new ResourceBarView(9L, 500, 100, "Vino", "/img/resource-wine.svg", 500);
         return new CapitalHeaderView("Atenas", "[2:2]", resourceBar, 3L, 9L);
     }
 }

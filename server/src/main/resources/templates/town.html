@@ -4,7 +4,7 @@
 <body>
 <div class="shell">
     <header th:replace="~{fragments/layout :: topBar()}"></header>
-    <div class="shell-stage">
+    <div class="shell-stage" th:attr="data-town-events='/towns/' + ${town.id} + '/events'">
         <svg th:replace="~{fragments/townScene :: townScene(scene=${scene}, oob=false)}"></svg>
         <div th:replace="~{fragments/layout :: capitalHeader(header=${header})}"></div>
         <nav th:replace="~{fragments/layout :: breadcrumb(breadcrumb=${breadcrumb})}"></nav>
