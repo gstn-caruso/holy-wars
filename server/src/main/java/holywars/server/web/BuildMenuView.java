@@ -39,13 +39,6 @@ record BuildMenuView(long townId, int position, String title, List<BuildOptionVi
     }
 
     private static String statusTextFor(BuildingSlot slot, BuildingSlotState state, Instant now) {
-        return switch (state) {
-            case FREE -> null;
-            case LOCKED -> "Requiere ayuntamiento nivel " + slot.requiredTownHallLevel();
-            case OCCUPIED -> slot.building().orElseThrow().type().spanishName() + " nivel " + slot.builtLevel();
-            case UNDER_CONSTRUCTION -> "En obra: " + slot.construction().orElseThrow().type().spanishName()
-                    + " · faltan " + RemainingMinutes.roundedUp(slot.construction().orElseThrow().remaining(now))
-                    + " min";
-        };
+        return state == BuildingSlotState.FREE ? null : SlotLabel.of(slot, state, now);
     }
 }
