@@ -22,6 +22,15 @@ class IslandTest {
     }
 
     @Test
+    void anIslandListsItsOccupiedPlotsInPlotOrder() {
+        Island island = Island.withFreePlots(new IslandId(1), new Coordinate(3, 4), "Naxos", LuxuryResource.WINE);
+        island.plots().get(5).occupy(10L);
+        island.plots().get(2).occupy(20L);
+
+        assertThat(island.occupiedPlots()).extracting(IslandPlot::number).containsExactly(3, 6);
+    }
+
+    @Test
     void anIslandCannotBeCreatedWithoutExactlySixteenPlots() {
         List<IslandPlot> fifteenPlots = new ArrayList<>();
         for (int number = 1; number <= 15; number++) {
