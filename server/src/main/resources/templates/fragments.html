@@ -10,11 +10,14 @@
     <title th:text="${title}">Holy Wars</title>
     <link rel="stylesheet" th:href="@{/css/holy-wars.css}">
 </th:block>
-<nav th:fragment="nav">
-    <a th:href="@{/}">Inicio</a>
-    <a th:href="@{/map}">Mapa</a>
-    <a th:href="@{/}">Mi aldea</a>
-</nav>
+<header class="marble" th:fragment="nav">
+    <span class="brand">Holy Wars</span>
+    <nav>
+        <a class="nav-button" th:href="@{/}">Inicio</a>
+        <a class="nav-button" th:href="@{/map}">Mapa</a>
+        <a class="nav-button" th:href="@{/}">Mi aldea</a>
+    </nav>
+</header>
 <div th:fragment="resourceBar(bar)" class="resource-bar">
     <span class="resource">
         <img th:src="@{/img/resource-wood.svg}" alt="Madera">

@@ -39,10 +39,28 @@ class LayoutTest {
                 .andReturn().getResponse().getContentAsString());
     }
 
+    @Test
+    void everyPageHasTheMarbleHeaderWithTheNavigation() throws Exception {
+        assertHasMarbleHeader(mockMvc.perform(get("/")).andReturn().getResponse().getContentAsString());
+
+        World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
+        worldRepository.save(world);
+
+        assertHasMarbleHeader(mockMvc.perform(get("/map")).andReturn().getResponse().getContentAsString());
+        assertHasMarbleHeader(mockMvc.perform(get("/islands/" + world.islands().get(0).id().value()))
+                .andReturn().getResponse().getContentAsString());
+    }
+
     private void assertHasLayout(String body) {
         assertThat(body).contains("/css/holy-wars.css");
         assertThat(body).contains("Inicio");
         assertThat(body).contains("Mapa");
         assertThat(body).contains("Mi aldea");
+    }
+
+    private void assertHasMarbleHeader(String body) {
+        assertThat(body).contains("<header class=\"marble\"");
+        assertThat(body).contains("href=\"/\"");
+        assertThat(body).contains("href=\"/map\"");
     }
 }
