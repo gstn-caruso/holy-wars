@@ -99,3 +99,9 @@ td.sea {
 td.island {
     background: linear-gradient(#d7e6c8, #c1d6ac);
 }
+
+.island-link {
+    color: #7a4a1f;
+    text-decoration: none;
+    font-weight: bold;
+}
