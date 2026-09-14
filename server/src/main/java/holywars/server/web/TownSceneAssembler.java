@@ -1,0 +1,79 @@
+package holywars.server.web;
+
+import holywars.town.Building;
+import holywars.town.BuildingSlot;
+import holywars.town.BuildingType;
+import holywars.town.SlotKind;
+import holywars.town.Town;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import org.springframework.stereotype.Component;
+
+@Component
+class TownSceneAssembler {
+
+    private static final Map<BuildingType, String> BUILDING_NAMES = Map.ofEntries(
+            Map.entry(BuildingType.TOWN_HALL, "Ayuntamiento"),
+            Map.entry(BuildingType.WALL, "Muralla"),
+            Map.entry(BuildingType.TRADING_PORT, "Puerto comercial"),
+            Map.entry(BuildingType.SHIPYARD, "Astillero"),
+            Map.entry(BuildingType.ACADEMY, "Academia"),
+            Map.entry(BuildingType.WAREHOUSE, "Almacén"),
+            Map.entry(BuildingType.TAVERN, "Taberna"),
+            Map.entry(BuildingType.BARRACKS, "Cuartel"),
+            Map.entry(BuildingType.TEMPLE, "Templo"),
+            Map.entry(BuildingType.MARKET, "Mercado"),
+            Map.entry(BuildingType.CARPENTER, "Carpintería"),
+            Map.entry(BuildingType.WINERY, "Viñedo"),
+            Map.entry(BuildingType.STONEMASON, "Cantería"),
+            Map.entry(BuildingType.GLASSBLOWER, "Vidriería"),
+            Map.entry(BuildingType.ALCHEMIST, "Alquimista"));
+
+    private final TownSceneProperties properties;
+
+    TownSceneAssembler(TownSceneProperties properties) {
+        this.properties = properties;
+    }
+
+    List<PlotSpriteView> assemble(Town town) {
+        int townHallLevel = town.townHallLevel();
+        return town.slots().stream()
+                .map(slot -> new SlotWithAnchor(slot, properties.anchorFor(slot.position())))
+                .sorted(Comparator.comparingInt(slotWithAnchor -> slotWithAnchor.anchor().cy()))
+                .map(slotWithAnchor -> spriteFor(slotWithAnchor.slot(), slotWithAnchor.anchor(), townHallLevel))
+                .toList();
+    }
+
+    private PlotSpriteView spriteFor(BuildingSlot slot, PlotAnchor anchor, int townHallLevel) {
+        int x = anchor.cx() - anchor.width() / 2;
+        int height = heightFor(slot.kind(), anchor.width());
+        int y = anchor.cy() - height;
+        return switch (slot.state(townHallLevel)) {
+            case OCCUPIED -> {
+                Building building = slot.building().orElseThrow();
+                yield new PlotSpriteView(spriteFileFor(building.type()), labelFor(building), x, y, anchor.width(), height);
+            }
+            case FREE -> new PlotSpriteView("plot-free.svg", "Parcela libre", x, y, anchor.width(), height);
+            case LOCKED -> new PlotSpriteView(
+                    "plot-locked.svg",
+                    "Requiere ayuntamiento nivel " + slot.requiredTownHallLevel(),
+                    x, y, anchor.width(), height);
+        };
+    }
+
+    private static int heightFor(SlotKind kind, int width) {
+        return kind == SlotKind.WALL ? width * 111 / 201 : width * 140 / 172;
+    }
+
+    private static String spriteFileFor(BuildingType type) {
+        return "building-" + type.name().toLowerCase().replace('_', '-') + ".svg";
+    }
+
+    private static String labelFor(Building building) {
+        return BUILDING_NAMES.get(building.type()) + " nivel " + building.level();
+    }
+
+    private record SlotWithAnchor(BuildingSlot slot, PlotAnchor anchor) {
+    }
+}
