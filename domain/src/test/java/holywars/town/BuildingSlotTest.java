@@ -111,4 +111,13 @@ class BuildingSlotTest {
                 .isInstanceOf(SlotNotFreeException.class)
                 .hasMessageContaining("UNDER_CONSTRUCTION");
     }
+
+    @Test
+    void advancingASlotWithoutConstructionChangesNothing() {
+        BuildingSlot slot = new BuildingSlot(5, SlotKind.LAND, 1, Optional.empty());
+
+        BuildingSlot advanced = slot.advancedTo(now);
+
+        assertThat(advanced).isEqualTo(slot);
+    }
 }

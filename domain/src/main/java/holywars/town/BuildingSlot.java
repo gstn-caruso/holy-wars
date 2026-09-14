@@ -49,4 +49,8 @@ public record BuildingSlot(
         }
         return new BuildingSlot(position, kind, requiredTownHallLevel, building, Optional.of(Construction.of(type, now)));
     }
+
+    public BuildingSlot advancedTo(Instant now) {
+        return this;
+    }
 }
