@@ -1,0 +1,21 @@
+package holywars.town;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import holywars.world.LuxuryResource;
+import java.time.Instant;
+import org.junit.jupiter.api.Test;
+
+class TownResourcesTest {
+
+    private final Instant foundedAt = Instant.parse("2024-01-01T00:00:00Z");
+
+    @Test
+    void aNewTownStartsWithFiveHundredWoodAndOneHundredOfItsLuxury() {
+        TownResources resources = TownResources.initial(LuxuryResource.WINE, foundedAt);
+
+        assertThat(resources.wood()).isEqualTo(500);
+        assertThat(resources.luxuryAmount()).isEqualTo(100);
+        assertThat(resources.luxury()).isEqualTo(LuxuryResource.WINE);
+    }
+}
