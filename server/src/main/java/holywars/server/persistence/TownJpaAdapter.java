@@ -6,9 +6,9 @@ import holywars.town.TownId;
 import holywars.town.TownRepository;
 import holywars.world.IslandId;
 import java.util.Optional;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-@Component
+@Repository
 class TownJpaAdapter implements TownRepository {
 
     private final TownJpaRepository townJpaRepository;

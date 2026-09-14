@@ -4,9 +4,9 @@ import holywars.player.Player;
 import holywars.player.PlayerId;
 import holywars.player.PlayerRepository;
 import java.util.Optional;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-@Component
+@Repository
 class PlayerJpaAdapter implements PlayerRepository {
 
     private final PlayerJpaRepository playerJpaRepository;
