@@ -12,6 +12,22 @@ nav a {
     margin-right: 1em;
 }
 
+.resource-bar {
+    display: flex;
+    gap: 1.5em;
+}
+
+.resource-bar .resource {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+}
+
+.resource-bar img {
+    width: 24px;
+    height: 24px;
+}
+
 table {
     border-collapse: collapse;
 }

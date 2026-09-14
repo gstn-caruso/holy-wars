@@ -9,10 +9,13 @@ final class PlayerEntityMapper {
     }
 
     static PlayerEntity toEntity(Player player) {
-        return new PlayerEntity(player.id().value(), player.name(), player.kind(), player.gold());
+        return new PlayerEntity(
+                player.id().value(), player.name(), player.kind(), player.goldTicks(), player.lastUpdate());
     }
 
     static Player toDomain(PlayerEntity entity) {
-        return new Player(new PlayerId(entity.getId()), entity.getName(), entity.getKind(), entity.getGold());
+        return new Player(
+                new PlayerId(entity.getId()), entity.getName(), entity.getKind(), entity.getGoldTicks(),
+                entity.getGoldUpdatedAt());
     }
 }

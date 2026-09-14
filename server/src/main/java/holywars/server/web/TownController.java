@@ -8,6 +8,8 @@ import holywars.town.TownRepository;
 import holywars.world.Island;
 import holywars.world.World;
 import holywars.world.WorldRepository;
+import java.time.Clock;
+import java.time.Instant;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,11 +23,15 @@ class TownController {
     private final TownRepository townRepository;
     private final PlayerRepository playerRepository;
     private final WorldRepository worldRepository;
+    private final Clock clock;
 
-    TownController(TownRepository townRepository, PlayerRepository playerRepository, WorldRepository worldRepository) {
+    TownController(
+            TownRepository townRepository, PlayerRepository playerRepository, WorldRepository worldRepository,
+            Clock clock) {
         this.townRepository = townRepository;
         this.playerRepository = playerRepository;
         this.worldRepository = worldRepository;
+        this.clock = clock;
     }
 
     @GetMapping("/towns/{id}")
@@ -45,6 +51,21 @@ class TownController {
                 island.name(),
                 island.id().value(),
                 town.location().plotNumber()));
+        model.addAttribute("resourceBar", resourceBarAdvancedToNow(town, owner));
         return "town";
+    }
+
+    private ResourceBarView resourceBarAdvancedToNow(Town town, Player owner) {
+        Instant now = clock.instant();
+        Town advancedTown = town.advancedTo(now);
+        Player advancedOwner = owner.advancedTo(now);
+        LuxuryResourceView luxury = LuxuryResourceView.of(advancedTown.resources().luxury());
+
+        return new ResourceBarView(
+                advancedTown.resources().wood(),
+                advancedTown.resources().luxuryAmount(),
+                luxury.spanishName(),
+                luxury.icon(),
+                advancedOwner.gold());
     }
 }

@@ -10,6 +10,7 @@ import holywars.town.TownNames;
 import holywars.world.CityPlot;
 import holywars.world.Island;
 import holywars.world.World;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +23,7 @@ public final class GameSetup {
     private GameSetup() {
     }
 
-    public static NewGame start(World world, Random random, GameSetupSettings settings) {
+    public static NewGame start(World world, Random random, GameSetupSettings settings, Instant startedAt) {
         int playerCount = 1 + settings.aiPlayers();
         List<Island> assignedIslands = pickDistinctIslands(world, playerCount, random);
         List<String> aiNames = PlayerNames.pick(settings.aiPlayers(), random);
@@ -35,12 +36,12 @@ public final class GameSetup {
         for (int index = 0; index < playerCount; index++) {
             PlayerId playerId = new PlayerId(index + 1);
             TownId townId = new TownId(index + 1);
-            Player player = playerAt(index, playerId, aiNames, settings);
+            Player player = playerAt(index, playerId, aiNames, settings, startedAt);
 
             Island island = assignedIslands.get(index);
             CityPlot capitalPlot = island.firstFreePlot().orElseThrow();
             PlotLocation location = new PlotLocation(island.id(), capitalPlot.number());
-            Town town = Town.founded(townId, townNames.get(index), playerId, location);
+            Town town = Town.founded(townId, townNames.get(index), playerId, location, island.resource(), startedAt);
 
             updatedWorld = updatedWorld.withCityFounded(location, townId);
             players.add(player);
@@ -50,10 +51,11 @@ public final class GameSetup {
         return new NewGame(updatedWorld, players, towns);
     }
 
-    private static Player playerAt(int index, PlayerId playerId, List<String> aiNames, GameSetupSettings settings) {
+    private static Player playerAt(
+            int index, PlayerId playerId, List<String> aiNames, GameSetupSettings settings, Instant startedAt) {
         return index == 0
-                ? Player.human(playerId, HUMAN_NAME, settings.startingGold())
-                : Player.ai(playerId, aiNames.get(index - 1), settings.startingGold());
+                ? Player.human(playerId, HUMAN_NAME, settings.startingGold(), startedAt)
+                : Player.ai(playerId, aiNames.get(index - 1), settings.startingGold(), startedAt);
     }
 
     private static List<Island> pickDistinctIslands(World world, int playerCount, Random random) {

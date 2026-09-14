@@ -12,7 +12,9 @@ import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
 import holywars.world.IslandId;
+import holywars.world.LuxuryResource;
 import jakarta.persistence.EntityManager;
+import java.time.Instant;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 @ActiveProfiles("test")
 @Transactional
 class IslandOccupancyTest {
+
+    private static final Instant FOUNDED_AT = Instant.parse("2026-01-01T00:00:00Z");
 
     @Autowired
     private IslandOccupancy islandOccupancy;
@@ -44,8 +48,8 @@ class IslandOccupancyTest {
 
     @Test
     void mapsAFoundedTownToItsPlotWithTheOwnerName() {
-        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500));
-        townRepository.save(Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3)));
+        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500, FOUNDED_AT));
+        townRepository.save(Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), LuxuryResource.WINE, FOUNDED_AT));
         entityManager.flush();
         entityManager.clear();
 
@@ -60,10 +64,10 @@ class IslandOccupancyTest {
 
     @Test
     void mapsSeveralFoundedTownsOnTheSameIslandToTheirOwners() {
-        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500));
-        playerRepository.save(Player.ai(new PlayerId(2), "Rival", 500));
-        townRepository.save(Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3)));
-        townRepository.save(Town.founded(new TownId(2), "Corinto", new PlayerId(2), new PlotLocation(new IslandId(1), 7)));
+        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500, FOUNDED_AT));
+        playerRepository.save(Player.ai(new PlayerId(2), "Rival", 500, FOUNDED_AT));
+        townRepository.save(Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), LuxuryResource.WINE, FOUNDED_AT));
+        townRepository.save(Town.founded(new TownId(2), "Corinto", new PlayerId(2), new PlotLocation(new IslandId(1), 7), LuxuryResource.WINE, FOUNDED_AT));
         entityManager.flush();
         entityManager.clear();
 
@@ -76,7 +80,7 @@ class IslandOccupancyTest {
 
     @Test
     void throwsWhenATownsOwnerCannotBeFound() {
-        townRepository.save(Town.founded(new TownId(1), "Esparta", new PlayerId(99), new PlotLocation(new IslandId(1), 3)));
+        townRepository.save(Town.founded(new TownId(1), "Esparta", new PlayerId(99), new PlotLocation(new IslandId(1), 3), LuxuryResource.WINE, FOUNDED_AT));
         entityManager.flush();
         entityManager.clear();
 

@@ -13,6 +13,8 @@ import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.TownRepository;
 import holywars.world.IslandId;
+import holywars.world.LuxuryResource;
+import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,8 +51,11 @@ class HomeControllerTest {
 
     @Test
     void redirectsToTheHumanCapitalWhenAGameIsInProgress() throws Exception {
-        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500));
-        townRepository.save(Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 1)));
+        Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
+        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500, foundedAt));
+        townRepository.save(Town.founded(
+                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 1),
+                LuxuryResource.WINE, foundedAt));
 
         mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())

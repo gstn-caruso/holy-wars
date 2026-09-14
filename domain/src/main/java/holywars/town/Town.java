@@ -1,12 +1,16 @@
 package holywars.town;
 
 import holywars.player.PlayerId;
+import holywars.world.LuxuryResource;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public record Town(TownId id, String name, PlayerId ownerId, PlotLocation location, List<BuildingSlot> slots) {
+public record Town(
+        TownId id, String name, PlayerId ownerId, PlotLocation location, List<BuildingSlot> slots,
+        TownResources resources) {
 
     public Town {
         slots = List.copyOf(slots);
@@ -19,12 +23,19 @@ public record Town(TownId id, String name, PlayerId ownerId, PlotLocation locati
         }
     }
 
-    public static Town founded(TownId id, String name, PlayerId ownerId, PlotLocation location) {
-        return new Town(id, name, ownerId, location, BuildingSlots.standard(1));
+    public static Town founded(
+            TownId id, String name, PlayerId ownerId, PlotLocation location, LuxuryResource luxury,
+            Instant foundedAt) {
+        return new Town(
+                id, name, ownerId, location, BuildingSlots.standard(1), TownResources.initial(luxury, foundedAt));
     }
 
     public int townHallLevel() {
         return townHallBuilding(slots).map(Building::level).orElseThrow(MissingTownHallException::new);
+    }
+
+    public Town advancedTo(Instant now) {
+        return new Town(id, name, ownerId, location, slots, resources.advancedTo(now));
     }
 
     private static Optional<Building> townHallBuilding(List<BuildingSlot> slots) {

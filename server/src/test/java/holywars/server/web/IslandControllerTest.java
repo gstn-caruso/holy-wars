@@ -16,6 +16,7 @@ import holywars.world.World;
 import holywars.world.WorldGenerationSettings;
 import holywars.world.WorldGenerator;
 import holywars.world.WorldRepository;
+import java.time.Instant;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +50,11 @@ class IslandControllerTest {
         World world = WorldGenerator.generate(42L, WorldGenerationSettings.standard());
         worldRepository.save(world);
         Island island = world.islands().get(0);
-        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500));
-        townRepository.save(Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(island.id(), 1)));
+        Instant foundedAt = Instant.parse("2026-01-01T00:00:00Z");
+        playerRepository.save(Player.human(new PlayerId(1), "Jugador", 500, foundedAt));
+        townRepository.save(Town.founded(
+                new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(island.id(), 1), island.resource(),
+                foundedAt));
 
         MvcResult result = mockMvc.perform(get("/islands/" + island.id().value()))
                 .andExpect(status().isOk())
