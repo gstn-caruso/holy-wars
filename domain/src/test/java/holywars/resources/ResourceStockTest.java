@@ -15,4 +15,13 @@ class ResourceStockTest {
 
         assertThat(advanced).isEqualTo(stock);
     }
+
+    @Test
+    void afterOneHourTheAmountRisesByExactlyTheRatePerHour() {
+        ResourceStock stock = ResourceStock.of(500, 30);
+
+        ResourceStock advanced = stock.advancedTo(Duration.ofHours(1));
+
+        assertThat(advanced.amount()).isEqualTo(530);
+    }
 }
