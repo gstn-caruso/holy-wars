@@ -1,5 +1,6 @@
 package holywars.town;
 
+import java.time.Duration;
 import java.time.Instant;
 
 public record Construction(BuildingType type, Instant startedAt, Instant finishesAt) {
@@ -10,5 +11,9 @@ public record Construction(BuildingType type, Instant startedAt, Instant finishe
 
     public boolean isFinishedBy(Instant now) {
         return !now.isBefore(finishesAt);
+    }
+
+    public Duration remaining(Instant now) {
+        return Duration.between(now, finishesAt);
     }
 }

@@ -2,6 +2,7 @@ package holywars.town;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Duration;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
@@ -29,5 +30,13 @@ class ConstructionTest {
         Construction construction = Construction.startingAt(BuildingType.WAREHOUSE, STARTED_AT);
 
         assertThat(construction.isFinishedBy(construction.finishesAt().minusMillis(1))).isFalse();
+    }
+
+    @Test
+    void remainingIsTheDurationUntilFinishesAt() {
+        Construction construction = Construction.startingAt(BuildingType.WAREHOUSE, STARTED_AT);
+        Instant twoMinutesIn = STARTED_AT.plus(Duration.ofMinutes(2));
+
+        assertThat(construction.remaining(twoMinutesIn)).isEqualTo(Duration.ofMinutes(4));
     }
 }
