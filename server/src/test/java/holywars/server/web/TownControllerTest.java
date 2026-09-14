@@ -2,7 +2,10 @@ package holywars.server.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -140,6 +143,24 @@ class TownControllerTest {
                 .andExpect(content().string(containsString("Mostrar mundo")))
                 .andExpect(content().string(containsString("Mostrar isla")))
                 .andExpect(content().string(containsString("Mostrar ciudad")));
+    }
+
+    @Test
+    void viewingATownNeverPersistsTheAdvancedResources() throws Exception {
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        World world = new World(List.of(island));
+        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(playerRepository.find())
+                .willReturn(Optional.of(Player.starting(new PlayerId(1), "Jugador", NOW)));
+        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(townRepository.findByOwner(new PlayerId(1))).willReturn(Optional.of(town));
+
+        mockMvc.perform(get("/towns/1")).andExpect(status().isOk());
+
+        verify(townRepository, never()).save(any());
+        verify(playerRepository, never()).save(any());
     }
 
     private static int countOccurrences(String text, String token) {
