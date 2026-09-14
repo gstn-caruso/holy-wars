@@ -51,6 +51,15 @@ public record BuildingSlot(
     }
 
     public BuildingSlot advancedTo(Instant now) {
-        return this;
+        if (construction.isEmpty()) {
+            return this;
+        }
+        Construction activeConstruction = construction.get();
+        if (now.isBefore(activeConstruction.finishesAt())) {
+            return this;
+        }
+        return new BuildingSlot(
+                position, kind, requiredTownHallLevel,
+                Optional.of(new Building(activeConstruction.type(), 1)), Optional.empty());
     }
 }
