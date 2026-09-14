@@ -10,7 +10,7 @@
   <packaging>pom</packaging>
 
   <name>Holy Wars</name>
-  <description>Juego hecho con libGDX en Java 25.</description>
+  <description>Clon de Ikariam single-player: server Spring Boot que sirve el juego en el browser, Java 25.</description>
   <url>https://github.com/gstn-caruso/holy-wars</url>
 
   <licenses>
@@ -23,7 +23,6 @@
   <modules>
     <module>domain</module>
     <module>server</module>
-    <module>game</module>
   </modules>
 
   <properties>
@@ -73,24 +72,7 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.6.0</version>
         </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
-          <version>3.6.4</version>
-        </plugin>
       </plugins>
     </pluginManagement>
-    <plugins>
-      <!-- exec-maven-plugin valida "executable" como requerido antes de mirar "skip",
-           asi que los modulos que no corren el juego necesitan igual un valor dummy. -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-          <executable>true</executable>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
 </project>
