@@ -11,4 +11,8 @@ record PlotAnchor(int cx, int cy, int width) {
     int x() {
         return cx - width / 2;
     }
+
+    int y(int height) {
+        return cy - height / 2;
+    }
 }

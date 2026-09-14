@@ -27,4 +27,11 @@ class PlotAnchorTest {
 
         assertThat(anchor.x()).isEqualTo(530);
     }
+
+    @Test
+    void yIsCenteredOnCyForAGivenHeight() {
+        PlotAnchor anchor = new PlotAnchor(600, 330, 140);
+
+        assertThat(anchor.y(140)).isEqualTo(260);
+    }
 }
