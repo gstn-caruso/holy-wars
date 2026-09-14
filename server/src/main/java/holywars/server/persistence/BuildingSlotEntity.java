@@ -77,4 +77,11 @@ class BuildingSlotEntity {
     void assignTo(TownEntity town) {
         this.town = town;
     }
+
+    void updateFrom(BuildingSlotEntity desired) {
+        this.kind = desired.kind;
+        this.requiredTownHallLevel = desired.requiredTownHallLevel;
+        this.buildingType = desired.buildingType;
+        this.buildingLevel = desired.buildingLevel;
+    }
 }

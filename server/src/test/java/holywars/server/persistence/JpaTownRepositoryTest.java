@@ -131,6 +131,22 @@ class JpaTownRepositoryTest {
     }
 
     @Test
+    void savingATownAgainReplacesItsSlots() {
+        Town town = Town.founded(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3));
+        townRepository.save(town);
+        entityManager.flush();
+        entityManager.clear();
+
+        List<BuildingSlot> slotsWithAnAcademy = withBuildingAt(BuildingSlots.standard(1), 5, new Building(BuildingType.ACADEMY, 1));
+        Town townWithAnAcademy = new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), slotsWithAnAcademy);
+        townRepository.save(townWithAnAcademy);
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThat(townRepository.find(new TownId(1))).contains(townWithAnAcademy);
+    }
+
+    @Test
     void savedTownWithAnOccupiedWallSlotIsFoundBackWithThatWall() {
         List<BuildingSlot> slots = withBuildingAt(BuildingSlots.standard(1), 12, new Building(BuildingType.WALL, 1));
         Town town = new Town(new TownId(1), "Esparta", new PlayerId(1), new PlotLocation(new IslandId(1), 3), slots);

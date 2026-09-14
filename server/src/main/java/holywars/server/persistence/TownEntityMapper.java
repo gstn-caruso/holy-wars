@@ -33,6 +33,11 @@ final class TownEntityMapper {
         return entity;
     }
 
+    static void updateEntity(TownEntity entity, Town town) {
+        List<BuildingSlotEntity> slots = town.slots().stream().map(TownEntityMapper::toEntity).toList();
+        entity.update(town.name(), town.ownerId().value(), town.location().island().value(), town.location().plotNumber(), slots);
+    }
+
     static Town toDomain(TownEntity entity) {
         PlotLocation location = new PlotLocation(new IslandId(entity.getIslandId()), entity.getPlotNumber());
         TownResources resources = new TownResources(

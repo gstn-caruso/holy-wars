@@ -116,4 +116,19 @@ class TownEntity {
         slot.assignTo(this);
         slots.add(slot);
     }
+
+    void update(String name, int ownerId, int islandId, int plotNumber, List<BuildingSlotEntity> desiredSlots) {
+        this.name = name;
+        this.ownerId = ownerId;
+        this.islandId = islandId;
+        this.plotNumber = plotNumber;
+        desiredSlots.forEach(desired -> slotAt(desired.getPosition()).updateFrom(desired));
+    }
+
+    private BuildingSlotEntity slotAt(int position) {
+        return slots.stream()
+                .filter(slot -> slot.getPosition() == position)
+                .findFirst()
+                .orElseThrow();
+    }
 }

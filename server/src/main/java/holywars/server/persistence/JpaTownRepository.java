@@ -22,7 +22,9 @@ class JpaTownRepository implements TownRepository {
     @Override
     @Transactional
     public void save(Town town) {
-        springDataTownRepository.save(TownEntityMapper.toEntity(town));
+        springDataTownRepository.findById(town.id().value()).ifPresentOrElse(
+                existing -> TownEntityMapper.updateEntity(existing, town),
+                () -> springDataTownRepository.save(TownEntityMapper.toEntity(town)));
     }
 
     @Override
