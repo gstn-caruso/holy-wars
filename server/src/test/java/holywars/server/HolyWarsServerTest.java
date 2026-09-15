@@ -18,9 +18,15 @@ class HolyWarsServerTest {
     private DataSource dataSource;
 
     @Test
-    void startsTheContextOnAnInMemoryH2Database() throws Exception {
-        try (Connection connection = dataSource.getConnection()) {
+    void startsTheContextOnAnInMemoryH2DatabaseInPostgreSqlMode() throws Exception {
+        try (Connection connection = dataSource.getConnection();
+                Statement modeStatement = connection.createStatement();
+                ResultSet modeSetting = modeStatement.executeQuery(
+                        "select \"setting_value\" from information_schema.settings "
+                                + "where \"setting_name\" = 'MODE'")) {
             assertThat(connection.getMetaData().getURL()).startsWith("jdbc:h2:mem:");
+            modeSetting.next();
+            assertThat(modeSetting.getString(1)).isEqualTo("PostgreSQL");
         }
     }
 
