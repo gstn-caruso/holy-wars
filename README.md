@@ -10,16 +10,6 @@ brújula enmarcando cada vista de la ciudad capital.
 
 ## Jugar
 
-```
-mvn -B -pl server -am package -DskipTests
-java -jar server/target/holy-wars-server-0.0.0-SNAPSHOT.jar
-```
-
-Abrí `http://localhost:8080` en el navegador. El jar empaquetado usa H2 en memoria: el estado
-se pierde al cerrar el server.
-
-## Base de datos
-
 Con Docker corriendo, desde la raíz del repo:
 
 ```
@@ -28,9 +18,29 @@ mvn -pl server spring-boot:run
 ```
 
 El `install` deja `holy-wars-domain` en el repositorio local, así el segundo comando puede correr el
-módulo `server` solo. `spring-boot:run` levanta un Postgres 17 (usa el `compose.yaml` de la raíz) y guarda
-ahí el esquema y los datos entre reinicios; al cortarlo, para el contenedor solo. `docker compose down -v`
-borra los datos guardados en Postgres.
+módulo `server` solo. `spring-boot:run` levanta un PostgreSQL 18.6 (usa el `compose.yaml` de la raíz) y las
+migraciones de Flyway arman el esquema al arrancar. Abrí `http://localhost:8080` en el navegador. Los
+datos quedan en el volumen `holywars-pgdata` entre reinicios: al cortar el server, Spring frena el
+contenedor sin borrarlo. `docker compose down -v` los borra. Si ya tenías el volumen `holywars-postgres`
+de una corrida con Postgres 17, borralo con `docker volume rm holy-wars_holywars-postgres`: PostgreSQL 18
+no abre esos datos.
+
+## Base de datos
+
+PostgreSQL es la única base con la que corre la app, en producción con la misma versión mayor, 18; ahí
+no hay compose, así que el server se conecta por variables de entorno:
+
+```
+mvn -B -pl server -am package -DskipTests
+SPRING_DATASOURCE_URL=jdbc:postgresql://<host>:5432/<base> \
+SPRING_DATASOURCE_USERNAME=<usuario> \
+SPRING_DATASOURCE_PASSWORD=<password> \
+java -jar server/target/holy-wars-server-0.0.0-SNAPSHOT.jar
+```
+
+Sin esas tres variables el server no arranca. El esquema lo crean y actualizan las migraciones de
+`server/src/main/resources/db/migration` al arrancar; un cambio de esquema entra como una migración
+nueva numerada arriba de la última, nunca editando una ya aplicada.
 
 ## Perfil de desarrollo
 
@@ -47,6 +57,9 @@ probar assets locales (por ejemplo, imágenes de referencia) sin empaquetarlos e
 ```
 mvn -B verify
 ```
+
+Corre sin Docker: los tests de integración usan H2 en memoria en modo de compatibilidad PostgreSQL,
+con las mismas migraciones que corren en dev y en producción.
 
 ## Releases
 
