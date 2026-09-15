@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Component
-public class TownClockwork {
+class TownClockwork {
 
     private static final Logger LOG = LoggerFactory.getLogger(TownClockwork.class);
     private static final Duration TICK_INTERVAL = Duration.ofSeconds(10);
@@ -29,14 +29,14 @@ public class TownClockwork {
     private final Map<TownId, List<TownEventSink>> sinksByTown = new ConcurrentHashMap<>();
     private final Map<TownId, ScheduledFuture<?>> finishTasksByTown = new ConcurrentHashMap<>();
 
-    public TownClockwork(ScheduledExecutorService scheduler, Clock clock) {
+    TownClockwork(ScheduledExecutorService scheduler, Clock clock) {
         this.scheduler = scheduler;
         this.clock = clock;
         long tickMillis = TICK_INTERVAL.toMillis();
         scheduler.scheduleAtFixedRate(this::tickResources, tickMillis, tickMillis, TimeUnit.MILLISECONDS);
     }
 
-    public SseEmitter subscribe(TownId townId) {
+    SseEmitter subscribe(TownId townId) {
         SseEmitter emitter = new SseEmitter(SUBSCRIPTION_TIMEOUT.toMillis());
         TownEventSink sink = new SseTownEventSink(emitter);
         subscribeSink(townId, sink);
@@ -46,7 +46,7 @@ public class TownClockwork {
         return emitter;
     }
 
-    public void scheduleFinish(Town town) {
+    void scheduleFinish(Town town) {
         TownId townId = town.id();
         ScheduledFuture<?> previous = finishTasksByTown.remove(townId);
         if (previous != null) {
