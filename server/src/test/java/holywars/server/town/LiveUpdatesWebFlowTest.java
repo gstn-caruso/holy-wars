@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import holywars.server.town.service.FakeScheduledExecutorService;
 import holywars.town.BuildingType;
 import java.time.Clock;
 import java.time.Duration;
