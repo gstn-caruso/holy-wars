@@ -1,4 +1,4 @@
-package holywars.server.web;
+package holywars.server.game;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import holywars.player.Player;
 import holywars.player.PlayerId;
 import holywars.player.Players;
-import holywars.server.game.NewGameService;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.Towns;

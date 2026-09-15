@@ -1,4 +1,4 @@
-package holywars.server.web;
+package holywars.server.game;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
