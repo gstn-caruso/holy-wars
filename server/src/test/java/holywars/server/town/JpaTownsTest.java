@@ -31,7 +31,7 @@ class JpaTownsTest {
     private static final Instant FOUNDED_AT = Instant.parse("2026-01-01T00:00:00Z");
 
     @Autowired
-    private JpaTownTable townJpaTable;
+    private JpaTownTable jpaTownTable;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -43,7 +43,7 @@ class JpaTownsTest {
 
     @BeforeEach
     void setUp() {
-        towns = new JpaTowns(townJpaTable);
+        towns = new JpaTowns(jpaTownTable);
     }
 
     @Test

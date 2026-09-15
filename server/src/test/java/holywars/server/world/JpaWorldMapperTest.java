@@ -16,11 +16,11 @@ import org.junit.jupiter.api.Test;
 
 class JpaWorldMapperTest {
 
-    private final JpaWorldMapper worldMapper = new JpaWorldMapper();
+    private final JpaWorldMapper jpaWorldMapper = new JpaWorldMapper();
 
     @Test
     void mapsNoIslandEntitiesToAWorldWithNoIslands() {
-        World world = worldMapper.toDomain(List.of());
+        World world = jpaWorldMapper.toDomain(List.of());
 
         assertThat(world.islands()).isEmpty();
     }
@@ -29,7 +29,7 @@ class JpaWorldMapperTest {
     void mapsASingleIslandEntityToItsMatchingDomainIsland() {
         JpaIsland naxos = anIslandEntityWithFreePlots(3, 5, 8, "Naxos", "WINE");
 
-        World world = worldMapper.toDomain(List.of(naxos));
+        World world = jpaWorldMapper.toDomain(List.of(naxos));
 
         assertThat(world.islands()).hasSize(1);
         Island island = world.island(new IslandId(3));
@@ -47,7 +47,7 @@ class JpaWorldMapperTest {
         JpaIsland naxos = anIslandEntityWithFreePlots(1, 0, 0, "Naxos", "WINE");
         JpaIsland ikaria = anIslandEntityWithFreePlots(2, 1, 1, "Ikaria", "MARBLE");
 
-        World world = worldMapper.toDomain(List.of(naxos, ikaria));
+        World world = jpaWorldMapper.toDomain(List.of(naxos, ikaria));
 
         assertThat(world.islands()).hasSize(2);
         Island mappedNaxos = world.island(new IslandId(1));
@@ -68,7 +68,7 @@ class JpaWorldMapperTest {
             naxos.addPlot(new JpaIslandPlot(naxos, number, null));
         }
 
-        World world = worldMapper.toDomain(List.of(naxos));
+        World world = jpaWorldMapper.toDomain(List.of(naxos));
 
         Island island = world.island(new IslandId(1));
         IslandPlot firstPlot = island.plots().get(0);
@@ -83,7 +83,7 @@ class JpaWorldMapperTest {
         Island naxos = Island.withFreePlots(new IslandId(4), new Coordinate(2, 6), "Naxos", LuxuryResource.CRYSTAL);
         naxos.firstFreePlot().occupy(9L);
 
-        JpaIsland jpaIsland = worldMapper.toEntity(naxos);
+        JpaIsland jpaIsland = jpaWorldMapper.toEntity(naxos);
 
         assertThat(jpaIsland.id()).isEqualTo(4L);
         assertThat(jpaIsland.x()).isEqualTo(2);
@@ -111,7 +111,7 @@ class JpaWorldMapperTest {
             naxos.addPlot(new JpaIslandPlot(naxos, number, null));
         }
 
-        assertThatThrownBy(() -> worldMapper.toDomain(List.of(naxos)))
+        assertThatThrownBy(() -> jpaWorldMapper.toDomain(List.of(naxos)))
                 .isInstanceOf(InvalidIslandPlotCountException.class);
     }
 

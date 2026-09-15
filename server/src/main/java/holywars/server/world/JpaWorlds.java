@@ -14,42 +14,42 @@ import org.springframework.stereotype.Repository;
 @Repository
 class JpaWorlds implements Worlds {
 
-    private final JpaIslandTable islandJpaTable;
-    private final JpaWorldMapper worldMapper;
+    private final JpaIslandTable jpaIslandTable;
+    private final JpaWorldMapper jpaWorldMapper;
 
-    JpaWorlds(JpaIslandTable islandJpaTable, JpaWorldMapper worldMapper) {
-        this.islandJpaTable = islandJpaTable;
-        this.worldMapper = worldMapper;
+    JpaWorlds(JpaIslandTable jpaIslandTable, JpaWorldMapper jpaWorldMapper) {
+        this.jpaIslandTable = jpaIslandTable;
+        this.jpaWorldMapper = jpaWorldMapper;
     }
 
     @Override
     public Optional<World> find() {
-        List<JpaIsland> jpaIslands = islandJpaTable.findAllWithPlots();
+        List<JpaIsland> jpaIslands = jpaIslandTable.findAllWithPlots();
         if (jpaIslands.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(worldMapper.toDomain(jpaIslands));
+        return Optional.of(jpaWorldMapper.toDomain(jpaIslands));
     }
 
     @Override
     public void save(World world) {
-        Map<Long, JpaIsland> existingJpaIslandsById = islandJpaTable.findAllWithPlots().stream()
+        Map<Long, JpaIsland> existingJpaIslandsById = jpaIslandTable.findAllWithPlots().stream()
                 .collect(Collectors.toMap(JpaIsland::id, Function.identity()));
 
         List<JpaIsland> jpaIslandsToSave = world.islands().stream()
                 .map(island -> reconcile(island, existingJpaIslandsById.get(island.id().value())))
                 .toList();
 
-        islandJpaTable.saveAll(jpaIslandsToSave);
+        jpaIslandTable.saveAll(jpaIslandsToSave);
     }
 
     private JpaIsland reconcile(Island island, JpaIsland existingJpaIsland) {
         if (existingJpaIsland == null) {
-            return worldMapper.toEntity(island);
+            return jpaWorldMapper.toEntity(island);
         }
 
         for (IslandPlot plot : island.plots()) {
-            existingJpaIsland.putPlot(plot.number(), worldMapper.occupantTownIdOf(plot));
+            existingJpaIsland.putPlot(plot.number(), jpaWorldMapper.occupantTownIdOf(plot));
         }
 
         return existingJpaIsland;

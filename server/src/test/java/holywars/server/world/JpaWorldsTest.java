@@ -17,7 +17,7 @@ import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 class JpaWorldsTest {
 
     @Autowired
-    private JpaIslandTable islandJpaTable;
+    private JpaIslandTable jpaIslandTable;
 
     @Autowired
     private TestEntityManager entityManager;
@@ -26,7 +26,7 @@ class JpaWorldsTest {
 
     @BeforeEach
     void setUp() {
-        worlds = new JpaWorlds(islandJpaTable, new JpaWorldMapper());
+        worlds = new JpaWorlds(jpaIslandTable, new JpaWorldMapper());
     }
 
     @Test
@@ -57,8 +57,8 @@ class JpaWorldsTest {
         worlds.save(generatedWorld);
         entityManager.flush();
 
-        assertThat(islandJpaTable.count()).isEqualTo(20L);
-        long totalPlotCount = islandJpaTable.findAllWithPlots().stream()
+        assertThat(jpaIslandTable.count()).isEqualTo(20L);
+        long totalPlotCount = jpaIslandTable.findAllWithPlots().stream()
                 .mapToLong(jpaIsland -> jpaIsland.plots().size())
                 .sum();
         assertThat(totalPlotCount).isEqualTo(320L);

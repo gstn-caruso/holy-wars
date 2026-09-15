@@ -9,15 +9,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 class JpaPlayers implements Players {
 
-    private final JpaPlayerTable playerJpaTable;
+    private final JpaPlayerTable jpaPlayerTable;
 
-    JpaPlayers(JpaPlayerTable playerJpaTable) {
-        this.playerJpaTable = playerJpaTable;
+    JpaPlayers(JpaPlayerTable jpaPlayerTable) {
+        this.jpaPlayerTable = jpaPlayerTable;
     }
 
     @Override
     public Optional<Player> find() {
-        return playerJpaTable.findAll().stream()
+        return jpaPlayerTable.findAll().stream()
                 .findFirst()
                 .map(jpaPlayer -> Player.reconstituted(new PlayerId(jpaPlayer.id()), jpaPlayer.name(),
                         jpaPlayer.goldTicks(), jpaPlayer.goldUpdatedAt()));
@@ -25,7 +25,7 @@ class JpaPlayers implements Players {
 
     @Override
     public void save(Player player) {
-        playerJpaTable.save(new JpaPlayer(player.id().value(), player.name(), player.gold().ticks(),
+        jpaPlayerTable.save(new JpaPlayer(player.id().value(), player.name(), player.gold().ticks(),
                 player.lastUpdate()));
     }
 }

@@ -17,13 +17,13 @@ class JpaPlayersTest {
     private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
 
     @Autowired
-    private JpaPlayerTable playerJpaTable;
+    private JpaPlayerTable jpaPlayerTable;
 
     private JpaPlayers players;
 
     @BeforeEach
     void setUp() {
-        players = new JpaPlayers(playerJpaTable);
+        players = new JpaPlayers(jpaPlayerTable);
     }
 
     @Test

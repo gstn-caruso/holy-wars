@@ -16,29 +16,29 @@ import org.springframework.stereotype.Repository;
 @Repository
 class JpaTowns implements Towns {
 
-    private final JpaTownTable townJpaTable;
+    private final JpaTownTable jpaTownTable;
 
-    JpaTowns(JpaTownTable townJpaTable) {
-        this.townJpaTable = townJpaTable;
+    JpaTowns(JpaTownTable jpaTownTable) {
+        this.jpaTownTable = jpaTownTable;
     }
 
     @Override
     public Optional<Town> find(TownId id) {
-        return townJpaTable.findWithPlotsById(id.value()).map(this::toDomain);
+        return jpaTownTable.findWithPlotsById(id.value()).map(this::toDomain);
     }
 
     @Override
     public Optional<Town> findByOwner(PlayerId ownerId) {
-        return townJpaTable.findWithPlotsByOwnerId(ownerId.value()).map(this::toDomain);
+        return jpaTownTable.findWithPlotsByOwnerId(ownerId.value()).map(this::toDomain);
     }
 
     @Override
     public void save(Town town) {
-        JpaTown jpaTown = townJpaTable.findWithPlotsById(town.id().value())
+        JpaTown jpaTown = jpaTownTable.findWithPlotsById(town.id().value())
                 .orElseGet(() -> new JpaTown(town));
         jpaTown.updateFrom(town);
         town.plots().forEach(jpaTown::putPlot);
-        townJpaTable.save(jpaTown);
+        jpaTownTable.save(jpaTown);
     }
 
     private Town toDomain(JpaTown jpaTown) {
