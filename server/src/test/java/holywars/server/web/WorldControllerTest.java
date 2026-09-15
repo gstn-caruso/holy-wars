@@ -9,16 +9,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import holywars.player.Player;
 import holywars.player.PlayerId;
-import holywars.player.PlayerRepository;
+import holywars.player.Players;
 import holywars.town.Town;
 import holywars.town.TownId;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import holywars.world.Coordinate;
 import holywars.world.Island;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import holywars.world.World;
-import holywars.world.WorldRepository;
+import holywars.world.Worlds;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -37,20 +37,20 @@ class WorldControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private WorldRepository worldRepository;
+    private Worlds worlds;
 
     @MockitoBean
-    private TownRepository townRepository;
+    private Towns towns;
 
     @MockitoBean
-    private PlayerRepository playerRepository;
+    private Players players;
 
     @MockitoBean
     private CapitalHeaders capitalHeaders;
 
     @Test
     void mapWithoutAWorldReturns404() throws Exception {
-        given(worldRepository.find()).willReturn(Optional.empty());
+        given(worlds.find()).willReturn(Optional.empty());
 
         mockMvc.perform(get("/map")).andExpect(status().isNotFound());
     }
@@ -61,8 +61,8 @@ class WorldControllerTest {
         island.plots().get(0).occupy(9L);
         World world = new World(List.of(island));
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(worldRepository.find()).willReturn(Optional.of(world));
-        given(playerRepository.find()).willReturn(Optional.of(player));
+        given(worlds.find()).willReturn(Optional.of(world));
+        given(players.find()).willReturn(Optional.of(player));
         given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/map"))
@@ -79,8 +79,8 @@ class WorldControllerTest {
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 4), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(worldRepository.find()).willReturn(Optional.of(world));
-        given(playerRepository.find()).willReturn(Optional.of(player));
+        given(worlds.find()).willReturn(Optional.of(world));
+        given(players.find()).willReturn(Optional.of(player));
         given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/map"))
@@ -94,8 +94,8 @@ class WorldControllerTest {
     @Test
     void mapWithoutAPlayerRedirectsToTheIndex() throws Exception {
         World world = new World(List.of());
-        given(worldRepository.find()).willReturn(Optional.of(world));
-        given(playerRepository.find()).willReturn(Optional.empty());
+        given(worlds.find()).willReturn(Optional.of(world));
+        given(players.find()).willReturn(Optional.empty());
 
         mockMvc.perform(get("/map"))
                 .andExpect(status().is3xxRedirection())
@@ -105,7 +105,7 @@ class WorldControllerTest {
     @Test
     void unknownIslandReturns404ViaTheAdvice() throws Exception {
         World world = new World(List.of());
-        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(worlds.find()).willReturn(Optional.of(world));
 
         mockMvc.perform(get("/islands/99")).andExpect(status().isNotFound());
     }
@@ -118,9 +118,9 @@ class WorldControllerTest {
         Town occupant = Town.founded(new TownId(11L), new PlayerId(1), island.id(), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(worldRepository.find()).willReturn(Optional.of(world));
-        given(townRepository.find(new TownId(11L))).willReturn(Optional.of(occupant));
-        given(playerRepository.find()).willReturn(Optional.of(player));
+        given(worlds.find()).willReturn(Optional.of(world));
+        given(towns.find(new TownId(11L))).willReturn(Optional.of(occupant));
+        given(players.find()).willReturn(Optional.of(player));
         given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/islands/4"))
@@ -141,8 +141,8 @@ class WorldControllerTest {
         Island island = Island.withFreePlots(new IslandId(4), new Coordinate(1, 2), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(worldRepository.find()).willReturn(Optional.of(world));
-        given(playerRepository.find()).willReturn(Optional.of(player));
+        given(worlds.find()).willReturn(Optional.of(world));
+        given(players.find()).willReturn(Optional.of(player));
         given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/islands/4"))
@@ -157,8 +157,8 @@ class WorldControllerTest {
     void islandWithoutAPlayerRedirectsToTheIndex() throws Exception {
         Island island = Island.withFreePlots(new IslandId(4), new Coordinate(1, 2), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
-        given(worldRepository.find()).willReturn(Optional.of(world));
-        given(playerRepository.find()).willReturn(Optional.empty());
+        given(worlds.find()).willReturn(Optional.of(world));
+        given(players.find()).willReturn(Optional.empty());
 
         mockMvc.perform(get("/islands/4"))
                 .andExpect(status().is3xxRedirection())

@@ -1,9 +1,9 @@
 package holywars.server.web;
 
-import holywars.player.PlayerRepository;
+import holywars.player.Players;
 import holywars.server.game.NewGameService;
 import holywars.town.Town;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import java.util.Optional;
 import java.util.Random;
 import org.springframework.stereotype.Controller;
@@ -14,20 +14,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 class HomeController {
 
-    private final PlayerRepository playerRepository;
-    private final TownRepository townRepository;
+    private final Players players;
+    private final Towns towns;
     private final NewGameService newGameService;
 
-    HomeController(PlayerRepository playerRepository, TownRepository townRepository,
+    HomeController(Players players, Towns towns,
             NewGameService newGameService) {
-        this.playerRepository = playerRepository;
-        this.townRepository = townRepository;
+        this.players = players;
+        this.towns = towns;
         this.newGameService = newGameService;
     }
 
     @GetMapping("/")
     String home() {
-        Optional<Town> capital = playerRepository.find().flatMap(player -> townRepository.findByOwner(player.id()));
+        Optional<Town> capital = players.find().flatMap(player -> towns.findByOwner(player.id()));
         return capital.map(town -> "redirect:/towns/" + town.id().value()).orElse("index");
     }
 

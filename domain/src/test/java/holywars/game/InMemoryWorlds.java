@@ -1,10 +1,10 @@
 package holywars.game;
 
 import holywars.world.World;
-import holywars.world.WorldRepository;
+import holywars.world.Worlds;
 import java.util.Optional;
 
-final class InMemoryWorldRepository implements WorldRepository {
+final class InMemoryWorlds implements Worlds {
 
     private World world;
     private int saveCount;

@@ -3,7 +3,7 @@ package holywars.server.persistence;
 import holywars.world.Island;
 import holywars.world.IslandPlot;
 import holywars.world.World;
-import holywars.world.WorldRepository;
+import holywars.world.Worlds;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 @Repository
-class WorldJpaAdapter implements WorldRepository {
+class WorldJpaAdapter implements Worlds {
 
     private final IslandJpaRepository islandJpaRepository;
     private final WorldMapper worldMapper;

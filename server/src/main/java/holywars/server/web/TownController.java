@@ -1,14 +1,14 @@
 package holywars.server.web;
 
 import holywars.player.Player;
-import holywars.player.PlayerRepository;
+import holywars.player.Players;
 import holywars.server.game.UnknownTownException;
 import holywars.town.Town;
 import holywars.town.TownId;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import holywars.world.Island;
 import holywars.world.World;
-import holywars.world.WorldRepository;
+import holywars.world.Worlds;
 import java.time.Clock;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,19 +18,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 class TownController {
 
-    private final TownRepository townRepository;
-    private final WorldRepository worldRepository;
-    private final PlayerRepository playerRepository;
+    private final Towns towns;
+    private final Worlds worlds;
+    private final Players players;
     private final TownSceneProperties townSceneLayout;
     private final CapitalHeaders capitalHeaders;
     private final Clock clock;
 
-    TownController(TownRepository townRepository, WorldRepository worldRepository,
-            PlayerRepository playerRepository, TownSceneProperties townSceneLayout, CapitalHeaders capitalHeaders,
+    TownController(Towns towns, Worlds worlds,
+            Players players, TownSceneProperties townSceneLayout, CapitalHeaders capitalHeaders,
             Clock clock) {
-        this.townRepository = townRepository;
-        this.worldRepository = worldRepository;
-        this.playerRepository = playerRepository;
+        this.towns = towns;
+        this.worlds = worlds;
+        this.players = players;
         this.townSceneLayout = townSceneLayout;
         this.capitalHeaders = capitalHeaders;
         this.clock = clock;
@@ -39,8 +39,8 @@ class TownController {
     @GetMapping("/towns/{id}")
     String town(@PathVariable("id") long id, Model model) {
         Town town = townOrThrow(id);
-        Player player = playerRepository.find().orElseThrow();
-        World world = worldRepository.find().orElseThrow();
+        Player player = players.find().orElseThrow();
+        World world = worlds.find().orElseThrow();
         Island island = world.island(town.islandId());
 
         model.addAttribute("town", TownView.of(town, player.name(), island.name()));
@@ -60,13 +60,13 @@ class TownController {
     @GetMapping("/towns/{id}/resources")
     String resources(@PathVariable("id") long id, Model model) {
         Town town = townOrThrow(id);
-        Player player = playerRepository.find().orElseThrow();
+        Player player = players.find().orElseThrow();
         model.addAttribute("bar", ResourceBarView.of(town, player, clock.instant()));
         return "fragments/layout :: resourceBar(bar=${bar}, oob=false)";
     }
 
     private Town townOrThrow(long id) {
         TownId townId = new TownId(id);
-        return townRepository.find(townId).orElseThrow(() -> new UnknownTownException(townId));
+        return towns.find(townId).orElseThrow(() -> new UnknownTownException(townId));
     }
 }

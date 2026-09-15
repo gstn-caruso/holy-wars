@@ -11,7 +11,7 @@ import holywars.player.Player;
 import holywars.player.PlayerId;
 import holywars.town.Town;
 import holywars.town.TownId;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import holywars.world.Coordinate;
 import holywars.world.Island;
 import holywars.world.IslandId;
@@ -28,9 +28,9 @@ class CapitalHeadersTest {
 
     private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
 
-    private final TownRepository townRepository = mock(TownRepository.class);
+    private final Towns towns = mock(Towns.class);
     private final Clock clock = Clock.fixed(NOW, ZoneOffset.UTC);
-    private final CapitalHeaders capitalHeaders = new CapitalHeaders(townRepository, clock);
+    private final CapitalHeaders capitalHeaders = new CapitalHeaders(towns, clock);
 
     @Test
     void buildsTheCapitalHeaderFromThePlayersOwnTownAtTheClocksInstant() {
@@ -38,7 +38,7 @@ class CapitalHeadersTest {
         World world = new World(List.of(island));
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
         Town capital = Town.founded(new TownId(9), player.id(), island.id(), 1, "Atenas", LuxuryResource.WINE, NOW);
-        given(townRepository.findByOwner(player.id())).willReturn(Optional.of(capital));
+        given(towns.findByOwner(player.id())).willReturn(Optional.of(capital));
 
         CapitalHeaderView header = capitalHeaders.forPlayer(world, player).orElseThrow();
 
@@ -56,11 +56,11 @@ class CapitalHeadersTest {
         World world = new World(List.of(island));
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
         Town capital = Town.founded(new TownId(9), player.id(), island.id(), 1, "Atenas", LuxuryResource.WINE, NOW);
-        given(townRepository.findByOwner(player.id())).willReturn(Optional.of(capital));
+        given(towns.findByOwner(player.id())).willReturn(Optional.of(capital));
 
         capitalHeaders.forPlayer(world, player);
 
-        verify(townRepository, never()).save(any());
+        verify(towns, never()).save(any());
     }
 
     @Test
@@ -68,7 +68,7 @@ class CapitalHeadersTest {
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(townRepository.findByOwner(player.id())).willReturn(Optional.empty());
+        given(towns.findByOwner(player.id())).willReturn(Optional.empty());
 
         assertThat(capitalHeaders.forPlayer(world, player)).isEmpty();
     }

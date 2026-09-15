@@ -1,13 +1,13 @@
 package holywars.server.web;
 
 import holywars.player.Player;
-import holywars.player.PlayerRepository;
+import holywars.player.Players;
 import holywars.server.game.ConstructionService;
 import holywars.server.game.UnknownTownException;
 import holywars.town.BuildingType;
 import holywars.town.Town;
 import holywars.town.TownId;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import java.time.Clock;
 import java.time.Instant;
 import org.springframework.stereotype.Controller;
@@ -21,16 +21,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 class ConstructionController {
 
     private final ConstructionService constructionService;
-    private final TownRepository townRepository;
-    private final PlayerRepository playerRepository;
+    private final Towns towns;
+    private final Players players;
     private final TownSceneProperties townSceneLayout;
     private final Clock clock;
 
-    ConstructionController(ConstructionService constructionService, TownRepository townRepository,
-            PlayerRepository playerRepository, TownSceneProperties townSceneLayout, Clock clock) {
+    ConstructionController(ConstructionService constructionService, Towns towns,
+            Players players, TownSceneProperties townSceneLayout, Clock clock) {
         this.constructionService = constructionService;
-        this.townRepository = townRepository;
-        this.playerRepository = playerRepository;
+        this.towns = towns;
+        this.players = players;
         this.townSceneLayout = townSceneLayout;
         this.clock = clock;
     }
@@ -48,7 +48,7 @@ class ConstructionController {
         try {
             Town updated = constructionService.start(new TownId(id), position, type);
             Instant now = clock.instant();
-            Player player = playerRepository.find().orElseThrow();
+            Player player = players.find().orElseThrow();
             model.addAttribute("menu", BuildMenuView.of(updated, position, now));
             model.addAttribute("scene", TownSceneView.of(updated, townSceneLayout, now));
             model.addAttribute("bar", ResourceBarView.of(updated, player, now));
@@ -63,6 +63,6 @@ class ConstructionController {
 
     private Town findOrThrow(long id) {
         TownId townId = new TownId(id);
-        return townRepository.find(townId).orElseThrow(() -> new UnknownTownException(townId));
+        return towns.find(townId).orElseThrow(() -> new UnknownTownException(townId));
     }
 }

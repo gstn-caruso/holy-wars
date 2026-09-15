@@ -1,14 +1,14 @@
 package holywars.server.web;
 
 import holywars.player.Player;
-import holywars.player.PlayerRepository;
+import holywars.player.Players;
 import holywars.town.TownId;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import holywars.world.Island;
 import holywars.world.IslandId;
 import holywars.world.IslandPlot;
 import holywars.world.World;
-import holywars.world.WorldRepository;
+import holywars.world.Worlds;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,23 +23,23 @@ import org.springframework.web.server.ResponseStatusException;
 @Controller
 class WorldController {
 
-    private final WorldRepository worldRepository;
-    private final TownRepository townRepository;
-    private final PlayerRepository playerRepository;
+    private final Worlds worlds;
+    private final Towns towns;
+    private final Players players;
     private final CapitalHeaders capitalHeaders;
 
-    WorldController(WorldRepository worldRepository, TownRepository townRepository,
-            PlayerRepository playerRepository, CapitalHeaders capitalHeaders) {
-        this.worldRepository = worldRepository;
-        this.townRepository = townRepository;
-        this.playerRepository = playerRepository;
+    WorldController(Worlds worlds, Towns towns,
+            Players players, CapitalHeaders capitalHeaders) {
+        this.worlds = worlds;
+        this.towns = towns;
+        this.players = players;
         this.capitalHeaders = capitalHeaders;
     }
 
     @GetMapping("/map")
     String map(Model model) {
         World world = findWorldOrThrow();
-        return playerRepository.find()
+        return players.find()
                 .flatMap(player -> capitalHeaders.forPlayer(world, player))
                 .map(header -> showMap(model, world, header))
                 .orElse("redirect:/");
@@ -51,7 +51,7 @@ class WorldController {
         Island island = world.island(new IslandId(id));
         Optional<IslandPlot> occupiedPlot = occupiedPlot(island);
         String occupiedTownName = occupiedPlot.map(this::townNameOf).orElse(null);
-        return playerRepository.find()
+        return players.find()
                 .flatMap(player -> capitalHeaders.forPlayer(world, player)
                         .map(header -> showIsland(model, island, occupiedTownName, occupiedPlot, player, header)))
                 .orElse("redirect:/");
@@ -79,11 +79,11 @@ class WorldController {
 
     private String townNameOf(IslandPlot plot) {
         long townId = plot.occupant().orElseThrow();
-        return townRepository.find(new TownId(townId)).orElseThrow().name();
+        return towns.find(new TownId(townId)).orElseThrow().name();
     }
 
     private World findWorldOrThrow() {
-        return worldRepository.find().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return worlds.find().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     private List<List<MapCellView>> mapRows(World world) {

@@ -2,12 +2,12 @@ package holywars.server.persistence;
 
 import holywars.player.Player;
 import holywars.player.PlayerId;
-import holywars.player.PlayerRepository;
+import holywars.player.Players;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 @Repository
-class PlayerJpaAdapter implements PlayerRepository {
+class PlayerJpaAdapter implements Players {
 
     private final PlayerJpaRepository playerJpaRepository;
 

@@ -2,7 +2,7 @@ package holywars.world;
 
 import java.util.Optional;
 
-public interface WorldRepository {
+public interface Worlds {
 
     Optional<World> find();
 

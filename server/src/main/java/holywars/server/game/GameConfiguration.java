@@ -1,10 +1,10 @@
 package holywars.server.game;
 
 import holywars.game.NewGame;
-import holywars.player.PlayerRepository;
-import holywars.town.TownRepository;
+import holywars.player.Players;
+import holywars.town.Towns;
 import holywars.world.WorldGenerator;
-import holywars.world.WorldRepository;
+import holywars.world.Worlds;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,8 +17,8 @@ class GameConfiguration {
     }
 
     @Bean
-    NewGame newGame(WorldRepository worldRepository, PlayerRepository playerRepository,
-            TownRepository townRepository, WorldGenerator worldGenerator) {
-        return new NewGame(worldRepository, playerRepository, townRepository, worldGenerator);
+    NewGame newGame(Worlds worlds, Players players,
+            Towns towns, WorldGenerator worldGenerator) {
+        return new NewGame(worlds, players, towns, worldGenerator);
     }
 }

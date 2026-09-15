@@ -7,9 +7,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import holywars.player.PlayerRepository;
+import holywars.player.Players;
 import holywars.town.Town;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,16 +24,16 @@ class NewGameWebFlowTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private PlayerRepository playerRepository;
+    private Players players;
 
     @Autowired
-    private TownRepository townRepository;
+    private Towns towns;
 
     @Test
     void startingANewGameLetsThePlayerReachTheirCapital() throws Exception {
         mockMvc.perform(post("/world")).andExpect(status().is3xxRedirection());
 
-        Town town = townRepository.findByOwner(playerRepository.find().orElseThrow().id()).orElseThrow();
+        Town town = towns.findByOwner(players.find().orElseThrow().id()).orElseThrow();
 
         mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())

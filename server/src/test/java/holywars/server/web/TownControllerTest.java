@@ -13,17 +13,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import holywars.player.Player;
 import holywars.player.PlayerId;
-import holywars.player.PlayerRepository;
+import holywars.player.Players;
 import holywars.town.BuildingType;
 import holywars.town.Town;
 import holywars.town.TownId;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import holywars.world.Coordinate;
 import holywars.world.Island;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import holywars.world.World;
-import holywars.world.WorldRepository;
+import holywars.world.Worlds;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -51,20 +51,20 @@ class TownControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private TownRepository townRepository;
+    private Towns towns;
 
     @MockitoBean
-    private WorldRepository worldRepository;
+    private Worlds worlds;
 
     @MockitoBean
-    private PlayerRepository playerRepository;
+    private Players players;
 
     @MockitoBean
     private CapitalHeaders capitalHeaders;
 
     @Test
     void unknownTownReturns404() throws Exception {
-        given(townRepository.find(new TownId(1))).willReturn(Optional.empty());
+        given(towns.find(new TownId(1))).willReturn(Optional.empty());
 
         mockMvc.perform(get("/towns/1")).andExpect(status().isNotFound());
     }
@@ -76,9 +76,9 @@ class TownControllerTest {
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find()).willReturn(Optional.of(player));
-        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
+        given(players.find()).willReturn(Optional.of(player));
+        given(worlds.find()).willReturn(Optional.of(world));
         given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/towns/1"))
@@ -98,9 +98,9 @@ class TownControllerTest {
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find()).willReturn(Optional.of(player));
-        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
+        given(players.find()).willReturn(Optional.of(player));
+        given(worlds.find()).willReturn(Optional.of(world));
         given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         MvcResult result = mockMvc.perform(get("/towns/1"))
@@ -124,9 +124,9 @@ class TownControllerTest {
                 LuxuryResource.WINE, NOW);
         World world = new World(List.of(island));
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find()).willReturn(Optional.of(player));
-        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
+        given(players.find()).willReturn(Optional.of(player));
+        given(worlds.find()).willReturn(Optional.of(world));
         given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/towns/1"))
@@ -154,9 +154,9 @@ class TownControllerTest {
                 LuxuryResource.WINE, NOW);
         World world = new World(List.of(island));
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find()).willReturn(Optional.of(player));
-        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
+        given(players.find()).willReturn(Optional.of(player));
+        given(worlds.find()).willReturn(Optional.of(world));
         given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/towns/1"))
@@ -173,15 +173,15 @@ class TownControllerTest {
                 LuxuryResource.WINE, NOW);
         World world = new World(List.of(island));
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find()).willReturn(Optional.of(player));
-        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
+        given(players.find()).willReturn(Optional.of(player));
+        given(worlds.find()).willReturn(Optional.of(world));
         given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/towns/1")).andExpect(status().isOk());
 
-        verify(townRepository, never()).save(any());
-        verify(playerRepository, never()).save(any());
+        verify(towns, never()).save(any());
+        verify(players, never()).save(any());
     }
 
     @Test
@@ -191,9 +191,9 @@ class TownControllerTest {
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find()).willReturn(Optional.of(player));
-        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
+        given(players.find()).willReturn(Optional.of(player));
+        given(worlds.find()).willReturn(Optional.of(world));
         given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/towns/1"))
@@ -211,20 +211,20 @@ class TownControllerTest {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
                 LuxuryResource.WINE, foundedAt)
                 .startingConstruction(2, BuildingType.WAREHOUSE, startedAt);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
         mockMvc.perform(get("/towns/1/scene"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Almacén nivel 1")));
 
-        verify(townRepository, never()).save(any());
+        verify(towns, never()).save(any());
     }
 
     @Test
     void sceneEndpointRendersOnlyTheTownSceneSvg() throws Exception {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
         mockMvc.perform(get("/towns/1/scene"))
                 .andExpect(status().isOk())
@@ -240,8 +240,8 @@ class TownControllerTest {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find()).willReturn(Optional.of(player));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
+        given(players.find()).willReturn(Optional.of(player));
 
         mockMvc.perform(get("/towns/1/resources"))
                 .andExpect(status().isOk())
@@ -259,9 +259,9 @@ class TownControllerTest {
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         World world = new World(List.of(island));
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find()).willReturn(Optional.of(player));
-        given(worldRepository.find()).willReturn(Optional.of(world));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
+        given(players.find()).willReturn(Optional.of(player));
+        given(worlds.find()).willReturn(Optional.of(world));
         given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
 
         mockMvc.perform(get("/towns/1"))
@@ -278,7 +278,7 @@ class TownControllerTest {
     void sceneFragmentKeepsItsLiveUpdateAttributesAfterAnOutOfBandSwap() throws Exception {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
         mockMvc.perform(get("/towns/1/scene"))
                 .andExpect(status().isOk())
@@ -291,8 +291,8 @@ class TownControllerTest {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
-        given(playerRepository.find()).willReturn(Optional.of(player));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
+        given(players.find()).willReturn(Optional.of(player));
 
         mockMvc.perform(get("/towns/1/resources"))
                 .andExpect(status().isOk())

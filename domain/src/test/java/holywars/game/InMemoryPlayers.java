@@ -1,10 +1,10 @@
 package holywars.game;
 
 import holywars.player.Player;
-import holywars.player.PlayerRepository;
+import holywars.player.Players;
 import java.util.Optional;
 
-final class InMemoryPlayerRepository implements PlayerRepository {
+final class InMemoryPlayers implements Players {
 
     private Player player;
     private int saveCount;

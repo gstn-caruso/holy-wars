@@ -10,7 +10,7 @@ import holywars.town.BuildingType;
 import holywars.town.SlotNotFreeException;
 import holywars.town.Town;
 import holywars.town.TownId;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import java.time.Clock;
@@ -35,7 +35,7 @@ class ConstructionServiceTest {
     private ConstructionService constructionService;
 
     @Autowired
-    private TownRepository townRepository;
+    private Towns towns;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -56,11 +56,11 @@ class ConstructionServiceTest {
     void startingAConstructionPersistsTheUnderConstructionSlotAndTheSpentWood() {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
-        townRepository.save(town);
+        towns.save(town);
 
         constructionService.start(new TownId(1), 2, BuildingType.WAREHOUSE);
 
-        Town found = townRepository.find(new TownId(1)).orElseThrow();
+        Town found = towns.find(new TownId(1)).orElseThrow();
         assertThat(found.slot(2).state(1)).isEqualTo(BuildingSlotState.UNDER_CONSTRUCTION);
         assertThat(found.resources().woodAmount()).isEqualTo(500 - BuildingType.WAREHOUSE.woodCost());
     }
@@ -69,7 +69,7 @@ class ConstructionServiceTest {
     void startingAConstructionSchedulesTheClockworkFinishForTheSavedTown() {
         Town town = Town.founded(new TownId(3), new PlayerId(1), new IslandId(1), 1, "Corinto",
                 LuxuryResource.WINE, NOW);
-        townRepository.save(town);
+        towns.save(town);
 
         Town updated = constructionService.start(new TownId(3), 2, BuildingType.WAREHOUSE);
 
@@ -86,12 +86,12 @@ class ConstructionServiceTest {
     void startingAConstructionOnANonFreeSlotPropagatesWithoutPersisting() {
         Town town = Town.founded(new TownId(2), new PlayerId(1), new IslandId(1), 1, "Esparta",
                 LuxuryResource.WINE, NOW);
-        townRepository.save(town);
+        towns.save(town);
 
         assertThatThrownBy(() -> constructionService.start(new TownId(2), 1, BuildingType.WAREHOUSE))
                 .isInstanceOf(SlotNotFreeException.class);
 
-        assertThat(townRepository.find(new TownId(2))).contains(town);
+        assertThat(towns.find(new TownId(2))).contains(town);
     }
 
     @TestConfiguration

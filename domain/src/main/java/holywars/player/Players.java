@@ -2,7 +2,7 @@ package holywars.player;
 
 import java.util.Optional;
 
-public interface PlayerRepository {
+public interface Players {
 
     Optional<Player> find();
 

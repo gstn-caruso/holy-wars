@@ -13,11 +13,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import holywars.player.Player;
 import holywars.player.PlayerId;
-import holywars.player.PlayerRepository;
+import holywars.player.Players;
 import holywars.server.game.NewGameService;
 import holywars.town.Town;
 import holywars.town.TownId;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import java.time.Instant;
@@ -37,17 +37,17 @@ class HomeControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private PlayerRepository playerRepository;
+    private Players players;
 
     @MockitoBean
-    private TownRepository townRepository;
+    private Towns towns;
 
     @MockitoBean
     private NewGameService newGameService;
 
     @Test
     void showsTheIndexPageWithoutAPlayer() throws Exception {
-        given(playerRepository.find()).willReturn(Optional.empty());
+        given(players.find()).willReturn(Optional.empty());
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
@@ -59,7 +59,7 @@ class HomeControllerTest {
 
     @Test
     void showsTheShellWithoutAResourceBarOrABreadcrumb() throws Exception {
-        given(playerRepository.find()).willReturn(Optional.empty());
+        given(players.find()).willReturn(Optional.empty());
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
@@ -73,8 +73,8 @@ class HomeControllerTest {
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
         Town town = Town.founded(new TownId(5), player.id(), new IslandId(1), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
-        given(playerRepository.find()).willReturn(Optional.of(player));
-        given(townRepository.findByOwner(player.id())).willReturn(Optional.of(town));
+        given(players.find()).willReturn(Optional.of(player));
+        given(towns.findByOwner(player.id())).willReturn(Optional.of(town));
 
         mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())

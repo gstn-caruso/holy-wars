@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import holywars.player.Player;
 import holywars.player.PlayerId;
-import holywars.player.PlayerRepository;
+import holywars.player.Players;
 import holywars.resources.NotEnoughResourcesException;
 import holywars.server.game.ConstructionService;
 import holywars.server.game.UnknownTownException;
@@ -21,7 +21,7 @@ import holywars.town.MismatchedBuildingTypeException;
 import holywars.town.SlotNotFreeException;
 import holywars.town.Town;
 import holywars.town.TownId;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import java.time.Clock;
@@ -51,16 +51,16 @@ class ConstructionControllerTest {
     private ConstructionService constructionService;
 
     @MockitoBean
-    private TownRepository townRepository;
+    private Towns towns;
 
     @MockitoBean
-    private PlayerRepository playerRepository;
+    private Players players;
 
     @Test
     void buildMenuEndpointRendersTheFreeSlotsAllowedOptionsWithAPostButtonPerType() throws Exception {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
         mockMvc.perform(get("/towns/1/slots/2/build-menu"))
                 .andExpect(status().isOk())
@@ -79,7 +79,7 @@ class ConstructionControllerTest {
                 .startingConstruction(2, BuildingType.WAREHOUSE, NOW);
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
         given(constructionService.start(new TownId(1), 2, BuildingType.WAREHOUSE)).willReturn(updated);
-        given(playerRepository.find()).willReturn(Optional.of(player));
+        given(players.find()).willReturn(Optional.of(player));
 
         mockMvc.perform(post("/towns/1/slots/2/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
@@ -96,7 +96,7 @@ class ConstructionControllerTest {
                 LuxuryResource.WINE, NOW);
         given(constructionService.start(new TownId(1), 2, BuildingType.WAREHOUSE))
                 .willThrow(new NotEnoughResourcesException("wood"));
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
         mockMvc.perform(post("/towns/1/slots/2/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
@@ -109,7 +109,7 @@ class ConstructionControllerTest {
                 LuxuryResource.WINE, NOW);
         given(constructionService.start(new TownId(1), 1, BuildingType.WAREHOUSE))
                 .willThrow(new SlotNotFreeException(1, BuildingSlotState.OCCUPIED));
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
         mockMvc.perform(post("/towns/1/slots/1/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
@@ -122,7 +122,7 @@ class ConstructionControllerTest {
                 LuxuryResource.WINE, NOW);
         given(constructionService.start(new TownId(1), 12, BuildingType.WAREHOUSE))
                 .willThrow(new MismatchedBuildingTypeException(BuildingSlotKind.WALL, BuildingType.WAREHOUSE));
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
         mockMvc.perform(post("/towns/1/slots/12/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
@@ -135,7 +135,7 @@ class ConstructionControllerTest {
                 LuxuryResource.WINE, NOW);
         given(constructionService.start(new TownId(1), 20, BuildingType.WAREHOUSE))
                 .willThrow(new InvalidBuildingSlotPositionException(20));
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
         mockMvc.perform(post("/towns/1/slots/20/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
@@ -146,7 +146,7 @@ class ConstructionControllerTest {
     void buildMenuForAnInvalidSlotPositionShowsItDoesNotExist() throws Exception {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
         mockMvc.perform(get("/towns/1/slots/20/build-menu"))
                 .andExpect(status().isOk())
@@ -155,7 +155,7 @@ class ConstructionControllerTest {
 
     @Test
     void buildMenuForAnUnknownTownReturns404() throws Exception {
-        given(townRepository.find(new TownId(404))).willReturn(Optional.empty());
+        given(towns.find(new TownId(404))).willReturn(Optional.empty());
 
         mockMvc.perform(get("/towns/404/slots/2/build-menu")).andExpect(status().isNotFound());
     }

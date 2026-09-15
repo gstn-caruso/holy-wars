@@ -10,7 +10,7 @@ import holywars.player.PlayerId;
 import holywars.server.game.TownClockwork;
 import holywars.town.Town;
 import holywars.town.TownId;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import java.time.Instant;
@@ -32,14 +32,14 @@ class TownEventsControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private TownRepository townRepository;
+    private Towns towns;
 
     @MockitoBean
     private TownClockwork clockwork;
 
     @Test
     void subscribingToAnUnknownTownReturns404() throws Exception {
-        given(townRepository.find(new TownId(404))).willReturn(Optional.empty());
+        given(towns.find(new TownId(404))).willReturn(Optional.empty());
 
         mockMvc.perform(get("/towns/404/events")).andExpect(status().isNotFound());
     }
@@ -48,7 +48,7 @@ class TownEventsControllerTest {
     void subscribingToAKnownTownStartsAnEventStream() throws Exception {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas", LuxuryResource.WINE,
                 NOW);
-        given(townRepository.find(new TownId(1))).willReturn(Optional.of(town));
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
         given(clockwork.subscribe(new TownId(1))).willReturn(new SseEmitter());
 
         mockMvc.perform(get("/towns/1/events"))

@@ -3,7 +3,7 @@ package holywars.town;
 import holywars.player.PlayerId;
 import java.util.Optional;
 
-public interface TownRepository {
+public interface Towns {
 
     Optional<Town> find(TownId id);
 

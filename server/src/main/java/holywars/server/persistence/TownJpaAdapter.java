@@ -6,7 +6,7 @@ import holywars.town.BuildingSlot;
 import holywars.town.BuildingSlots;
 import holywars.town.Town;
 import holywars.town.TownId;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import holywars.world.IslandId;
 import holywars.world.LuxuryResource;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 @Repository
-class TownJpaAdapter implements TownRepository {
+class TownJpaAdapter implements Towns {
 
     private final TownJpaRepository townJpaRepository;
 

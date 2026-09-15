@@ -3,12 +3,12 @@ package holywars.game;
 import holywars.player.PlayerId;
 import holywars.town.Town;
 import holywars.town.TownId;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-final class InMemoryTownRepository implements TownRepository {
+final class InMemoryTowns implements Towns {
 
     private final Map<TownId, Town> townsById = new HashMap<>();
     private int saveCount;

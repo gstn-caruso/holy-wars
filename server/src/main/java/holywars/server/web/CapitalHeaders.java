@@ -2,7 +2,7 @@ package holywars.server.web;
 
 import holywars.player.Player;
 import holywars.town.Town;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import holywars.world.Island;
 import holywars.world.World;
 import java.time.Clock;
@@ -12,16 +12,16 @@ import org.springframework.stereotype.Component;
 @Component
 class CapitalHeaders {
 
-    private final TownRepository townRepository;
+    private final Towns towns;
     private final Clock clock;
 
-    CapitalHeaders(TownRepository townRepository, Clock clock) {
-        this.townRepository = townRepository;
+    CapitalHeaders(Towns towns, Clock clock) {
+        this.towns = towns;
         this.clock = clock;
     }
 
     Optional<CapitalHeaderView> forPlayer(World world, Player player) {
-        return townRepository.findByOwner(player.id())
+        return towns.findByOwner(player.id())
                 .map(capital -> buildHeader(world, player, capital));
     }
 
