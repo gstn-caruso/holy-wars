@@ -1,4 +1,4 @@
-package holywars.server.game;
+package holywars.server;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

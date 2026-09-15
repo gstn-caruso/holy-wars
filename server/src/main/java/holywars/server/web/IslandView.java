@@ -1,5 +1,6 @@
 package holywars.server.web;
 
+import holywars.server.LuxuryResourceIcon;
 import holywars.world.Island;
 import holywars.world.IslandPlot;
 import java.util.List;

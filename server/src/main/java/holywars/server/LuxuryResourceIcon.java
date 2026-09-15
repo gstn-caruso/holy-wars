@@ -1,13 +1,13 @@
-package holywars.server.web;
+package holywars.server;
 
 import holywars.world.LuxuryResource;
 
-final class LuxuryResourceIcon {
+public final class LuxuryResourceIcon {
 
     private LuxuryResourceIcon() {
     }
 
-    static String pathFor(LuxuryResource resource) {
+    public static String pathFor(LuxuryResource resource) {
         return "/img/resource-" + resource.name().toLowerCase() + ".svg";
     }
 }

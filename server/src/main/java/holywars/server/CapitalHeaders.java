@@ -1,4 +1,4 @@
-package holywars.server.web;
+package holywars.server;
 
 import holywars.player.Player;
 import holywars.town.Town;
@@ -10,7 +10,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component
-class CapitalHeaders {
+public class CapitalHeaders {
 
     private final Towns towns;
     private final Clock clock;
@@ -20,7 +20,7 @@ class CapitalHeaders {
         this.clock = clock;
     }
 
-    Optional<CapitalHeaderView> forPlayer(World world, Player player) {
+    public Optional<CapitalHeaderView> forPlayer(World world, Player player) {
         return towns.findByOwner(player.id())
                 .map(capital -> buildHeader(world, player, capital));
     }

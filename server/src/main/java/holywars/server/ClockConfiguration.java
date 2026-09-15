@@ -1,4 +1,4 @@
-package holywars.server.game;
+package holywars.server;
 
 import java.time.Clock;
 import org.springframework.context.annotation.Bean;

@@ -10,6 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import holywars.player.Player;
 import holywars.player.PlayerId;
 import holywars.player.Players;
+import holywars.server.CapitalHeaderView;
+import holywars.server.CapitalHeaders;
+import holywars.server.ResourceBarView;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.Towns;

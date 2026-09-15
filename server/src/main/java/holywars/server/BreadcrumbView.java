@@ -1,25 +1,25 @@
-package holywars.server.web;
+package holywars.server;
 
 import holywars.town.Town;
 import holywars.world.Island;
 import java.util.List;
 
-record BreadcrumbView(List<Crumb> crumbs) {
+public record BreadcrumbView(List<Crumb> crumbs) {
 
     record Crumb(String label, String href) {
     }
 
     private static final Crumb WORLD_CRUMB = new Crumb("Mundo", "/map");
 
-    static BreadcrumbView worldOnly() {
+    public static BreadcrumbView worldOnly() {
         return new BreadcrumbView(List.of(WORLD_CRUMB));
     }
 
-    static BreadcrumbView upToIsland(Island island) {
+    public static BreadcrumbView upToIsland(Island island) {
         return new BreadcrumbView(List.of(WORLD_CRUMB, islandCrumb(island)));
     }
 
-    static BreadcrumbView upToTown(Island island, Town town) {
+    public static BreadcrumbView upToTown(Island island, Town town) {
         return new BreadcrumbView(List.of(WORLD_CRUMB, islandCrumb(island), townCrumb(town)));
     }
 

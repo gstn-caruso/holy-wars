@@ -1,5 +1,6 @@
 package holywars.server.web;
 
+import holywars.server.LuxuryResourceIcon;
 import holywars.world.Island;
 
 record MapCellView(boolean island, long islandId, String islandName, String iconPath, String villageCountLabel) {

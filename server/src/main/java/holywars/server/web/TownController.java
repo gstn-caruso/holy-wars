@@ -2,6 +2,9 @@ package holywars.server.web;
 
 import holywars.player.Player;
 import holywars.player.Players;
+import holywars.server.BreadcrumbView;
+import holywars.server.CapitalHeaders;
+import holywars.server.ResourceBarView;
 import holywars.server.game.UnknownTownException;
 import holywars.town.Town;
 import holywars.town.TownId;
