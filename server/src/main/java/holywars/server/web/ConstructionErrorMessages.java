@@ -1,18 +1,18 @@
 package holywars.server.web;
 
 import holywars.resources.NotEnoughResourcesException;
-import holywars.town.InvalidBuildingSlotPositionException;
+import holywars.town.InvalidTownPlotPositionException;
 import holywars.town.MismatchedBuildingTypeException;
-import holywars.town.SlotNotFreeException;
+import holywars.town.TownPlotNotFreeException;
 import java.util.Map;
 
 final class ConstructionErrorMessages {
 
     private static final Map<Class<? extends RuntimeException>, String> MESSAGES = Map.of(
             NotEnoughResourcesException.class, "No alcanzan los recursos",
-            SlotNotFreeException.class, "La parcela no está libre",
+            TownPlotNotFreeException.class, "La parcela no está libre",
             MismatchedBuildingTypeException.class, "Ese edificio no va en esa parcela",
-            InvalidBuildingSlotPositionException.class, "La parcela no existe");
+            InvalidTownPlotPositionException.class, "La parcela no existe");
 
     private ConstructionErrorMessages() {
     }

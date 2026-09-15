@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import holywars.player.PlayerId;
 import holywars.town.Building;
-import holywars.town.BuildingSlots;
+import holywars.town.TownPlots;
 import holywars.town.BuildingType;
 import holywars.town.Construction;
 import holywars.town.Town;
@@ -90,7 +90,7 @@ class TownJpaAdapterTest {
 
         Town found = townJpaAdapter.find(new TownId(4)).orElseThrow();
         assertThat(found).isEqualTo(town);
-        assertThat(found.slot(2).building()).contains(new Building(BuildingType.WAREHOUSE, 1));
+        assertThat(found.plot(2).building()).contains(new Building(BuildingType.WAREHOUSE, 1));
     }
 
     @Test
@@ -104,9 +104,9 @@ class TownJpaAdapterTest {
 
         Town found = townJpaAdapter.find(new TownId(5)).orElseThrow();
         assertThat(found).isEqualTo(town);
-        assertThat(found.slot(2).construction()).contains(Construction.startingAt(BuildingType.WAREHOUSE, startedAt));
-        assertThat(found.slot(2).construction().orElseThrow().startedAt()).isEqualTo(startedAt);
-        assertThat(found.slot(2).construction().orElseThrow().finishesAt())
+        assertThat(found.plot(2).construction()).contains(Construction.startingAt(BuildingType.WAREHOUSE, startedAt));
+        assertThat(found.plot(2).construction().orElseThrow().startedAt()).isEqualTo(startedAt);
+        assertThat(found.plot(2).construction().orElseThrow().finishesAt())
                 .isEqualTo(startedAt.plus(BuildingType.WAREHOUSE.buildTime()));
     }
 
@@ -149,7 +149,7 @@ class TownJpaAdapterTest {
                 8L, 3L, LuxuryResource.WINE.name(), 100L, "Rodas", 7L, 1, Timestamp.from(FOUNDED_AT), 500L);
 
         Town found = townJpaAdapter.find(new TownId(8)).orElseThrow();
-        assertThat(found.buildingSlots()).isEqualTo(BuildingSlots.standard());
+        assertThat(found.townPlots()).isEqualTo(TownPlots.standard());
         assertThat(countBuildingSlotRowsFor(8L)).isZero();
 
         townJpaAdapter.save(found);

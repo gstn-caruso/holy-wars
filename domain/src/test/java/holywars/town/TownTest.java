@@ -19,11 +19,11 @@ class TownTest {
     private static final Instant FOUNDED_AT = Instant.parse("2026-01-01T00:00:00Z");
 
     @Test
-    void foundedTownHasTheStandardBuildingSlotLayoutAndTownHallLevelOne() {
+    void foundedTownHasTheStandardBuildingPlotLayoutAndTownHallLevelOne() {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
                 LuxuryResource.WINE, FOUNDED_AT);
 
-        assertThat(town.buildingSlots()).isEqualTo(BuildingSlots.standard());
+        assertThat(town.townPlots()).isEqualTo(TownPlots.standard());
         assertThat(town.townHallLevel()).isEqualTo(1);
     }
 
@@ -61,41 +61,41 @@ class TownTest {
     }
 
     @Test
-    void slotReturnsTheBuildingSlotAtThatPosition() {
+    void plotReturnsTheBuildingPlotAtThatPosition() {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
                 LuxuryResource.WINE, FOUNDED_AT);
 
-        assertThat(town.slot(1)).isEqualTo(BuildingSlots.standard().get(0));
+        assertThat(town.plot(1)).isEqualTo(TownPlots.standard().get(0));
     }
 
     @Test
-    void slotAtANonExistentPositionIsRejected() {
+    void plotAtANonExistentPositionIsRejected() {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
                 LuxuryResource.WINE, FOUNDED_AT);
 
-        assertThatThrownBy(() -> town.slot(15))
-                .isInstanceOf(InvalidBuildingSlotPositionException.class);
+        assertThatThrownBy(() -> town.plot(15))
+                .isInstanceOf(InvalidTownPlotPositionException.class);
     }
 
     @Test
     void aTownWithoutExactlyItsFourteenDistinctPositionsIsRejected() {
-        List<BuildingSlot> missingOnePosition = new ArrayList<>(BuildingSlots.standard());
+        List<TownPlot> missingOnePosition = new ArrayList<>(TownPlots.standard());
         missingOnePosition.remove(missingOnePosition.size() - 1);
 
         assertThatThrownBy(() -> new Town(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
                 missingOnePosition, TownResources.starting(LuxuryResource.WINE, FOUNDED_AT)))
-                .isInstanceOf(InvalidBuildingSlotCountException.class);
+                .isInstanceOf(InvalidTownPlotCountException.class);
     }
 
     @Test
-    void aTownWithARepeatedBuildingSlotPositionIsRejected() {
-        List<BuildingSlot> repeatedPosition = new ArrayList<>(BuildingSlots.standard());
-        repeatedPosition.set(13, new BuildingSlot(13, BuildingSlotKind.COAST, 1));
+    void aTownWithARepeatedBuildingPlotPositionIsRejected() {
+        List<TownPlot> repeatedPosition = new ArrayList<>(TownPlots.standard());
+        repeatedPosition.set(13, new TownPlot(13, TownPlotKind.COAST, 1));
 
         assertThatThrownBy(() -> new Town(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
                 repeatedPosition, TownResources.starting(LuxuryResource.WINE, FOUNDED_AT)))
-                .isInstanceOf(InvalidBuildingSlotCountException.class)
-                .hasMessage("A town must have exactly 14 distinct building slot positions, got 13");
+                .isInstanceOf(InvalidTownPlotCountException.class)
+                .hasMessage("A town must have exactly 14 distinct building plot positions, got 13");
     }
 
     @Test
@@ -107,7 +107,7 @@ class TownTest {
 
         assertThat(underConstruction.resources().woodAmount()).isEqualTo(460);
         assertThat(underConstruction.resources().luxuryAmount()).isEqualTo(100);
-        assertThat(underConstruction.slot(2).construction())
+        assertThat(underConstruction.plot(2).construction())
                 .contains(Construction.startingAt(BuildingType.WAREHOUSE, FOUNDED_AT));
     }
 
@@ -117,18 +117,18 @@ class TownTest {
                 LuxuryResource.WINE, FOUNDED_AT);
 
         assertThatThrownBy(() -> town.startingConstruction(15, BuildingType.WAREHOUSE, FOUNDED_AT))
-                .isInstanceOf(InvalidBuildingSlotPositionException.class);
+                .isInstanceOf(InvalidTownPlotPositionException.class);
         assertThat(town.resources().woodAmount()).isEqualTo(500);
-        assertThat(town.buildingSlots()).isEqualTo(BuildingSlots.standard());
+        assertThat(town.townPlots()).isEqualTo(TownPlots.standard());
     }
 
     @Test
-    void startingConstructionOnASlotThatIsNotFreeLeavesResourcesIntact() {
+    void startingConstructionOnAPlotThatIsNotFreeLeavesResourcesIntact() {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
                 LuxuryResource.WINE, FOUNDED_AT);
 
         assertThatThrownBy(() -> town.startingConstruction(5, BuildingType.WAREHOUSE, FOUNDED_AT))
-                .isInstanceOf(SlotNotFreeException.class);
+                .isInstanceOf(TownPlotNotFreeException.class);
         assertThat(town.resources().woodAmount()).isEqualTo(500);
         assertThat(town.resources().luxuryAmount()).isEqualTo(100);
     }
@@ -154,22 +154,22 @@ class TownTest {
     }
 
     @Test
-    void startingConstructionOnALockedSlotIsRejectedBeforeSpending() {
+    void startingConstructionOnALockedPlotIsRejectedBeforeSpending() {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
                 LuxuryResource.WINE, FOUNDED_AT).spend(450, 0);
 
         assertThatThrownBy(() -> town.startingConstruction(5, BuildingType.BARRACKS, FOUNDED_AT))
-                .isInstanceOf(SlotNotFreeException.class);
+                .isInstanceOf(TownPlotNotFreeException.class);
     }
 
     @Test
-    void startingConstructionWithoutEnoughResourcesLeavesTheSlotFree() {
+    void startingConstructionWithoutEnoughResourcesLeavesThePlotFree() {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
                 LuxuryResource.WINE, FOUNDED_AT).spend(450, 0);
 
         assertThatThrownBy(() -> town.startingConstruction(2, BuildingType.BARRACKS, FOUNDED_AT))
                 .isInstanceOf(NotEnoughResourcesException.class);
-        assertThat(town.slot(2).state(town.townHallLevel())).isEqualTo(BuildingSlotState.FREE);
+        assertThat(town.plot(2).state(town.townHallLevel())).isEqualTo(TownPlotState.FREE);
     }
 
     @Test
@@ -181,8 +181,8 @@ class TownTest {
 
         Town advanced = underConstruction.advancedTo(FOUNDED_AT.plus(Duration.ofMinutes(7)));
 
-        assertThat(advanced.slot(2).building()).contains(new Building(BuildingType.WAREHOUSE, 1));
-        assertThat(advanced.slot(3).construction())
+        assertThat(advanced.plot(2).building()).contains(new Building(BuildingType.WAREHOUSE, 1));
+        assertThat(advanced.plot(3).construction())
                 .contains(Construction.startingAt(BuildingType.TAVERN, FOUNDED_AT));
     }
 
@@ -214,8 +214,8 @@ class TownTest {
 
     @Test
     void aTownWithoutAnOccupiedTownHallIsRejected() {
-        List<BuildingSlot> withoutAnOccupiedTownHall = new ArrayList<>(BuildingSlots.standard());
-        withoutAnOccupiedTownHall.set(0, new BuildingSlot(1, BuildingSlotKind.TOWN_HALL, 1));
+        List<TownPlot> withoutAnOccupiedTownHall = new ArrayList<>(TownPlots.standard());
+        withoutAnOccupiedTownHall.set(0, new TownPlot(1, TownPlotKind.TOWN_HALL, 1));
 
         assertThatThrownBy(() -> new Town(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
                 withoutAnOccupiedTownHall, TownResources.starting(LuxuryResource.WINE, FOUNDED_AT)))

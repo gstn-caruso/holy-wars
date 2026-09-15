@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 
 import holywars.player.PlayerId;
-import holywars.town.BuildingSlotState;
+import holywars.town.TownPlotState;
 import holywars.town.BuildingType;
-import holywars.town.SlotNotFreeException;
+import holywars.town.TownPlotNotFreeException;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.Towns;
@@ -61,7 +61,7 @@ class ConstructionServiceTest {
         constructionService.start(new TownId(1), 2, BuildingType.WAREHOUSE);
 
         Town found = towns.find(new TownId(1)).orElseThrow();
-        assertThat(found.slot(2).state(1)).isEqualTo(BuildingSlotState.UNDER_CONSTRUCTION);
+        assertThat(found.plot(2).state(1)).isEqualTo(TownPlotState.UNDER_CONSTRUCTION);
         assertThat(found.resources().woodAmount()).isEqualTo(500 - BuildingType.WAREHOUSE.woodCost());
     }
 
@@ -89,7 +89,7 @@ class ConstructionServiceTest {
         towns.save(town);
 
         assertThatThrownBy(() -> constructionService.start(new TownId(2), 1, BuildingType.WAREHOUSE))
-                .isInstanceOf(SlotNotFreeException.class);
+                .isInstanceOf(TownPlotNotFreeException.class);
 
         assertThat(towns.find(new TownId(2))).contains(town);
     }

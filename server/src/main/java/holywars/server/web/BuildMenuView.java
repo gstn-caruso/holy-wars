@@ -1,7 +1,7 @@
 package holywars.server.web;
 
-import holywars.town.BuildingSlot;
-import holywars.town.BuildingSlotState;
+import holywars.town.TownPlot;
+import holywars.town.TownPlotState;
 import holywars.town.Town;
 import java.time.Instant;
 import java.util.List;
@@ -22,23 +22,23 @@ record BuildMenuView(long townId, int position, String title, List<BuildOptionVi
 
     private static BuildMenuView of(Town town, int position, Instant now, String error) {
         Town advanced = town.advancedTo(now);
-        Optional<BuildingSlot> slot = advanced.buildingSlots().stream()
+        Optional<TownPlot> plot = advanced.townPlots().stream()
                 .filter(candidate -> candidate.position() == position)
                 .findFirst();
-        if (slot.isEmpty()) {
+        if (plot.isEmpty()) {
             return new BuildMenuView(advanced.id().value(), position, "Parcela " + position, List.of(), null,
                     INVALID_POSITION_ERROR);
         }
         int townHallLevel = advanced.townHallLevel();
-        BuildingSlotState state = slot.get().state(townHallLevel);
-        List<BuildOptionView> options = state == BuildingSlotState.FREE
-                ? slot.get().allowedTypes(townHallLevel).stream().map(BuildOptionView::of).toList()
+        TownPlotState state = plot.get().state(townHallLevel);
+        List<BuildOptionView> options = state == TownPlotState.FREE
+                ? plot.get().allowedTypes(townHallLevel).stream().map(BuildOptionView::of).toList()
                 : List.of();
         return new BuildMenuView(advanced.id().value(), position, "Parcela " + position, options,
-                statusTextFor(slot.get(), state, now), error);
+                statusTextFor(plot.get(), state, now), error);
     }
 
-    private static String statusTextFor(BuildingSlot slot, BuildingSlotState state, Instant now) {
-        return state == BuildingSlotState.FREE ? null : SlotLabel.of(slot, state, now);
+    private static String statusTextFor(TownPlot plot, TownPlotState state, Instant now) {
+        return state == TownPlotState.FREE ? null : SlotLabel.of(plot, state, now);
     }
 }

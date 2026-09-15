@@ -2,7 +2,7 @@ package holywars.town;
 
 public final class MismatchedBuildingTypeException extends RuntimeException {
 
-    public MismatchedBuildingTypeException(BuildingSlotKind slotKind, BuildingType type) {
-        super("Cannot build a " + type + " in a " + slotKind + " slot");
+    public MismatchedBuildingTypeException(TownPlotKind plotKind, BuildingType type) {
+        super("Cannot build a " + type + " in a " + plotKind + " plot");
     }
 }

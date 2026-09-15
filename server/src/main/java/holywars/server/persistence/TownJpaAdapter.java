@@ -2,8 +2,8 @@ package holywars.server.persistence;
 
 import holywars.player.PlayerId;
 import holywars.resources.TownResources;
-import holywars.town.BuildingSlot;
-import holywars.town.BuildingSlots;
+import holywars.town.TownPlot;
+import holywars.town.TownPlots;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.Towns;
@@ -37,7 +37,7 @@ class TownJpaAdapter implements Towns {
         TownEntity entity = townJpaRepository.findWithSlotsById(town.id().value())
                 .orElseGet(() -> new TownEntity(town));
         entity.updateFrom(town);
-        town.buildingSlots().forEach(entity::putSlot);
+        town.townPlots().forEach(entity::putSlot);
         townJpaRepository.save(entity);
     }
 
@@ -47,8 +47,8 @@ class TownJpaAdapter implements Towns {
                 entity.luxuryTicks(),
                 LuxuryResource.valueOf(entity.luxuryResource()),
                 entity.resourcesUpdatedAt());
-        List<BuildingSlot> slots = entity.slots().isEmpty()
-                ? BuildingSlots.standard()
+        List<TownPlot> slots = entity.slots().isEmpty()
+                ? TownPlots.standard()
                 : entity.slots().stream().map(BuildingSlotEntity::toDomain).toList();
         return Town.reconstituted(
                 new TownId(entity.id()),

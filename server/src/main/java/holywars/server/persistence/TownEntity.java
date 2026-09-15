@@ -1,7 +1,7 @@
 package holywars.server.persistence;
 
 import holywars.resources.TownResources;
-import holywars.town.BuildingSlot;
+import holywars.town.TownPlot;
 import holywars.town.Town;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -61,14 +61,14 @@ class TownEntity {
         this.resourcesUpdatedAt = resources.lastUpdate();
     }
 
-    void putSlot(BuildingSlot slot) {
+    void putSlot(TownPlot plot) {
         Optional<BuildingSlotEntity> existingSlot = slots.stream()
-                .filter(entity -> entity.position() == slot.position())
+                .filter(entity -> entity.position() == plot.position())
                 .findFirst();
         if (existingSlot.isPresent()) {
-            existingSlot.get().updateFrom(slot);
+            existingSlot.get().updateFrom(plot);
         } else {
-            slots.add(new BuildingSlotEntity(this, slot));
+            slots.add(new BuildingSlotEntity(this, plot));
         }
     }
 

@@ -13,12 +13,12 @@ import holywars.player.Players;
 import holywars.resources.NotEnoughResourcesException;
 import holywars.server.game.ConstructionService;
 import holywars.server.game.UnknownTownException;
-import holywars.town.BuildingSlotKind;
-import holywars.town.BuildingSlotState;
+import holywars.town.TownPlotKind;
+import holywars.town.TownPlotState;
 import holywars.town.BuildingType;
-import holywars.town.InvalidBuildingSlotPositionException;
+import holywars.town.InvalidTownPlotPositionException;
 import holywars.town.MismatchedBuildingTypeException;
-import holywars.town.SlotNotFreeException;
+import holywars.town.TownPlotNotFreeException;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.Towns;
@@ -108,7 +108,7 @@ class ConstructionControllerTest {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
         given(constructionService.start(new TownId(1), 1, BuildingType.WAREHOUSE))
-                .willThrow(new SlotNotFreeException(1, BuildingSlotState.OCCUPIED));
+                .willThrow(new TownPlotNotFreeException(1, TownPlotState.OCCUPIED));
         given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
         mockMvc.perform(post("/towns/1/slots/1/build").param("type", "WAREHOUSE"))
@@ -121,7 +121,7 @@ class ConstructionControllerTest {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
         given(constructionService.start(new TownId(1), 12, BuildingType.WAREHOUSE))
-                .willThrow(new MismatchedBuildingTypeException(BuildingSlotKind.WALL, BuildingType.WAREHOUSE));
+                .willThrow(new MismatchedBuildingTypeException(TownPlotKind.WALL, BuildingType.WAREHOUSE));
         given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
         mockMvc.perform(post("/towns/1/slots/12/build").param("type", "WAREHOUSE"))
@@ -134,7 +134,7 @@ class ConstructionControllerTest {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
         given(constructionService.start(new TownId(1), 20, BuildingType.WAREHOUSE))
-                .willThrow(new InvalidBuildingSlotPositionException(20));
+                .willThrow(new InvalidTownPlotPositionException(20));
         given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
         mockMvc.perform(post("/towns/1/slots/20/build").param("type", "WAREHOUSE"))

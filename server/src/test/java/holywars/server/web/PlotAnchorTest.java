@@ -2,7 +2,7 @@ package holywars.server.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import holywars.town.BuildingSlotKind;
+import holywars.town.TownPlotKind;
 import org.junit.jupiter.api.Test;
 
 class PlotAnchorTest {
@@ -11,14 +11,14 @@ class PlotAnchorTest {
     void heightForLandScalesWidthByOneFortyOverOneSeventyTwo() {
         PlotAnchor anchor = new PlotAnchor(600, 330, 172);
 
-        assertThat(anchor.height(BuildingSlotKind.LAND)).isEqualTo(140);
+        assertThat(anchor.height(TownPlotKind.LAND)).isEqualTo(140);
     }
 
     @Test
     void heightForWallScalesWidthByOneElevenOverTwoZeroOne() {
         PlotAnchor anchor = new PlotAnchor(600, 330, 201);
 
-        assertThat(anchor.height(BuildingSlotKind.WALL)).isEqualTo(111);
+        assertThat(anchor.height(TownPlotKind.WALL)).isEqualTo(111);
     }
 
     @Test

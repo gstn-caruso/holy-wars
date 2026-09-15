@@ -9,9 +9,9 @@ record TownSceneView(long townId, int width, int height, List<PlotSceneView> plo
 
     static TownSceneView of(Town town, TownSceneProperties layout, Instant now) {
         Town advanced = town.advancedTo(now);
-        List<PlotSceneView> plots = advanced.buildingSlots().stream()
-                .sorted(Comparator.comparingInt(slot -> layout.anchorFor(slot.position()).cy()))
-                .map(slot -> PlotSceneView.of(slot, advanced.townHallLevel(), layout.anchorFor(slot.position()), now))
+        List<PlotSceneView> plots = advanced.townPlots().stream()
+                .sorted(Comparator.comparingInt(plot -> layout.anchorFor(plot.position()).cy()))
+                .map(plot -> PlotSceneView.of(plot, advanced.townHallLevel(), layout.anchorFor(plot.position()), now))
                 .toList();
         return new TownSceneView(advanced.id().value(), layout.width(), layout.height(), plots);
     }

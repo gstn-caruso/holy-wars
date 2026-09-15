@@ -1,8 +1,8 @@
 package holywars.server.persistence;
 
 import holywars.town.Building;
-import holywars.town.BuildingSlot;
-import holywars.town.BuildingSlotKind;
+import holywars.town.TownPlot;
+import holywars.town.TownPlotKind;
 import holywars.town.BuildingType;
 import holywars.town.Construction;
 import jakarta.persistence.Entity;
@@ -48,19 +48,19 @@ class BuildingSlotEntity {
     protected BuildingSlotEntity() {
     }
 
-    BuildingSlotEntity(TownEntity town, BuildingSlot slot) {
+    BuildingSlotEntity(TownEntity town, TownPlot plot) {
         this.town = town;
-        this.position = slot.position();
-        updateFrom(slot);
+        this.position = plot.position();
+        updateFrom(plot);
     }
 
-    void updateFrom(BuildingSlot slot) {
-        this.kind = slot.kind().name();
-        this.requiredTownHallLevel = slot.requiredTownHallLevel();
-        Optional<Building> building = slot.building();
+    void updateFrom(TownPlot plot) {
+        this.kind = plot.kind().name();
+        this.requiredTownHallLevel = plot.requiredTownHallLevel();
+        Optional<Building> building = plot.building();
         this.buildingType = building.map(occupant -> occupant.type().name()).orElse(null);
         this.buildingLevel = building.map(Building::level).orElse(null);
-        Optional<Construction> construction = slot.construction();
+        Optional<Construction> construction = plot.construction();
         this.constructionType = construction.map(inProgress -> inProgress.type().name()).orElse(null);
         this.constructionStartedAt = construction.map(Construction::startedAt).orElse(null);
         this.constructionFinishesAt = construction.map(Construction::finishesAt).orElse(null);
@@ -70,7 +70,7 @@ class BuildingSlotEntity {
         return position;
     }
 
-    BuildingSlot toDomain() {
+    TownPlot toDomain() {
         Optional<Building> building = buildingType == null
                 ? Optional.empty()
                 : Optional.of(new Building(BuildingType.valueOf(buildingType), buildingLevel));
@@ -78,7 +78,7 @@ class BuildingSlotEntity {
                 ? Optional.empty()
                 : Optional.of(new Construction(BuildingType.valueOf(constructionType), constructionStartedAt,
                         constructionFinishesAt));
-        return new BuildingSlot(position, BuildingSlotKind.valueOf(kind), requiredTownHallLevel, building,
+        return new TownPlot(position, TownPlotKind.valueOf(kind), requiredTownHallLevel, building,
                 construction);
     }
 }

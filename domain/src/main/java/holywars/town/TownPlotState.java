@@ -1,6 +1,6 @@
 package holywars.town;
 
-public enum BuildingSlotState {
+public enum TownPlotState {
     LOCKED,
     FREE,
     OCCUPIED,

@@ -4,15 +4,15 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-public record BuildingSlot(int position, BuildingSlotKind kind, int requiredTownHallLevel,
+public record TownPlot(int position, TownPlotKind kind, int requiredTownHallLevel,
         Optional<Building> building, Optional<Construction> construction) {
 
     static final int MIN_POSITION = 1;
     static final int MAX_POSITION = 14;
 
-    public BuildingSlot {
+    public TownPlot {
         if (position < MIN_POSITION || position > MAX_POSITION) {
-            throw new InvalidBuildingSlotPositionException(position);
+            throw new InvalidTownPlotPositionException(position);
         }
         if (requiredTownHallLevel < 1) {
             throw new InvalidBuildingLevelException(requiredTownHallLevel);
@@ -24,15 +24,15 @@ public record BuildingSlot(int position, BuildingSlotKind kind, int requiredTown
             throw new MismatchedBuildingTypeException(kind, construction.get().type());
         }
         if (building.isPresent() && construction.isPresent()) {
-            throw new ConflictingSlotContentsException(position);
+            throw new ConflictingTownPlotContentsException(position);
         }
     }
 
-    public BuildingSlot(int position, BuildingSlotKind kind, int requiredTownHallLevel) {
+    public TownPlot(int position, TownPlotKind kind, int requiredTownHallLevel) {
         this(position, kind, requiredTownHallLevel, Optional.empty(), Optional.empty());
     }
 
-    public BuildingSlot(int position, BuildingSlotKind kind, int requiredTownHallLevel, Building building) {
+    public TownPlot(int position, TownPlotKind kind, int requiredTownHallLevel, Building building) {
         this(position, kind, requiredTownHallLevel, Optional.of(building), Optional.empty());
     }
 
@@ -41,47 +41,47 @@ public record BuildingSlot(int position, BuildingSlotKind kind, int requiredTown
     }
 
     public boolean isOccupiedTownHall() {
-        return kind == BuildingSlotKind.TOWN_HALL && isOccupied();
+        return kind == TownPlotKind.TOWN_HALL && isOccupied();
     }
 
     public int builtLevel() {
         return building.orElseThrow().level();
     }
 
-    public BuildingSlotState state(int townHallLevel) {
+    public TownPlotState state(int townHallLevel) {
         if (construction.isPresent()) {
-            return BuildingSlotState.UNDER_CONSTRUCTION;
+            return TownPlotState.UNDER_CONSTRUCTION;
         }
         if (isOccupied()) {
-            return BuildingSlotState.OCCUPIED;
+            return TownPlotState.OCCUPIED;
         }
-        return townHallLevel >= requiredTownHallLevel ? BuildingSlotState.FREE : BuildingSlotState.LOCKED;
+        return townHallLevel >= requiredTownHallLevel ? TownPlotState.FREE : TownPlotState.LOCKED;
     }
 
     public List<BuildingType> allowedTypes(int townHallLevel) {
-        return state(townHallLevel) == BuildingSlotState.FREE ? BuildingType.allowedFor(kind) : List.of();
+        return state(townHallLevel) == TownPlotState.FREE ? BuildingType.allowedFor(kind) : List.of();
     }
 
     public Optional<Instant> finishesAt() {
         return construction.map(Construction::finishesAt);
     }
 
-    public BuildingSlot startingConstruction(BuildingType type, int townHallLevel, Instant startedAt) {
-        BuildingSlotState currentState = state(townHallLevel);
-        if (currentState != BuildingSlotState.FREE) {
-            throw new SlotNotFreeException(position, currentState);
+    public TownPlot startingConstruction(BuildingType type, int townHallLevel, Instant startedAt) {
+        TownPlotState currentState = state(townHallLevel);
+        if (currentState != TownPlotState.FREE) {
+            throw new TownPlotNotFreeException(position, currentState);
         }
         if (type.kind() != kind) {
             throw new MismatchedBuildingTypeException(kind, type);
         }
-        return new BuildingSlot(position, kind, requiredTownHallLevel, Optional.empty(),
+        return new TownPlot(position, kind, requiredTownHallLevel, Optional.empty(),
                 Optional.of(Construction.startingAt(type, startedAt)));
     }
 
-    public BuildingSlot advancedTo(Instant now) {
+    public TownPlot advancedTo(Instant now) {
         if (construction.isPresent() && construction.get().isFinishedBy(now)) {
             Building finishedBuilding = new Building(construction.get().type(), 1);
-            return new BuildingSlot(position, kind, requiredTownHallLevel, Optional.of(finishedBuilding),
+            return new TownPlot(position, kind, requiredTownHallLevel, Optional.of(finishedBuilding),
                     Optional.empty());
         }
         return this;

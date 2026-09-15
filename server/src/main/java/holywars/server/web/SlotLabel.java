@@ -1,7 +1,7 @@
 package holywars.server.web;
 
-import holywars.town.BuildingSlot;
-import holywars.town.BuildingSlotState;
+import holywars.town.TownPlot;
+import holywars.town.TownPlotState;
 import java.time.Instant;
 
 final class SlotLabel {
@@ -9,13 +9,13 @@ final class SlotLabel {
     private SlotLabel() {
     }
 
-    static String of(BuildingSlot slot, BuildingSlotState state, Instant now) {
+    static String of(TownPlot plot, TownPlotState state, Instant now) {
         return switch (state) {
             case FREE -> "Parcela libre";
-            case LOCKED -> "Requiere ayuntamiento nivel " + slot.requiredTownHallLevel();
-            case OCCUPIED -> slot.building().orElseThrow().type().spanishName() + " nivel " + slot.builtLevel();
-            case UNDER_CONSTRUCTION -> "En obra: " + slot.construction().orElseThrow().type().spanishName()
-                    + " · faltan " + RemainingMinutes.roundedUp(slot.construction().orElseThrow().remaining(now))
+            case LOCKED -> "Requiere ayuntamiento nivel " + plot.requiredTownHallLevel();
+            case OCCUPIED -> plot.building().orElseThrow().type().spanishName() + " nivel " + plot.builtLevel();
+            case UNDER_CONSTRUCTION -> "En obra: " + plot.construction().orElseThrow().type().spanishName()
+                    + " · faltan " + RemainingMinutes.roundedUp(plot.construction().orElseThrow().remaining(now))
                     + " min";
         };
     }

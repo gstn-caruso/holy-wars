@@ -44,7 +44,7 @@ class NewGameTest {
         assertThat(town.ownerId()).isEqualTo(player.id());
         assertThat(town.plotNumber()).isEqualTo(1);
         assertThat(GREEK_TOWN_NAMES).contains(town.name());
-        assertThat(town.buildingSlots()).hasSize(14);
+        assertThat(town.townPlots()).hasSize(14);
         assertThat(town.townHallLevel()).isEqualTo(1);
         assertThat(town.resources().woodAmount()).isEqualTo(500);
         assertThat(town.resources().luxuryAmount()).isEqualTo(100);

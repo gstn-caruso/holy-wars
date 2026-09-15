@@ -1,6 +1,6 @@
 package holywars.town;
 
-public enum BuildingSlotKind {
+public enum TownPlotKind {
     TOWN_HALL,
     LAND,
     WALL,
