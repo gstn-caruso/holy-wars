@@ -63,7 +63,7 @@ class JpaTown {
 
     void putPlot(TownPlot plot) {
         Optional<JpaTownPlot> existingPlot = plots.stream()
-                .filter(entity -> entity.position() == plot.position())
+                .filter(jpaTownPlot -> jpaTownPlot.position() == plot.position())
                 .findFirst();
         if (existingPlot.isPresent()) {
             existingPlot.get().updateFrom(plot);

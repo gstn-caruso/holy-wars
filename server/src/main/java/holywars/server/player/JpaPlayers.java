@@ -19,8 +19,8 @@ class JpaPlayers implements Players {
     public Optional<Player> find() {
         return playerJpaTable.findAll().stream()
                 .findFirst()
-                .map(entity -> Player.reconstituted(new PlayerId(entity.id()), entity.name(), entity.goldTicks(),
-                        entity.goldUpdatedAt()));
+                .map(jpaPlayer -> Player.reconstituted(new PlayerId(jpaPlayer.id()), jpaPlayer.name(),
+                        jpaPlayer.goldTicks(), jpaPlayer.goldUpdatedAt()));
     }
 
     @Override

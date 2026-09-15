@@ -34,28 +34,28 @@ class JpaTowns implements Towns {
 
     @Override
     public void save(Town town) {
-        JpaTown entity = townJpaTable.findWithPlotsById(town.id().value())
+        JpaTown jpaTown = townJpaTable.findWithPlotsById(town.id().value())
                 .orElseGet(() -> new JpaTown(town));
-        entity.updateFrom(town);
-        town.townPlots().forEach(entity::putPlot);
-        townJpaTable.save(entity);
+        jpaTown.updateFrom(town);
+        town.townPlots().forEach(jpaTown::putPlot);
+        townJpaTable.save(jpaTown);
     }
 
-    private Town toDomain(JpaTown entity) {
+    private Town toDomain(JpaTown jpaTown) {
         TownResources resources = TownResources.reconstituted(
-                entity.woodTicks(),
-                entity.luxuryTicks(),
-                LuxuryResource.valueOf(entity.luxuryResource()),
-                entity.resourcesUpdatedAt());
-        List<TownPlot> plots = entity.plots().isEmpty()
+                jpaTown.woodTicks(),
+                jpaTown.luxuryTicks(),
+                LuxuryResource.valueOf(jpaTown.luxuryResource()),
+                jpaTown.resourcesUpdatedAt());
+        List<TownPlot> plots = jpaTown.plots().isEmpty()
                 ? TownPlots.standard()
-                : entity.plots().stream().map(JpaTownPlot::toDomain).toList();
+                : jpaTown.plots().stream().map(JpaTownPlot::toDomain).toList();
         return Town.reconstituted(
-                new TownId(entity.id()),
-                new PlayerId(entity.ownerId()),
-                new IslandId(entity.islandId()),
-                entity.plotNumber(),
-                entity.name(),
+                new TownId(jpaTown.id()),
+                new PlayerId(jpaTown.ownerId()),
+                new IslandId(jpaTown.islandId()),
+                jpaTown.plotNumber(),
+                jpaTown.name(),
                 plots,
                 resources);
     }
