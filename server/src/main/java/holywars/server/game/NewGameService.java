@@ -6,18 +6,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class NewGameService {
+class NewGameService {
 
     private final NewGame newGame;
     private final Clock clock;
 
-    public NewGameService(NewGame newGame, Clock clock) {
+    NewGameService(NewGame newGame, Clock clock) {
         this.newGame = newGame;
         this.clock = clock;
     }
 
     @Transactional
-    public void start(long seed) {
+    void start(long seed) {
         newGame.start(seed, clock.instant());
     }
 }
