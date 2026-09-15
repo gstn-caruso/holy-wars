@@ -14,7 +14,7 @@ class JpaSliceDatabaseTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    void runsOnTheSharedH2DatabaseInPostgreSqlMode() {
+    void keepsTheConfiguredH2DatabaseInPostgreSqlModeInsteadOfAnEmbeddedOne() {
         String mode = jdbcTemplate.queryForObject(
                 "select setting_value from information_schema.settings where setting_name = 'MODE'",
                 String.class);
