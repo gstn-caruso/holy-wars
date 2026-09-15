@@ -18,7 +18,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 @Entity
-@Table(name = "building_slot", uniqueConstraints = @UniqueConstraint(columnNames = {"town_id", "position"}))
+@Table(name = "town_plot", uniqueConstraints = @UniqueConstraint(name = "uk_town_plot_town_id_position", columnNames = {"town_id", "position"}))
 class JpaTownPlot {
 
     @Id

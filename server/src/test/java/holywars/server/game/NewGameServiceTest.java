@@ -43,7 +43,7 @@ class NewGameServiceTest {
 
     @BeforeEach
     void emptyTheSharedDatabase() {
-        jdbcTemplate.update("delete from building_slot");
+        jdbcTemplate.update("delete from town_plot");
         jdbcTemplate.update("delete from town");
         jdbcTemplate.update("delete from player");
         jdbcTemplate.update("delete from island_plot");
@@ -58,7 +58,7 @@ class NewGameServiceTest {
         assertThat(countRowsIn("island")).isEqualTo(20);
         assertThat(countRowsIn("player")).isEqualTo(1);
         assertThat(countRowsIn("town")).isEqualTo(1);
-        assertThat(countRowsIn("building_slot")).isEqualTo(14);
+        assertThat(countRowsIn("town_plot")).isEqualTo(14);
 
         Player player = players.find().orElseThrow();
         Town town = towns.findByOwner(player.id()).orElseThrow();

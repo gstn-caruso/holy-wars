@@ -47,7 +47,7 @@ class LiveUpdatesWebFlowTest {
 
     @BeforeEach
     void emptyTheSharedDatabase() {
-        jdbcTemplate.update("delete from building_slot");
+        jdbcTemplate.update("delete from town_plot");
         jdbcTemplate.update("delete from town");
         jdbcTemplate.update("delete from player");
         jdbcTemplate.update("delete from island_plot");

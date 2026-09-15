@@ -158,7 +158,7 @@ class JpaTownsTest {
 
     private long countTownPlotRowsFor(long townId) {
         Long count = jdbcTemplate.queryForObject(
-                "select count(*) from building_slot where town_id = ?", Long.class, townId);
+                "select count(*) from town_plot where town_id = ?", Long.class, townId);
         return count == null ? 0 : count;
     }
 }
