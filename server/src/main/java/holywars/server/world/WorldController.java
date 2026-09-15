@@ -64,7 +64,7 @@ class WorldController {
         model.addAttribute("rows", mapRows(world));
         model.addAttribute("header", header);
         model.addAttribute("breadcrumb", BreadcrumbView.worldOnly());
-        return "map";
+        return "world/map";
     }
 
     private String showIsland(Model model, Island island, String occupiedTownName, Optional<IslandPlot> occupiedPlot,
@@ -73,7 +73,7 @@ class WorldController {
         model.addAttribute("island", IslandView.of(island, occupiedTownName, ownerName));
         model.addAttribute("header", header);
         model.addAttribute("breadcrumb", BreadcrumbView.upToIsland(island));
-        return "island";
+        return "world/island";
     }
 
     private Optional<IslandPlot> occupiedPlot(Island island) {

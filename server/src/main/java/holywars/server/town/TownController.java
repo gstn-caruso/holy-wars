@@ -49,14 +49,14 @@ class TownController {
         model.addAttribute("scene", TownSceneView.of(town, townSceneLayout, clock.instant()));
         model.addAttribute("header", capitalHeaders.forPlayer(world, player).orElseThrow());
         model.addAttribute("breadcrumb", BreadcrumbView.upToTown(island, town));
-        return "town";
+        return "town/town";
     }
 
     @GetMapping("/towns/{id}/scene")
     String scene(@PathVariable("id") long id, Model model) {
         Town town = townOrThrow(id);
         model.addAttribute("scene", TownSceneView.of(town, townSceneLayout, clock.instant()));
-        return "fragments/townScene :: townScene(scene=${scene}, oob=false)";
+        return "town/fragments/townScene :: townScene(scene=${scene}, oob=false)";
     }
 
     @GetMapping("/towns/{id}/resources")

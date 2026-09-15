@@ -38,7 +38,7 @@ class ConstructionController {
     String buildMenu(@PathVariable("id") long id, @PathVariable("position") int position, Model model) {
         Town town = findOrThrow(id);
         model.addAttribute("menu", BuildMenuView.of(town, position, clock.instant()));
-        return "fragments/buildMenu :: buildMenu(menu=${menu})";
+        return "town/fragments/buildMenu :: buildMenu(menu=${menu})";
     }
 
     @PostMapping("/towns/{id}/slots/{position}/build")
@@ -51,12 +51,12 @@ class ConstructionController {
             model.addAttribute("menu", BuildMenuView.of(updated, position, now));
             model.addAttribute("scene", TownSceneView.of(updated, townSceneLayout, now));
             model.addAttribute("bar", ResourceBarView.of(updated, player, now));
-            return "fragments/buildResult :: buildResult(menu=${menu},scene=${scene},bar=${bar})";
+            return "town/fragments/buildResult :: buildResult(menu=${menu},scene=${scene},bar=${bar})";
         } catch (RuntimeException exception) {
             Town town = findOrThrow(id);
             String error = ConstructionErrorMessages.forException(exception);
             model.addAttribute("menu", BuildMenuView.withError(town, position, clock.instant(), error));
-            return "fragments/buildMenu :: buildMenu(menu=${menu})";
+            return "town/fragments/buildMenu :: buildMenu(menu=${menu})";
         }
     }
 

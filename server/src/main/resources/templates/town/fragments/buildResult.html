@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <th:block th:fragment="buildResult(menu, scene, bar)">
-    <div th:replace="~{fragments/buildMenu :: buildMenu(menu=${menu})}"></div>
-    <svg th:replace="~{fragments/townScene :: townScene(scene=${scene}, oob=true)}"></svg>
+    <div th:replace="~{town/fragments/buildMenu :: buildMenu(menu=${menu})}"></div>
+    <svg th:replace="~{town/fragments/townScene :: townScene(scene=${scene}, oob=true)}"></svg>
     <div th:replace="~{fragments/layout :: resourceBar(bar=${bar}, oob=true)}"></div>
 </th:block>
 </body>

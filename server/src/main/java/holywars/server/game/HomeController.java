@@ -27,7 +27,7 @@ class HomeController {
     @GetMapping("/")
     String home() {
         Optional<Town> capital = players.find().flatMap(player -> towns.findByOwner(player.id()));
-        return capital.map(town -> "redirect:/towns/" + town.id().value()).orElse("index");
+        return capital.map(town -> "redirect:/towns/" + town.id().value()).orElse("game/index");
     }
 
     @PostMapping("/world")
