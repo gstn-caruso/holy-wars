@@ -24,22 +24,6 @@
         "preset": "conventionalcommits"
       }
     ],
-    [
-      "@semantic-release/exec",
-      {
-        "prepareCmd": "bash scripts/prepare-release.sh ${nextRelease.version}"
-      }
-    ],
-    [
-      "@semantic-release/github",
-      {
-        "assets": [
-          {
-            "path": "server/target/holy-wars_*_all.deb",
-            "label": "holy-wars_${nextRelease.version}_all.deb"
-          }
-        ]
-      }
-    ]
+    "@semantic-release/github"
   ]
 }
