@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationPropertiesBinding
-public class PlotAnchorConverter implements Converter<String, PlotAnchor> {
+class PlotAnchorConverter implements Converter<String, PlotAnchor> {
 
     @Override
     public PlotAnchor convert(String raw) {

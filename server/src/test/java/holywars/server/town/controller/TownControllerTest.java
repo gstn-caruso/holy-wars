@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import holywars.player.Player;
 import holywars.player.PlayerId;
 import holywars.player.Players;
-import holywars.server.town.config.PlotAnchorConverter;
 import holywars.server.town.config.TownSceneConfiguration;
 import holywars.server.view.CapitalHeaderView;
 import holywars.server.view.CapitalHeaders;
@@ -47,7 +46,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(TownController.class)
-@Import({TownSceneConfiguration.class, PlotAnchorConverter.class, TownControllerTest.FixedClockConfiguration.class})
+@Import({TownSceneConfiguration.class, TownControllerTest.FixedClockConfiguration.class})
 class TownControllerTest {
 
     private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
