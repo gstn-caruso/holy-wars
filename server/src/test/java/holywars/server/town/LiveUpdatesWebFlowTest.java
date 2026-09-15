@@ -62,7 +62,7 @@ class LiveUpdatesWebFlowTest {
                 .andExpect(request().asyncStarted())
                 .andReturn();
 
-        mockMvc.perform(post("/towns/1/slots/2/build").param("type", "WAREHOUSE")).andExpect(status().isOk());
+        mockMvc.perform(post("/towns/1/plots/2/build").param("type", "WAREHOUSE")).andExpect(status().isOk());
 
         FakeScheduledExecutorService fakeScheduler = (FakeScheduledExecutorService) scheduler;
         fakeScheduler.runNextOneShotTask();

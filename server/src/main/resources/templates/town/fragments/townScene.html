@@ -10,7 +10,7 @@
     <image th:attr="href='/img/town-scene.svg',x=0,y=0,width=${scene.width},height=${scene.height}"/>
     <image th:each="plot : ${scene.plots}" class="scene-plot"
            th:attr="href=${plot.spriteHref},x=${plot.x},y=${plot.y},width=${plot.width},height=${plot.height},
-                     hx-get='/towns/' + ${scene.townId} + '/slots/' + ${plot.position} + '/build-menu',
+                     hx-get='/towns/' + ${scene.townId} + '/plots/' + ${plot.position} + '/build-menu',
                      hx-target='#build-panel',hx-swap='innerHTML'">
         <title th:text="${plot.label}"></title>
     </image>

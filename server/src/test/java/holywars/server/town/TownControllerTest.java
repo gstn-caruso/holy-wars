@@ -203,7 +203,7 @@ class TownControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("<script src=\"/js/htmx.min.js\" defer>")))
                 .andExpect(content().string(containsString("id=\"build-panel\"")))
-                .andExpect(content().string(containsString("hx-get=\"/towns/1/slots/1/build-menu\"")))
+                .andExpect(content().string(containsString("hx-get=\"/towns/1/plots/1/build-menu\"")))
                 .andExpect(content().string(containsString("hx-target=\"#build-panel\"")));
     }
 

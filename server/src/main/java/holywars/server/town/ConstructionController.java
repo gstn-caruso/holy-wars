@@ -34,14 +34,14 @@ class ConstructionController {
         this.clock = clock;
     }
 
-    @GetMapping("/towns/{id}/slots/{position}/build-menu")
+    @GetMapping("/towns/{id}/plots/{position}/build-menu")
     String buildMenu(@PathVariable("id") long id, @PathVariable("position") int position, Model model) {
         Town town = findOrThrow(id);
         model.addAttribute("menu", BuildMenuView.of(town, position, clock.instant()));
         return "town/fragments/buildMenu :: buildMenu(menu=${menu})";
     }
 
-    @PostMapping("/towns/{id}/slots/{position}/build")
+    @PostMapping("/towns/{id}/plots/{position}/build")
     String build(@PathVariable("id") long id, @PathVariable("position") int position,
             @RequestParam("type") BuildingType type, Model model) {
         try {

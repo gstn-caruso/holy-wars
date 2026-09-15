@@ -60,13 +60,13 @@ class ConstructionControllerTest {
                 LuxuryResource.WINE, NOW);
         given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
-        mockMvc.perform(get("/towns/1/slots/2/build-menu"))
+        mockMvc.perform(get("/towns/1/plots/2/build-menu"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Parcela 2")))
                 .andExpect(content().string(containsString("Almacén")))
                 .andExpect(content().string(containsString("40 madera")))
                 .andExpect(content().string(containsString("6 min")))
-                .andExpect(content().string(containsString("hx-post=\"/towns/1/slots/2/build\"")))
+                .andExpect(content().string(containsString("hx-post=\"/towns/1/plots/2/build\"")))
                 .andExpect(content().string(containsString("¡Construir!")));
     }
 
@@ -79,7 +79,7 @@ class ConstructionControllerTest {
         given(constructionService.start(new TownId(1), 2, BuildingType.WAREHOUSE)).willReturn(updated);
         given(players.find()).willReturn(Optional.of(player));
 
-        mockMvc.perform(post("/towns/1/slots/2/build").param("type", "WAREHOUSE"))
+        mockMvc.perform(post("/towns/1/plots/2/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("En obra: Almacén · faltan 6 min")))
                 .andExpect(content().string(containsString("id=\"town-scene\"")))
@@ -96,7 +96,7 @@ class ConstructionControllerTest {
                 .willThrow(new NotEnoughResourcesException("wood"));
         given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
-        mockMvc.perform(post("/towns/1/slots/2/build").param("type", "WAREHOUSE"))
+        mockMvc.perform(post("/towns/1/plots/2/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("No alcanzan los recursos")));
     }
@@ -109,7 +109,7 @@ class ConstructionControllerTest {
                 .willThrow(new TownPlotNotFreeException(1, TownPlotState.OCCUPIED));
         given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
-        mockMvc.perform(post("/towns/1/slots/1/build").param("type", "WAREHOUSE"))
+        mockMvc.perform(post("/towns/1/plots/1/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("La parcela no está libre")));
     }
@@ -122,7 +122,7 @@ class ConstructionControllerTest {
                 .willThrow(new MismatchedBuildingTypeException(TownPlotKind.WALL, BuildingType.WAREHOUSE));
         given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
-        mockMvc.perform(post("/towns/1/slots/12/build").param("type", "WAREHOUSE"))
+        mockMvc.perform(post("/towns/1/plots/12/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Ese edificio no va en esa parcela")));
     }
@@ -135,7 +135,7 @@ class ConstructionControllerTest {
                 .willThrow(new InvalidTownPlotPositionException(20));
         given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
-        mockMvc.perform(post("/towns/1/slots/20/build").param("type", "WAREHOUSE"))
+        mockMvc.perform(post("/towns/1/plots/20/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("La parcela no existe")));
     }
@@ -146,7 +146,7 @@ class ConstructionControllerTest {
                 LuxuryResource.WINE, NOW);
         given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
-        mockMvc.perform(get("/towns/1/slots/20/build-menu"))
+        mockMvc.perform(get("/towns/1/plots/20/build-menu"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("La parcela no existe")));
     }
@@ -155,7 +155,7 @@ class ConstructionControllerTest {
     void buildMenuForAnUnknownTownReturns404() throws Exception {
         given(towns.find(new TownId(404))).willReturn(Optional.empty());
 
-        mockMvc.perform(get("/towns/404/slots/2/build-menu")).andExpect(status().isNotFound());
+        mockMvc.perform(get("/towns/404/plots/2/build-menu")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -163,7 +163,7 @@ class ConstructionControllerTest {
         given(constructionService.start(new TownId(404), 2, BuildingType.WAREHOUSE))
                 .willThrow(new UnknownTownException(new TownId(404)));
 
-        mockMvc.perform(post("/towns/404/slots/2/build").param("type", "WAREHOUSE"))
+        mockMvc.perform(post("/towns/404/plots/2/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isNotFound());
     }
 

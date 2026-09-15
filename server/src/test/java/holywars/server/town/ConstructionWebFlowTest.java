@@ -45,11 +45,11 @@ class ConstructionWebFlowTest {
     void startingAConstructionShowsUpInTheBuildMenuTheBuildResultAndTheTownPage() throws Exception {
         mockMvc.perform(post("/world")).andExpect(status().is3xxRedirection());
 
-        mockMvc.perform(get("/towns/1/slots/2/build-menu"))
+        mockMvc.perform(get("/towns/1/plots/2/build-menu"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Almacén")));
 
-        mockMvc.perform(post("/towns/1/slots/2/build").param("type", "WAREHOUSE"))
+        mockMvc.perform(post("/towns/1/plots/2/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("En obra")))
                 .andExpect(content().string(containsString("hx-swap-oob=\"true\"")));
@@ -64,7 +64,7 @@ class ConstructionWebFlowTest {
     void buildingOnAnInvalidPlotPositionShowsItDoesNotExistInsteadOfFailing() throws Exception {
         mockMvc.perform(post("/world")).andExpect(status().is3xxRedirection());
 
-        mockMvc.perform(post("/towns/1/slots/20/build").param("type", "WAREHOUSE"))
+        mockMvc.perform(post("/towns/1/plots/20/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("La parcela no existe")));
     }

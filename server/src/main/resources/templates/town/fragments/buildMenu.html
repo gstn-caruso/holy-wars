@@ -6,7 +6,7 @@
     <p class="error" th:if="${menu.error}" th:text="${menu.error}"></p>
     <p class="build-menu-status" th:if="${menu.statusText}" th:text="${menu.statusText}"></p>
     <form th:each="option : ${menu.options}" class="build-option"
-          th:attr="hx-post=@{/towns/{id}/slots/{position}/build(id=${menu.townId},position=${menu.position})}"
+          th:attr="hx-post=@{/towns/{id}/plots/{position}/build(id=${menu.townId},position=${menu.position})}"
           hx-target="#build-panel" hx-swap="innerHTML">
         <input type="hidden" name="type" th:value="${option.type}"/>
         <img th:src="${option.spriteHref}" alt=""/>
