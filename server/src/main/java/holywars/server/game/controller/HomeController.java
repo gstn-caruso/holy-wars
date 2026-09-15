@@ -1,6 +1,7 @@
-package holywars.server.game;
+package holywars.server.game.controller;
 
 import holywars.player.Players;
+import holywars.server.game.service.NewGameService;
 import holywars.town.Town;
 import holywars.town.Towns;
 import java.util.Optional;

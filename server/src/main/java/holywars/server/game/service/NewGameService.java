@@ -1,4 +1,4 @@
-package holywars.server.game;
+package holywars.server.game.service;
 
 import holywars.game.NewGame;
 import java.time.Clock;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-class NewGameService {
+public class NewGameService {
 
     private final NewGame newGame;
     private final Clock clock;
@@ -17,7 +17,7 @@ class NewGameService {
     }
 
     @Transactional
-    void start(long seed) {
+    public void start(long seed) {
         newGame.start(seed, clock.instant());
     }
 }

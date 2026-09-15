@@ -1,4 +1,4 @@
-package holywars.server.game;
+package holywars.server.game.config;
 
 import holywars.game.NewGame;
 import holywars.player.Players;
