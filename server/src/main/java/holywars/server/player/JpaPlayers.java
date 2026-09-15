@@ -1,4 +1,4 @@
-package holywars.server.persistence;
+package holywars.server.player;
 
 import holywars.player.Player;
 import holywars.player.PlayerId;
@@ -7,17 +7,17 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 @Repository
-class PlayerJpaAdapter implements Players {
+class JpaPlayers implements Players {
 
-    private final PlayerJpaRepository playerJpaRepository;
+    private final JpaPlayerTable playerJpaTable;
 
-    PlayerJpaAdapter(PlayerJpaRepository playerJpaRepository) {
-        this.playerJpaRepository = playerJpaRepository;
+    JpaPlayers(JpaPlayerTable playerJpaTable) {
+        this.playerJpaTable = playerJpaTable;
     }
 
     @Override
     public Optional<Player> find() {
-        return playerJpaRepository.findAll().stream()
+        return playerJpaTable.findAll().stream()
                 .findFirst()
                 .map(entity -> Player.reconstituted(new PlayerId(entity.id()), entity.name(), entity.goldTicks(),
                         entity.goldUpdatedAt()));
@@ -25,7 +25,7 @@ class PlayerJpaAdapter implements Players {
 
     @Override
     public void save(Player player) {
-        playerJpaRepository.save(new PlayerEntity(player.id().value(), player.name(), player.gold().ticks(),
+        playerJpaTable.save(new JpaPlayer(player.id().value(), player.name(), player.gold().ticks(),
                 player.lastUpdate()));
     }
 }

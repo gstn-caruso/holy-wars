@@ -1,4 +1,4 @@
-package holywars.server.persistence;
+package holywars.server.player;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,35 +12,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 
 @DataJpaTest
-class PlayerJpaAdapterTest {
+class JpaPlayersTest {
 
     private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
 
     @Autowired
-    private PlayerJpaRepository playerJpaRepository;
+    private JpaPlayerTable playerJpaTable;
 
-    private PlayerJpaAdapter playerJpaAdapter;
+    private JpaPlayers players;
 
     @BeforeEach
     void setUp() {
-        playerJpaAdapter = new PlayerJpaAdapter(playerJpaRepository);
+        players = new JpaPlayers(playerJpaTable);
     }
 
     @Test
     void savesAPlayerAndFindsItBackEqual() {
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
 
-        playerJpaAdapter.save(player);
+        players.save(player);
 
-        assertThat(playerJpaAdapter.find()).contains(player);
+        assertThat(players.find()).contains(player);
     }
 
     @Test
     void savesAnAdvancedPlayerAndKeepsItsGoldTicksAndGoldUpdatedAt() {
         Player player = Player.starting(new PlayerId(1), "Jugador", NOW).advancedTo(NOW.plus(Duration.ofHours(1)));
 
-        playerJpaAdapter.save(player);
+        players.save(player);
 
-        assertThat(playerJpaAdapter.find()).contains(player);
+        assertThat(players.find()).contains(player);
     }
 }

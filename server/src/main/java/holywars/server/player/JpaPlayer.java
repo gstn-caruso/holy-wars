@@ -1,4 +1,4 @@
-package holywars.server.persistence;
+package holywars.server.player;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -7,7 +7,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "player")
-class PlayerEntity {
+class JpaPlayer {
 
     @Id
     private Long id;
@@ -18,10 +18,10 @@ class PlayerEntity {
 
     private Instant goldUpdatedAt;
 
-    protected PlayerEntity() {
+    protected JpaPlayer() {
     }
 
-    PlayerEntity(long id, String name, long goldTicks, Instant goldUpdatedAt) {
+    JpaPlayer(long id, String name, long goldTicks, Instant goldUpdatedAt) {
         this.id = id;
         this.name = name;
         this.goldTicks = goldTicks;
