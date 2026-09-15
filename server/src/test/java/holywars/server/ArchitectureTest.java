@@ -9,15 +9,23 @@ import org.junit.jupiter.api.Test;
 
 class ArchitectureTest {
 
-    @Test
-    void onlyJpaPrefixedClassesDependOnThePersistenceFramework() {
-        JavaClasses serverClasses = new ClassFileImporter()
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages("holywars.server");
+    private static final JavaClasses SERVER_CLASSES = new ClassFileImporter()
+            .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+            .importPackages("holywars.server");
 
-        noClasses().that().haveSimpleNameNotStartingWith("Jpa")
+    @Test
+    void onlyEntitiesAndRepositoriesDependOnThePersistenceFramework() {
+        noClasses().that().resideOutsideOfPackages("holywars.server..entity..", "holywars.server..repository..")
                 .should().dependOnClassesThat().resideInAnyPackage("jakarta.persistence..", "org.springframework.data..")
-                .because("the persistence framework stays inside the Jpa implementations of each feature")
-                .check(serverClasses);
+                .because("the persistence framework stays inside each feature's entity and repository")
+                .check(SERVER_CLASSES);
+    }
+
+    @Test
+    void controllersAndViewsDoNotDependOnPersistence() {
+        noClasses().that().resideInAnyPackage("holywars.server..controller..", "holywars.server..view..")
+                .should().dependOnClassesThat().resideInAnyPackage("holywars.server..entity..", "holywars.server..repository..")
+                .because("controllers and views work with the domain, not with how it is persisted")
+                .check(SERVER_CLASSES);
     }
 }
