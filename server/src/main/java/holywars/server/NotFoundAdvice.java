@@ -1,6 +1,6 @@
 package holywars.server;
 
-import holywars.server.game.UnknownTownException;
+import holywars.server.town.UnknownTownException;
 import holywars.world.UnknownIslandException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
