@@ -14,7 +14,7 @@ class ArchitectureTest {
             .importPackages("holywars.server");
 
     @Test
-    void onlyEntitiesAndRepositoriesDependOnThePersistenceFramework() {
+    void onlyEntityAndRepositoryPackagesDependOnThePersistenceFramework() {
         noClasses().that().resideOutsideOfPackages("holywars.server..entity..", "holywars.server..repository..")
                 .should().dependOnClassesThat().resideInAnyPackage("jakarta.persistence..", "org.springframework.data..")
                 .because("the persistence framework stays inside each feature's entity and repository")
