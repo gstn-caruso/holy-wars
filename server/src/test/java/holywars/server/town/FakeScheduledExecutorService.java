@@ -11,7 +11,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-public final class FakeScheduledExecutorService extends AbstractExecutorService implements ScheduledExecutorService {
+final class FakeScheduledExecutorService extends AbstractExecutorService implements ScheduledExecutorService {
 
     private final List<FakeScheduledTask> oneShotTasks = new ArrayList<>();
     private final List<Runnable> periodicTasks = new ArrayList<>();
@@ -69,22 +69,22 @@ public final class FakeScheduledExecutorService extends AbstractExecutorService 
         return true;
     }
 
-    public void runNextOneShotTask() {
+    void runNextOneShotTask() {
         FakeScheduledTask task = pendingOneShotTasks().findFirst()
                 .orElseThrow(() -> new NoSuchElementException("No pending one-shot task"));
         oneShotTasks.remove(task);
         task.command.run();
     }
 
-    public void runPeriodicTick() {
+    void runPeriodicTick() {
         periodicTasks.forEach(Runnable::run);
     }
 
-    public int pendingOneShotTaskCount() {
+    int pendingOneShotTaskCount() {
         return (int) pendingOneShotTasks().count();
     }
 
-    public long lastScheduledDelayMillis() {
+    long lastScheduledDelayMillis() {
         return oneShotTasks.get(oneShotTasks.size() - 1).delayMillis;
     }
 
