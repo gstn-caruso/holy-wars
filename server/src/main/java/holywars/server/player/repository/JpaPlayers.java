@@ -1,8 +1,9 @@
-package holywars.server.player;
+package holywars.server.player.repository;
 
 import holywars.player.Player;
 import holywars.player.PlayerId;
 import holywars.player.Players;
+import holywars.server.player.entity.JpaPlayer;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
