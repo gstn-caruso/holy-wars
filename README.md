@@ -15,7 +15,7 @@ mvn -B -pl server -am package -DskipTests
 java -jar server/target/holy-wars-server-0.0.0-SNAPSHOT.jar
 ```
 
-Abrí `http://localhost:8080` en el navegador. El jar empaquetado y el `.deb` usan H2 en memoria: el estado
+Abrí `http://localhost:8080` en el navegador. El jar empaquetado usa H2 en memoria: el estado
 se pierde al cerrar el server.
 
 ## Base de datos
@@ -51,16 +51,5 @@ mvn -B verify
 ## Releases
 
 Cada merge a `main` que incluya un commit `feat` o `fix` publica un
-[GitHub Release](https://github.com/gstn-caruso/holy-wars/releases/latest) nuevo con su `.deb`.
-
-## Instalación
-
-Requiere Java 25. Bajá el `.deb` del [último release](https://github.com/gstn-caruso/holy-wars/releases/latest)
-en GitHub e instalalo:
-
-```
-sudo apt install ./holy-wars_<versión>_all.deb
-```
-
-Esto deja el comando `holy-wars` disponible y agrega Holy Wars al menú de aplicaciones. Al ejecutarlo,
-levanta el server local y abre el navegador.
+[GitHub Release](https://github.com/gstn-caruso/holy-wars/releases/latest) nuevo con su tag y las
+release notes generadas del historial de commits, sin artefactos adjuntos.
