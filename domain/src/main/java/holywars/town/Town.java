@@ -9,22 +9,22 @@ import java.util.List;
 import java.util.Optional;
 
 public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumber, String name,
-        List<TownPlot> townPlots, TownResources resources) {
+        List<TownPlot> plots, TownResources resources) {
 
-    static final int REQUIRED_BUILDING_PLOT_COUNT = 14;
+    static final int REQUIRED_PLOT_COUNT = 14;
 
     public Town {
-        long distinctPositions = townPlots.stream().map(TownPlot::position).distinct().count();
-        boolean hasExactlyTheRequiredDistinctPositions = townPlots.size() == REQUIRED_BUILDING_PLOT_COUNT
-                && distinctPositions == REQUIRED_BUILDING_PLOT_COUNT;
+        long distinctPositions = plots.stream().map(TownPlot::position).distinct().count();
+        boolean hasExactlyTheRequiredDistinctPositions = plots.size() == REQUIRED_PLOT_COUNT
+                && distinctPositions == REQUIRED_PLOT_COUNT;
         if (!hasExactlyTheRequiredDistinctPositions) {
             throw new InvalidTownPlotCountException((int) distinctPositions);
         }
-        boolean hasAnOccupiedTownHall = townPlots.stream().anyMatch(TownPlot::isOccupiedTownHall);
+        boolean hasAnOccupiedTownHall = plots.stream().anyMatch(TownPlot::isOccupiedTownHall);
         if (!hasAnOccupiedTownHall) {
             throw new MissingTownHallException();
         }
-        townPlots = List.copyOf(townPlots);
+        plots = List.copyOf(plots);
     }
 
     public static Town founded(TownId id, PlayerId ownerId, IslandId islandId, int plotNumber, String name,
@@ -34,24 +34,24 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
     }
 
     public static Town reconstituted(TownId id, PlayerId ownerId, IslandId islandId, int plotNumber, String name,
-            List<TownPlot> townPlots, TownResources resources) {
-        return new Town(id, ownerId, islandId, plotNumber, name, townPlots, resources);
+            List<TownPlot> plots, TownResources resources) {
+        return new Town(id, ownerId, islandId, plotNumber, name, plots, resources);
     }
 
     public Town advancedTo(Instant now) {
-        List<TownPlot> advancedPlots = townPlots.stream().map(plot -> plot.advancedTo(now)).toList();
+        List<TownPlot> advancedPlots = plots.stream().map(plot -> plot.advancedTo(now)).toList();
         return new Town(id, ownerId, islandId, plotNumber, name, advancedPlots, resources.advancedTo(now));
     }
 
     public Town spend(int wood, int luxury) {
-        return new Town(id, ownerId, islandId, plotNumber, name, townPlots, resources.spend(wood, luxury));
+        return new Town(id, ownerId, islandId, plotNumber, name, plots, resources.spend(wood, luxury));
     }
 
     public Town startingConstruction(int position, BuildingType type, Instant now) {
         Town advanced = advancedTo(now);
         TownPlot plot = advanced.plot(position);
         TownPlot underConstruction = plot.startingConstruction(type, advanced.townHallLevel(), now);
-        List<TownPlot> updatedPlots = advanced.townPlots.stream()
+        List<TownPlot> updatedPlots = advanced.plots.stream()
                 .map(existing -> existing.position() == position ? underConstruction : existing)
                 .toList();
         TownResources spentResources = advanced.resources.spend(type.woodCost(), type.luxuryCost());
@@ -60,7 +60,7 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
     }
 
     public int townHallLevel() {
-        return townPlots.stream()
+        return plots.stream()
                 .filter(TownPlot::isOccupiedTownHall)
                 .findFirst()
                 .orElseThrow()
@@ -68,14 +68,14 @@ public record Town(TownId id, PlayerId ownerId, IslandId islandId, int plotNumbe
     }
 
     public Optional<Instant> nextFinishAt() {
-        return townPlots.stream()
+        return plots.stream()
                 .map(TownPlot::finishesAt)
                 .flatMap(Optional::stream)
                 .min(Instant::compareTo);
     }
 
     public TownPlot plot(int position) {
-        return townPlots.stream()
+        return plots.stream()
                 .filter(plot -> plot.position() == position)
                 .findFirst()
                 .orElseThrow(() -> new InvalidTownPlotPositionException(position));

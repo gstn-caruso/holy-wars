@@ -22,7 +22,7 @@ record BuildMenuView(long townId, int position, String title, List<BuildOptionVi
 
     private static BuildMenuView of(Town town, int position, Instant now, String error) {
         Town advanced = town.advancedTo(now);
-        Optional<TownPlot> plot = advanced.townPlots().stream()
+        Optional<TownPlot> plot = advanced.plots().stream()
                 .filter(candidate -> candidate.position() == position)
                 .findFirst();
         if (plot.isEmpty()) {

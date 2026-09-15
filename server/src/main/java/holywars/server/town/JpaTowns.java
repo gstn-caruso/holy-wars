@@ -37,7 +37,7 @@ class JpaTowns implements Towns {
         JpaTown jpaTown = townJpaTable.findWithPlotsById(town.id().value())
                 .orElseGet(() -> new JpaTown(town));
         jpaTown.updateFrom(town);
-        town.townPlots().forEach(jpaTown::putPlot);
+        town.plots().forEach(jpaTown::putPlot);
         townJpaTable.save(jpaTown);
     }
 

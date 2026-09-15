@@ -23,7 +23,7 @@ class TownTest {
         Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
                 LuxuryResource.WINE, FOUNDED_AT);
 
-        assertThat(town.townPlots()).isEqualTo(TownPlots.standard());
+        assertThat(town.plots()).isEqualTo(TownPlots.standard());
         assertThat(town.townHallLevel()).isEqualTo(1);
     }
 
@@ -119,7 +119,7 @@ class TownTest {
         assertThatThrownBy(() -> town.startingConstruction(15, BuildingType.WAREHOUSE, FOUNDED_AT))
                 .isInstanceOf(InvalidTownPlotPositionException.class);
         assertThat(town.resources().woodAmount()).isEqualTo(500);
-        assertThat(town.townPlots()).isEqualTo(TownPlots.standard());
+        assertThat(town.plots()).isEqualTo(TownPlots.standard());
     }
 
     @Test

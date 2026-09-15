@@ -149,7 +149,7 @@ class JpaTownsTest {
                 8L, 3L, LuxuryResource.WINE.name(), 100L, "Rodas", 7L, 1, Timestamp.from(FOUNDED_AT), 500L);
 
         Town found = towns.find(new TownId(8)).orElseThrow();
-        assertThat(found.townPlots()).isEqualTo(TownPlots.standard());
+        assertThat(found.plots()).isEqualTo(TownPlots.standard());
         assertThat(countTownPlotRowsFor(8L)).isZero();
 
         towns.save(found);
