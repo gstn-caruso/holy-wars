@@ -26,8 +26,8 @@ class JpaWorldMapperTest {
     }
 
     @Test
-    void mapsASingleIslandEntityToItsMatchingDomainIsland() {
-        JpaIsland naxos = anIslandEntityWithFreePlots(3, 5, 8, "Naxos", "WINE");
+    void mapsASingleJpaIslandToItsMatchingDomainIsland() {
+        JpaIsland naxos = aJpaIslandWithFreePlots(3, 5, 8, "Naxos", "WINE");
 
         World world = jpaWorldMapper.toDomain(List.of(naxos));
 
@@ -44,8 +44,8 @@ class JpaWorldMapperTest {
 
     @Test
     void mapsSeveralIslandEntitiesPreservingEachOnesIdentity() {
-        JpaIsland naxos = anIslandEntityWithFreePlots(1, 0, 0, "Naxos", "WINE");
-        JpaIsland ikaria = anIslandEntityWithFreePlots(2, 1, 1, "Ikaria", "MARBLE");
+        JpaIsland naxos = aJpaIslandWithFreePlots(1, 0, 0, "Naxos", "WINE");
+        JpaIsland ikaria = aJpaIslandWithFreePlots(2, 1, 1, "Ikaria", "MARBLE");
 
         World world = jpaWorldMapper.toDomain(List.of(naxos, ikaria));
 
@@ -105,7 +105,7 @@ class JpaWorldMapperTest {
     }
 
     @Test
-    void refusesToRebuildAnIslandEntityWithoutSixteenPlots() {
+    void refusesToRebuildAJpaIslandWithoutSixteenPlots() {
         JpaIsland naxos = new JpaIsland(1, 0, 0, "Naxos", "WINE");
         for (int number = 1; number <= 15; number++) {
             naxos.addPlot(new JpaIslandPlot(naxos, number, null));
@@ -115,7 +115,7 @@ class JpaWorldMapperTest {
                 .isInstanceOf(InvalidIslandPlotCountException.class);
     }
 
-    private JpaIsland anIslandEntityWithFreePlots(long id, int x, int y, String name, String luxuryResource) {
+    private JpaIsland aJpaIslandWithFreePlots(long id, int x, int y, String name, String luxuryResource) {
         JpaIsland jpaIsland = new JpaIsland(id, x, y, name, luxuryResource);
         for (int number = 1; number <= 16; number++) {
             jpaIsland.addPlot(new JpaIslandPlot(jpaIsland, number, null));
