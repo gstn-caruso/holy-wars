@@ -103,6 +103,7 @@ class JpaTownsTest {
         towns.save(town);
 
         Town found = towns.find(new TownId(5)).orElseThrow();
+        assertThat(found).isEqualTo(town);
         assertThat(found.plot(2).construction()).contains(Construction.startingAt(BuildingType.WAREHOUSE, startedAt));
         assertThat(found.plot(2).construction().orElseThrow().startedAt()).isEqualTo(startedAt);
         assertThat(found.plot(2).construction().orElseThrow().finishesAt())
