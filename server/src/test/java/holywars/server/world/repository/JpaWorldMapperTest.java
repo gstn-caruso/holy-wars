@@ -1,8 +1,10 @@
-package holywars.server.world;
+package holywars.server.world.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import holywars.server.world.entity.JpaIsland;
+import holywars.server.world.entity.JpaIslandPlot;
 import holywars.world.Coordinate;
 import holywars.world.InvalidIslandPlotCountException;
 import holywars.world.Island;

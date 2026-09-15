@@ -1,4 +1,4 @@
-package holywars.server.world;
+package holywars.server.world.controller;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;

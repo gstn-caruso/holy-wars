@@ -1,5 +1,6 @@
-package holywars.server.world;
+package holywars.server.world.repository;
 
+import holywars.server.world.entity.JpaIsland;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

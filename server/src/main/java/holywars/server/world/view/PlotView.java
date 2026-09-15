@@ -1,4 +1,4 @@
-package holywars.server.world;
+package holywars.server.world.view;
 
 record PlotView(int number, boolean occupied, String townName, String ownerName, long townId) {
 

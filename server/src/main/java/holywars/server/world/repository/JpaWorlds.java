@@ -1,5 +1,6 @@
-package holywars.server.world;
+package holywars.server.world.repository;
 
+import holywars.server.world.entity.JpaIsland;
 import holywars.world.Island;
 import holywars.world.IslandPlot;
 import holywars.world.World;

@@ -1,14 +1,14 @@
-package holywars.server.world;
+package holywars.server.world.view;
 
 import holywars.server.view.LuxuryResourceIcon;
 import holywars.world.Island;
 import holywars.world.IslandPlot;
 import java.util.List;
 
-record IslandView(long id, String name, int x, int y, String luxuryResourceName, String luxuryIconPath,
+public record IslandView(long id, String name, int x, int y, String luxuryResourceName, String luxuryIconPath,
         List<PlotView> plots) {
 
-    static IslandView of(Island island, String occupiedTownName, String occupiedOwnerName) {
+    public static IslandView of(Island island, String occupiedTownName, String occupiedOwnerName) {
         List<PlotView> plots = island.plots().stream()
                 .map(plot -> toPlotView(plot, occupiedTownName, occupiedOwnerName))
                 .toList();

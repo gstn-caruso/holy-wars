@@ -1,4 +1,4 @@
-package holywars.server.world;
+package holywars.server.world.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Entity
 @Table(name = "island")
-class JpaIsland {
+public class JpaIsland {
 
     @Id
     private Long id;
@@ -32,7 +32,7 @@ class JpaIsland {
     protected JpaIsland() {
     }
 
-    JpaIsland(long id, int x, int y, String name, String luxuryResource) {
+    public JpaIsland(long id, int x, int y, String name, String luxuryResource) {
         this.id = id;
         this.x = x;
         this.y = y;
@@ -40,11 +40,11 @@ class JpaIsland {
         this.luxuryResource = luxuryResource;
     }
 
-    void addPlot(JpaIslandPlot plot) {
+    public void addPlot(JpaIslandPlot plot) {
         plots.add(plot);
     }
 
-    void putPlot(int number, Long occupantTownId) {
+    public void putPlot(int number, Long occupantTownId) {
         Optional<JpaIslandPlot> existingPlot = plots.stream()
                 .filter(plot -> plot.number() == number)
                 .findFirst();
@@ -55,27 +55,27 @@ class JpaIsland {
         }
     }
 
-    long id() {
+    public long id() {
         return id;
     }
 
-    int x() {
+    public int x() {
         return x;
     }
 
-    int y() {
+    public int y() {
         return y;
     }
 
-    String name() {
+    public String name() {
         return name;
     }
 
-    String luxuryResource() {
+    public String luxuryResource() {
         return luxuryResource;
     }
 
-    List<JpaIslandPlot> plots() {
+    public List<JpaIslandPlot> plots() {
         return List.copyOf(plots);
     }
 }

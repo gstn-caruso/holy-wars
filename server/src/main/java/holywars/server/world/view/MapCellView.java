@@ -1,15 +1,16 @@
-package holywars.server.world;
+package holywars.server.world.view;
 
 import holywars.server.view.LuxuryResourceIcon;
 import holywars.world.Island;
 
-record MapCellView(boolean island, long islandId, String islandName, String iconPath, String villageCountLabel) {
+public record MapCellView(boolean island, long islandId, String islandName, String iconPath,
+        String villageCountLabel) {
 
-    static MapCellView sea() {
+    public static MapCellView sea() {
         return new MapCellView(false, 0, null, null, null);
     }
 
-    static MapCellView of(Island island) {
+    public static MapCellView of(Island island) {
         int occupiedPlotCount = island.occupiedPlots().size();
         return new MapCellView(true, island.id().value(), island.name(),
                 LuxuryResourceIcon.pathFor(island.luxuryResource()), villageCountLabel(occupiedPlotCount));

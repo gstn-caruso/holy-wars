@@ -1,10 +1,12 @@
-package holywars.server.world;
+package holywars.server.world.controller;
 
 import holywars.player.Player;
 import holywars.player.Players;
 import holywars.server.view.BreadcrumbView;
 import holywars.server.view.CapitalHeaders;
 import holywars.server.view.CapitalHeaderView;
+import holywars.server.world.view.IslandView;
+import holywars.server.world.view.MapCellView;
 import holywars.town.TownId;
 import holywars.town.Towns;
 import holywars.world.Island;
