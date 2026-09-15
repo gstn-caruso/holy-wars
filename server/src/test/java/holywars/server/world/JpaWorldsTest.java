@@ -59,7 +59,7 @@ class JpaWorldsTest {
 
         assertThat(islandJpaTable.count()).isEqualTo(20L);
         long totalPlotCount = islandJpaTable.findAllWithPlots().stream()
-                .mapToLong(islandEntity -> islandEntity.plots().size())
+                .mapToLong(jpaIsland -> jpaIsland.plots().size())
                 .sum();
         assertThat(totalPlotCount).isEqualTo(320L);
     }

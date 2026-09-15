@@ -12,41 +12,41 @@ import org.springframework.stereotype.Component;
 @Component
 final class JpaWorldMapper {
 
-    World toDomain(List<JpaIsland> islandEntities) {
-        return new World(islandEntities.stream().map(this::toDomainIsland).toList());
+    World toDomain(List<JpaIsland> jpaIslands) {
+        return new World(jpaIslands.stream().map(this::toDomainIsland).toList());
     }
 
-    private Island toDomainIsland(JpaIsland islandEntity) {
-        List<IslandPlot> plots = islandEntity.plots().stream().map(this::toDomainPlot).toList();
+    private Island toDomainIsland(JpaIsland jpaIsland) {
+        List<IslandPlot> plots = jpaIsland.plots().stream().map(this::toDomainPlot).toList();
         return new Island(
-                new IslandId(islandEntity.id()),
-                new Coordinate(islandEntity.x(), islandEntity.y()),
-                islandEntity.name(),
-                LuxuryResource.valueOf(islandEntity.luxuryResource()),
+                new IslandId(jpaIsland.id()),
+                new Coordinate(jpaIsland.x(), jpaIsland.y()),
+                jpaIsland.name(),
+                LuxuryResource.valueOf(jpaIsland.luxuryResource()),
                 plots);
     }
 
-    private IslandPlot toDomainPlot(JpaIslandPlot islandPlotEntity) {
-        IslandPlot plot = new IslandPlot(islandPlotEntity.number());
-        if (islandPlotEntity.occupantTownId() != null) {
-            plot.occupy(islandPlotEntity.occupantTownId());
+    private IslandPlot toDomainPlot(JpaIslandPlot jpaIslandPlot) {
+        IslandPlot plot = new IslandPlot(jpaIslandPlot.number());
+        if (jpaIslandPlot.occupantTownId() != null) {
+            plot.occupy(jpaIslandPlot.occupantTownId());
         }
         return plot;
     }
 
     JpaIsland toEntity(Island island) {
-        JpaIsland islandEntity = new JpaIsland(
+        JpaIsland jpaIsland = new JpaIsland(
                 island.id().value(),
                 island.coordinate().x(),
                 island.coordinate().y(),
                 island.name(),
                 island.luxuryResource().name());
-        island.plots().forEach(plot -> islandEntity.addPlot(toEntity(plot, islandEntity)));
-        return islandEntity;
+        island.plots().forEach(plot -> jpaIsland.addPlot(toEntity(plot, jpaIsland)));
+        return jpaIsland;
     }
 
-    private JpaIslandPlot toEntity(IslandPlot plot, JpaIsland islandEntity) {
-        return new JpaIslandPlot(islandEntity, plot.number(), occupantTownIdOf(plot));
+    private JpaIslandPlot toEntity(IslandPlot plot, JpaIsland jpaIsland) {
+        return new JpaIslandPlot(jpaIsland, plot.number(), occupantTownIdOf(plot));
     }
 
     Long occupantTownIdOf(IslandPlot plot) {

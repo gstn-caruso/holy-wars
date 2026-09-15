@@ -83,25 +83,25 @@ class JpaWorldMapperTest {
         Island naxos = Island.withFreePlots(new IslandId(4), new Coordinate(2, 6), "Naxos", LuxuryResource.CRYSTAL);
         naxos.firstFreePlot().occupy(9L);
 
-        JpaIsland islandEntity = worldMapper.toEntity(naxos);
+        JpaIsland jpaIsland = worldMapper.toEntity(naxos);
 
-        assertThat(islandEntity.id()).isEqualTo(4L);
-        assertThat(islandEntity.x()).isEqualTo(2);
-        assertThat(islandEntity.y()).isEqualTo(6);
-        assertThat(islandEntity.name()).isEqualTo("Naxos");
-        assertThat(islandEntity.luxuryResource()).isEqualTo("CRYSTAL");
-        assertThat(islandEntity.plots()).hasSize(16);
-        JpaIslandPlot firstPlotEntity = islandEntity.plots().stream()
+        assertThat(jpaIsland.id()).isEqualTo(4L);
+        assertThat(jpaIsland.x()).isEqualTo(2);
+        assertThat(jpaIsland.y()).isEqualTo(6);
+        assertThat(jpaIsland.name()).isEqualTo("Naxos");
+        assertThat(jpaIsland.luxuryResource()).isEqualTo("CRYSTAL");
+        assertThat(jpaIsland.plots()).hasSize(16);
+        JpaIslandPlot firstJpaIslandPlot = jpaIsland.plots().stream()
                 .filter(plot -> plot.number() == 1)
                 .findFirst()
                 .orElseThrow();
-        assertThat(firstPlotEntity.island()).isSameAs(islandEntity);
-        assertThat(firstPlotEntity.occupantTownId()).isEqualTo(9L);
-        JpaIslandPlot secondPlotEntity = islandEntity.plots().stream()
+        assertThat(firstJpaIslandPlot.island()).isSameAs(jpaIsland);
+        assertThat(firstJpaIslandPlot.occupantTownId()).isEqualTo(9L);
+        JpaIslandPlot secondJpaIslandPlot = jpaIsland.plots().stream()
                 .filter(plot -> plot.number() == 2)
                 .findFirst()
                 .orElseThrow();
-        assertThat(secondPlotEntity.occupantTownId()).isNull();
+        assertThat(secondJpaIslandPlot.occupantTownId()).isNull();
     }
 
     @Test
@@ -116,10 +116,10 @@ class JpaWorldMapperTest {
     }
 
     private JpaIsland anIslandEntityWithFreePlots(long id, int x, int y, String name, String luxuryResource) {
-        JpaIsland islandEntity = new JpaIsland(id, x, y, name, luxuryResource);
+        JpaIsland jpaIsland = new JpaIsland(id, x, y, name, luxuryResource);
         for (int number = 1; number <= 16; number++) {
-            islandEntity.addPlot(new JpaIslandPlot(islandEntity, number, null));
+            jpaIsland.addPlot(new JpaIslandPlot(jpaIsland, number, null));
         }
-        return islandEntity;
+        return jpaIsland;
     }
 }

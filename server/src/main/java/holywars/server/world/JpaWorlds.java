@@ -24,34 +24,34 @@ class JpaWorlds implements Worlds {
 
     @Override
     public Optional<World> find() {
-        List<JpaIsland> islandEntities = islandJpaTable.findAllWithPlots();
-        if (islandEntities.isEmpty()) {
+        List<JpaIsland> jpaIslands = islandJpaTable.findAllWithPlots();
+        if (jpaIslands.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(worldMapper.toDomain(islandEntities));
+        return Optional.of(worldMapper.toDomain(jpaIslands));
     }
 
     @Override
     public void save(World world) {
-        Map<Long, JpaIsland> existingIslandEntitiesById = islandJpaTable.findAllWithPlots().stream()
+        Map<Long, JpaIsland> existingJpaIslandsById = islandJpaTable.findAllWithPlots().stream()
                 .collect(Collectors.toMap(JpaIsland::id, Function.identity()));
 
-        List<JpaIsland> islandEntitiesToSave = world.islands().stream()
-                .map(island -> reconcile(island, existingIslandEntitiesById.get(island.id().value())))
+        List<JpaIsland> jpaIslandsToSave = world.islands().stream()
+                .map(island -> reconcile(island, existingJpaIslandsById.get(island.id().value())))
                 .toList();
 
-        islandJpaTable.saveAll(islandEntitiesToSave);
+        islandJpaTable.saveAll(jpaIslandsToSave);
     }
 
-    private JpaIsland reconcile(Island island, JpaIsland existingIslandEntity) {
-        if (existingIslandEntity == null) {
+    private JpaIsland reconcile(Island island, JpaIsland existingJpaIsland) {
+        if (existingJpaIsland == null) {
             return worldMapper.toEntity(island);
         }
 
         for (IslandPlot plot : island.plots()) {
-            existingIslandEntity.putPlot(plot.number(), worldMapper.occupantTownIdOf(plot));
+            existingJpaIsland.putPlot(plot.number(), worldMapper.occupantTownIdOf(plot));
         }
 
-        return existingIslandEntity;
+        return existingJpaIsland;
     }
 }
