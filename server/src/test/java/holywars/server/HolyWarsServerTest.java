@@ -1,5 +1,6 @@
 package holywars.server;
 
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,9 @@ class HolyWarsServerTest {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private Flyway flyway;
 
     @Test
     void startsTheContextOnAnInMemoryH2DatabaseInPostgreSqlMode() throws Exception {
@@ -45,5 +49,10 @@ class HolyWarsServerTest {
             assertThat(appliedMigrations.getInt(1)).isPositive();
             assertThat(failedMigrations.getInt(1)).isZero();
         }
+    }
+
+    @Test
+    void doesNotBaselineAnExistingSchemaOnMigrate() {
+        assertThat(flyway.getConfiguration().isBaselineOnMigrate()).isFalse();
     }
 }
