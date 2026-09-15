@@ -8,7 +8,7 @@ class BuildingTypeAllowedForTest {
 
     @Test
     void allowedForLandIsEveryLandBuildingType() {
-        assertThat(BuildingType.allowedFor(BuildingSlotKind.LAND))
+        assertThat(BuildingType.allowedFor(TownPlotKind.LAND))
                 .containsExactly(
                         BuildingType.ACADEMY,
                         BuildingType.WAREHOUSE,
@@ -25,7 +25,7 @@ class BuildingTypeAllowedForTest {
 
     @Test
     void allowedForWallIsOnlyWall() {
-        assertThat(BuildingType.allowedFor(BuildingSlotKind.WALL))
+        assertThat(BuildingType.allowedFor(TownPlotKind.WALL))
                 .containsExactly(BuildingType.WALL);
     }
 }

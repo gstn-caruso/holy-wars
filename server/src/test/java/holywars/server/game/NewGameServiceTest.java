@@ -3,12 +3,12 @@ package holywars.server.game;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import holywars.player.Player;
-import holywars.player.PlayerRepository;
+import holywars.player.Players;
 import holywars.town.Town;
-import holywars.town.TownRepository;
+import holywars.town.Towns;
 import holywars.world.Island;
 import holywars.world.World;
-import holywars.world.WorldRepository;
+import holywars.world.Worlds;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -30,20 +30,20 @@ class NewGameServiceTest {
     private NewGameService newGameService;
 
     @Autowired
-    private WorldRepository worldRepository;
+    private Worlds worlds;
 
     @Autowired
-    private PlayerRepository playerRepository;
+    private Players players;
 
     @Autowired
-    private TownRepository townRepository;
+    private Towns towns;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void emptyTheSharedDatabase() {
-        jdbcTemplate.update("delete from building_slot");
+        jdbcTemplate.update("delete from town_plot");
         jdbcTemplate.update("delete from town");
         jdbcTemplate.update("delete from player");
         jdbcTemplate.update("delete from island_plot");
@@ -58,13 +58,13 @@ class NewGameServiceTest {
         assertThat(countRowsIn("island")).isEqualTo(20);
         assertThat(countRowsIn("player")).isEqualTo(1);
         assertThat(countRowsIn("town")).isEqualTo(1);
-        assertThat(countRowsIn("building_slot")).isEqualTo(14);
+        assertThat(countRowsIn("town_plot")).isEqualTo(14);
 
-        Player player = playerRepository.find().orElseThrow();
-        Town town = townRepository.findByOwner(player.id()).orElseThrow();
+        Player player = players.find().orElseThrow();
+        Town town = towns.findByOwner(player.id()).orElseThrow();
         assertThat(town.plotNumber()).isEqualTo(1);
 
-        World world = worldRepository.find().orElseThrow();
+        World world = worlds.find().orElseThrow();
         Island capitalIsland = world.island(town.islandId());
         assertThat(capitalIsland.plots().get(0).occupant()).hasValue(town.id().value());
 

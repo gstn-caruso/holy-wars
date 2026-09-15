@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title=${town.name})}"></head>
+<body>
+<div class="shell">
+    <header th:replace="~{fragments/layout :: topBar()}"></header>
+    <div class="shell-stage" th:attr="data-town-events='/towns/' + ${town.id} + '/events'">
+        <svg th:replace="~{town/fragments/townScene :: townScene(scene=${scene}, oob=false)}"></svg>
+        <div th:replace="~{fragments/layout :: capitalHeader(header=${header})}"></div>
+        <nav th:replace="~{fragments/layout :: breadcrumb(breadcrumb=${breadcrumb})}"></nav>
+        <div th:replace="~{fragments/layout :: frieze()}"></div>
+        <aside id="build-panel"></aside>
+        <div class="town-meta visually-hidden">
+            <h1 th:text="${town.name}"></h1>
+            <p th:text="'Dueño: ' + ${town.ownerName}"></p>
+            <p>Isla: <a th:href="@{/islands/{id}(id=${town.islandId})}" th:text="${town.islandName}"></a></p>
+            <p th:text="'Parcela: ' + ${town.plotNumber}"></p>
+        </div>
+    </div>
+    <footer th:replace="~{fragments/layout :: compassFooter(header=${header})}"></footer>
+</div>
+</body>
+</html>
