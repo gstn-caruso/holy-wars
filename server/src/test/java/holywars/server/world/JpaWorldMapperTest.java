@@ -19,7 +19,7 @@ class JpaWorldMapperTest {
     private final JpaWorldMapper jpaWorldMapper = new JpaWorldMapper();
 
     @Test
-    void mapsNoIslandEntitiesToAWorldWithNoIslands() {
+    void mapsNoJpaIslandsToAWorldWithNoIslands() {
         World world = jpaWorldMapper.toDomain(List.of());
 
         assertThat(world.islands()).isEmpty();
@@ -43,7 +43,7 @@ class JpaWorldMapperTest {
     }
 
     @Test
-    void mapsSeveralIslandEntitiesPreservingEachOnesIdentity() {
+    void mapsSeveralJpaIslandsPreservingEachOnesIdentity() {
         JpaIsland naxos = aJpaIslandWithFreePlots(1, 0, 0, "Naxos", "WINE");
         JpaIsland ikaria = aJpaIslandWithFreePlots(2, 1, 1, "Ikaria", "MARBLE");
 
@@ -79,7 +79,7 @@ class JpaWorldMapperTest {
     }
 
     @Test
-    void mapsADomainIslandToItsPersistableIslandAndPlotEntities() {
+    void mapsADomainIslandToAJpaIslandWithItsPlots() {
         Island naxos = Island.withFreePlots(new IslandId(4), new Coordinate(2, 6), "Naxos", LuxuryResource.CRYSTAL);
         naxos.firstFreePlot().occupy(9L);
 
