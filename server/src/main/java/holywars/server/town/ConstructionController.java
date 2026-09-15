@@ -2,7 +2,7 @@ package holywars.server.town;
 
 import holywars.player.Player;
 import holywars.player.Players;
-import holywars.server.ResourceBarView;
+import holywars.server.view.ResourceBarView;
 import holywars.town.BuildingType;
 import holywars.town.Town;
 import holywars.town.TownId;

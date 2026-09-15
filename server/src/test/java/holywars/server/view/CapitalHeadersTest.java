@@ -1,4 +1,4 @@
-package holywars.server;
+package holywars.server.view;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

@@ -1,4 +1,4 @@
-package holywars.server;
+package holywars.server.errors;
 
 import holywars.server.town.UnknownTownException;
 import holywars.world.UnknownIslandException;

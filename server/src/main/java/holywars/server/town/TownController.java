@@ -2,9 +2,9 @@ package holywars.server.town;
 
 import holywars.player.Player;
 import holywars.player.Players;
-import holywars.server.BreadcrumbView;
-import holywars.server.CapitalHeaders;
-import holywars.server.ResourceBarView;
+import holywars.server.view.BreadcrumbView;
+import holywars.server.view.CapitalHeaders;
+import holywars.server.view.ResourceBarView;
 import holywars.town.Town;
 import holywars.town.TownId;
 import holywars.town.Towns;

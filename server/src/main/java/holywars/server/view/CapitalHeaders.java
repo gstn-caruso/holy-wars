@@ -1,4 +1,4 @@
-package holywars.server;
+package holywars.server.view;
 
 import holywars.player.Player;
 import holywars.town.Town;
