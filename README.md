@@ -18,15 +18,17 @@ mvn -pl server spring-boot:run
 ```
 
 El `install` deja `holy-wars-domain` en el repositorio local, así el segundo comando puede correr el
-módulo `server` solo. `spring-boot:run` levanta un Postgres 17 (usa el `compose.yaml` de la raíz) y las
+módulo `server` solo. `spring-boot:run` levanta un PostgreSQL 18.6 (usa el `compose.yaml` de la raíz) y las
 migraciones de Flyway arman el esquema al arrancar. Abrí `http://localhost:8080` en el navegador. Los
-datos quedan en el volumen `holywars-postgres` entre reinicios: al cortar el server, Spring frena el
-contenedor sin borrarlo. `docker compose down -v` los borra.
+datos quedan en el volumen `holywars-pgdata` entre reinicios: al cortar el server, Spring frena el
+contenedor sin borrarlo. `docker compose down -v` los borra. Si ya tenías el volumen `holywars-postgres`
+de una corrida con Postgres 17, borralo con `docker volume rm holy-wars_holywars-postgres`: PostgreSQL 18
+no abre esos datos.
 
 ## Base de datos
 
-PostgreSQL es la única base con la que corre la app; en producción no hay compose, así que el server
-se conecta por variables de entorno:
+PostgreSQL es la única base con la que corre la app, en producción con la misma versión mayor, 18; ahí
+no hay compose, así que el server se conecta por variables de entorno:
 
 ```
 mvn -B -pl server -am package -DskipTests
