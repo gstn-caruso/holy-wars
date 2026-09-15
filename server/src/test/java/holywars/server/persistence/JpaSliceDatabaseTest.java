@@ -16,7 +16,7 @@ class JpaSliceDatabaseTest {
     @Test
     void runsOnTheSharedH2DatabaseInPostgreSqlMode() {
         String mode = jdbcTemplate.queryForObject(
-                "select \"setting_value\" from information_schema.settings where \"setting_name\" = 'MODE'",
+                "select setting_value from information_schema.settings where setting_name = 'MODE'",
                 String.class);
 
         assertThat(mode).isEqualTo("PostgreSQL");
