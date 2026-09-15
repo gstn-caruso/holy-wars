@@ -1,4 +1,4 @@
-package holywars.server.persistence;
+package holywars.server.world;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,7 +12,7 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "island_plot", uniqueConstraints = @UniqueConstraint(columnNames = {"island_id", "number"}))
-class IslandPlotEntity {
+class JpaIslandPlot {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,22 +20,22 @@ class IslandPlotEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "island_id", nullable = false)
-    private IslandEntity island;
+    private JpaIsland island;
 
     private int number;
 
     private Long occupantTownId;
 
-    protected IslandPlotEntity() {
+    protected JpaIslandPlot() {
     }
 
-    IslandPlotEntity(IslandEntity island, int number, Long occupantTownId) {
+    JpaIslandPlot(JpaIsland island, int number, Long occupantTownId) {
         this.island = island;
         this.number = number;
         this.occupantTownId = occupantTownId;
     }
 
-    IslandEntity island() {
+    JpaIsland island() {
         return island;
     }
 

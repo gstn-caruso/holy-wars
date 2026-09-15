@@ -1,4 +1,4 @@
-package holywars.server.persistence;
+package holywars.server.world;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 
-class WorldMapperTest {
+class JpaWorldMapperTest {
 
-    private final WorldMapper worldMapper = new WorldMapper();
+    private final JpaWorldMapper worldMapper = new JpaWorldMapper();
 
     @Test
     void mapsNoIslandEntitiesToAWorldWithNoIslands() {
@@ -27,7 +27,7 @@ class WorldMapperTest {
 
     @Test
     void mapsASingleIslandEntityToItsMatchingDomainIsland() {
-        IslandEntity naxos = anIslandEntityWithFreePlots(3, 5, 8, "Naxos", "WINE");
+        JpaIsland naxos = anIslandEntityWithFreePlots(3, 5, 8, "Naxos", "WINE");
 
         World world = worldMapper.toDomain(List.of(naxos));
 
@@ -44,8 +44,8 @@ class WorldMapperTest {
 
     @Test
     void mapsSeveralIslandEntitiesPreservingEachOnesIdentity() {
-        IslandEntity naxos = anIslandEntityWithFreePlots(1, 0, 0, "Naxos", "WINE");
-        IslandEntity ikaria = anIslandEntityWithFreePlots(2, 1, 1, "Ikaria", "MARBLE");
+        JpaIsland naxos = anIslandEntityWithFreePlots(1, 0, 0, "Naxos", "WINE");
+        JpaIsland ikaria = anIslandEntityWithFreePlots(2, 1, 1, "Ikaria", "MARBLE");
 
         World world = worldMapper.toDomain(List.of(naxos, ikaria));
 
@@ -62,10 +62,10 @@ class WorldMapperTest {
 
     @Test
     void mapsAnOccupiedPlotWithItsOccupantTownId() {
-        IslandEntity naxos = new IslandEntity(1, 0, 0, "Naxos", "WINE");
-        naxos.addPlot(new IslandPlotEntity(naxos, 1, 7L));
+        JpaIsland naxos = new JpaIsland(1, 0, 0, "Naxos", "WINE");
+        naxos.addPlot(new JpaIslandPlot(naxos, 1, 7L));
         for (int number = 2; number <= 16; number++) {
-            naxos.addPlot(new IslandPlotEntity(naxos, number, null));
+            naxos.addPlot(new JpaIslandPlot(naxos, number, null));
         }
 
         World world = worldMapper.toDomain(List.of(naxos));
@@ -83,7 +83,7 @@ class WorldMapperTest {
         Island naxos = Island.withFreePlots(new IslandId(4), new Coordinate(2, 6), "Naxos", LuxuryResource.CRYSTAL);
         naxos.firstFreePlot().occupy(9L);
 
-        IslandEntity islandEntity = worldMapper.toEntity(naxos);
+        JpaIsland islandEntity = worldMapper.toEntity(naxos);
 
         assertThat(islandEntity.id()).isEqualTo(4L);
         assertThat(islandEntity.x()).isEqualTo(2);
@@ -91,13 +91,13 @@ class WorldMapperTest {
         assertThat(islandEntity.name()).isEqualTo("Naxos");
         assertThat(islandEntity.luxuryResource()).isEqualTo("CRYSTAL");
         assertThat(islandEntity.plots()).hasSize(16);
-        IslandPlotEntity firstPlotEntity = islandEntity.plots().stream()
+        JpaIslandPlot firstPlotEntity = islandEntity.plots().stream()
                 .filter(plot -> plot.number() == 1)
                 .findFirst()
                 .orElseThrow();
         assertThat(firstPlotEntity.island()).isSameAs(islandEntity);
         assertThat(firstPlotEntity.occupantTownId()).isEqualTo(9L);
-        IslandPlotEntity secondPlotEntity = islandEntity.plots().stream()
+        JpaIslandPlot secondPlotEntity = islandEntity.plots().stream()
                 .filter(plot -> plot.number() == 2)
                 .findFirst()
                 .orElseThrow();
@@ -106,19 +106,19 @@ class WorldMapperTest {
 
     @Test
     void refusesToRebuildAnIslandEntityWithoutSixteenPlots() {
-        IslandEntity naxos = new IslandEntity(1, 0, 0, "Naxos", "WINE");
+        JpaIsland naxos = new JpaIsland(1, 0, 0, "Naxos", "WINE");
         for (int number = 1; number <= 15; number++) {
-            naxos.addPlot(new IslandPlotEntity(naxos, number, null));
+            naxos.addPlot(new JpaIslandPlot(naxos, number, null));
         }
 
         assertThatThrownBy(() -> worldMapper.toDomain(List.of(naxos)))
                 .isInstanceOf(InvalidIslandPlotCountException.class);
     }
 
-    private IslandEntity anIslandEntityWithFreePlots(long id, int x, int y, String name, String luxuryResource) {
-        IslandEntity islandEntity = new IslandEntity(id, x, y, name, luxuryResource);
+    private JpaIsland anIslandEntityWithFreePlots(long id, int x, int y, String name, String luxuryResource) {
+        JpaIsland islandEntity = new JpaIsland(id, x, y, name, luxuryResource);
         for (int number = 1; number <= 16; number++) {
-            islandEntity.addPlot(new IslandPlotEntity(islandEntity, number, null));
+            islandEntity.addPlot(new JpaIslandPlot(islandEntity, number, null));
         }
         return islandEntity;
     }

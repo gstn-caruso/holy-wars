@@ -1,4 +1,4 @@
-package holywars.server.persistence;
+package holywars.server.world;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Entity
 @Table(name = "island")
-class IslandEntity {
+class JpaIsland {
 
     @Id
     private Long id;
@@ -27,12 +27,12 @@ class IslandEntity {
 
     @OneToMany(mappedBy = "island", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("number ASC")
-    private List<IslandPlotEntity> plots = new ArrayList<>();
+    private List<JpaIslandPlot> plots = new ArrayList<>();
 
-    protected IslandEntity() {
+    protected JpaIsland() {
     }
 
-    IslandEntity(long id, int x, int y, String name, String luxuryResource) {
+    JpaIsland(long id, int x, int y, String name, String luxuryResource) {
         this.id = id;
         this.x = x;
         this.y = y;
@@ -40,18 +40,18 @@ class IslandEntity {
         this.luxuryResource = luxuryResource;
     }
 
-    void addPlot(IslandPlotEntity plot) {
+    void addPlot(JpaIslandPlot plot) {
         plots.add(plot);
     }
 
     void putPlot(int number, Long occupantTownId) {
-        Optional<IslandPlotEntity> existingPlot = plots.stream()
+        Optional<JpaIslandPlot> existingPlot = plots.stream()
                 .filter(plot -> plot.number() == number)
                 .findFirst();
         if (existingPlot.isPresent()) {
             existingPlot.get().updateOccupant(occupantTownId);
         } else {
-            addPlot(new IslandPlotEntity(this, number, occupantTownId));
+            addPlot(new JpaIslandPlot(this, number, occupantTownId));
         }
     }
 
@@ -75,7 +75,7 @@ class IslandEntity {
         return luxuryResource;
     }
 
-    List<IslandPlotEntity> plots() {
+    List<JpaIslandPlot> plots() {
         return List.copyOf(plots);
     }
 }

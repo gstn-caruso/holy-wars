@@ -1,4 +1,4 @@
-package holywars.server.persistence;
+package holywars.server.world;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,24 +14,24 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 
 @DataJpaTest
-class WorldJpaAdapterTest {
+class JpaWorldsTest {
 
     @Autowired
-    private IslandJpaRepository islandJpaRepository;
+    private JpaIslandTable islandJpaTable;
 
     @Autowired
     private TestEntityManager entityManager;
 
-    private WorldJpaAdapter worldJpaAdapter;
+    private JpaWorlds worlds;
 
     @BeforeEach
     void setUp() {
-        worldJpaAdapter = new WorldJpaAdapter(islandJpaRepository, new WorldMapper());
+        worlds = new JpaWorlds(islandJpaTable, new JpaWorldMapper());
     }
 
     @Test
     void findsNoWorldWhenNoIslandRowsExist() {
-        Optional<World> world = worldJpaAdapter.find();
+        Optional<World> world = worlds.find();
 
         assertThat(world).isEmpty();
     }
@@ -42,8 +42,8 @@ class WorldJpaAdapterTest {
         Island capitalIsland = generatedWorld.randomIsland(new Random(2L));
         capitalIsland.firstFreePlot().occupy(1L);
 
-        worldJpaAdapter.save(generatedWorld);
-        World foundWorld = worldJpaAdapter.find().orElseThrow();
+        worlds.save(generatedWorld);
+        World foundWorld = worlds.find().orElseThrow();
 
         assertThat(foundWorld).isEqualTo(generatedWorld);
     }
@@ -52,13 +52,13 @@ class WorldJpaAdapterTest {
     void savingAnExistingWorldUpdatesInsteadOfDuplicating() {
         World generatedWorld = new WorldGenerator().generate(new Random(1L));
 
-        worldJpaAdapter.save(generatedWorld);
+        worlds.save(generatedWorld);
         entityManager.flush();
-        worldJpaAdapter.save(generatedWorld);
+        worlds.save(generatedWorld);
         entityManager.flush();
 
-        assertThat(islandJpaRepository.count()).isEqualTo(20L);
-        long totalPlotCount = islandJpaRepository.findAllWithPlots().stream()
+        assertThat(islandJpaTable.count()).isEqualTo(20L);
+        long totalPlotCount = islandJpaTable.findAllWithPlots().stream()
                 .mapToLong(islandEntity -> islandEntity.plots().size())
                 .sum();
         assertThat(totalPlotCount).isEqualTo(320L);

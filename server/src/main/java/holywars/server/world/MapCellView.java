@@ -1,4 +1,4 @@
-package holywars.server.web;
+package holywars.server.world;
 
 import holywars.server.LuxuryResourceIcon;
 import holywars.world.Island;

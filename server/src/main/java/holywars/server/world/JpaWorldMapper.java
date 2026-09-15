@@ -1,4 +1,4 @@
-package holywars.server.persistence;
+package holywars.server.world;
 
 import holywars.world.Coordinate;
 import holywars.world.Island;
@@ -10,13 +10,13 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-final class WorldMapper {
+final class JpaWorldMapper {
 
-    World toDomain(List<IslandEntity> islandEntities) {
+    World toDomain(List<JpaIsland> islandEntities) {
         return new World(islandEntities.stream().map(this::toDomainIsland).toList());
     }
 
-    private Island toDomainIsland(IslandEntity islandEntity) {
+    private Island toDomainIsland(JpaIsland islandEntity) {
         List<IslandPlot> plots = islandEntity.plots().stream().map(this::toDomainPlot).toList();
         return new Island(
                 new IslandId(islandEntity.id()),
@@ -26,7 +26,7 @@ final class WorldMapper {
                 plots);
     }
 
-    private IslandPlot toDomainPlot(IslandPlotEntity islandPlotEntity) {
+    private IslandPlot toDomainPlot(JpaIslandPlot islandPlotEntity) {
         IslandPlot plot = new IslandPlot(islandPlotEntity.number());
         if (islandPlotEntity.occupantTownId() != null) {
             plot.occupy(islandPlotEntity.occupantTownId());
@@ -34,8 +34,8 @@ final class WorldMapper {
         return plot;
     }
 
-    IslandEntity toEntity(Island island) {
-        IslandEntity islandEntity = new IslandEntity(
+    JpaIsland toEntity(Island island) {
+        JpaIsland islandEntity = new JpaIsland(
                 island.id().value(),
                 island.coordinate().x(),
                 island.coordinate().y(),
@@ -45,8 +45,8 @@ final class WorldMapper {
         return islandEntity;
     }
 
-    private IslandPlotEntity toEntity(IslandPlot plot, IslandEntity islandEntity) {
-        return new IslandPlotEntity(islandEntity, plot.number(), occupantTownIdOf(plot));
+    private JpaIslandPlot toEntity(IslandPlot plot, JpaIsland islandEntity) {
+        return new JpaIslandPlot(islandEntity, plot.number(), occupantTownIdOf(plot));
     }
 
     Long occupantTownIdOf(IslandPlot plot) {

@@ -1,4 +1,4 @@
-package holywars.server.web;
+package holywars.server.world;
 
 import holywars.player.Player;
 import holywars.player.Players;

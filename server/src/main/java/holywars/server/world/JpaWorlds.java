@@ -1,4 +1,4 @@
-package holywars.server.persistence;
+package holywars.server.world;
 
 import holywars.world.Island;
 import holywars.world.IslandPlot;
@@ -12,19 +12,19 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 @Repository
-class WorldJpaAdapter implements Worlds {
+class JpaWorlds implements Worlds {
 
-    private final IslandJpaRepository islandJpaRepository;
-    private final WorldMapper worldMapper;
+    private final JpaIslandTable islandJpaTable;
+    private final JpaWorldMapper worldMapper;
 
-    WorldJpaAdapter(IslandJpaRepository islandJpaRepository, WorldMapper worldMapper) {
-        this.islandJpaRepository = islandJpaRepository;
+    JpaWorlds(JpaIslandTable islandJpaTable, JpaWorldMapper worldMapper) {
+        this.islandJpaTable = islandJpaTable;
         this.worldMapper = worldMapper;
     }
 
     @Override
     public Optional<World> find() {
-        List<IslandEntity> islandEntities = islandJpaRepository.findAllWithPlots();
+        List<JpaIsland> islandEntities = islandJpaTable.findAllWithPlots();
         if (islandEntities.isEmpty()) {
             return Optional.empty();
         }
@@ -33,17 +33,17 @@ class WorldJpaAdapter implements Worlds {
 
     @Override
     public void save(World world) {
-        Map<Long, IslandEntity> existingIslandEntitiesById = islandJpaRepository.findAllWithPlots().stream()
-                .collect(Collectors.toMap(IslandEntity::id, Function.identity()));
+        Map<Long, JpaIsland> existingIslandEntitiesById = islandJpaTable.findAllWithPlots().stream()
+                .collect(Collectors.toMap(JpaIsland::id, Function.identity()));
 
-        List<IslandEntity> islandEntitiesToSave = world.islands().stream()
+        List<JpaIsland> islandEntitiesToSave = world.islands().stream()
                 .map(island -> reconcile(island, existingIslandEntitiesById.get(island.id().value())))
                 .toList();
 
-        islandJpaRepository.saveAll(islandEntitiesToSave);
+        islandJpaTable.saveAll(islandEntitiesToSave);
     }
 
-    private IslandEntity reconcile(Island island, IslandEntity existingIslandEntity) {
+    private JpaIsland reconcile(Island island, JpaIsland existingIslandEntity) {
         if (existingIslandEntity == null) {
             return worldMapper.toEntity(island);
         }

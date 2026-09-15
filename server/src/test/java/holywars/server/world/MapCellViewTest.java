@@ -1,4 +1,4 @@
-package holywars.server.web;
+package holywars.server.world;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
