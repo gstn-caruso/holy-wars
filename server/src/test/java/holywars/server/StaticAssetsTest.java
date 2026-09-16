@@ -53,4 +53,13 @@ class StaticAssetsTest {
                 .andExpect(content().string(containsString("width=\"90\"")))
                 .andExpect(content().string(containsString("height=\"108\"")));
     }
+
+    @Test
+    void advisorPlusSvgIsServedWithItsFixedDimensions() throws Exception {
+        mockMvc.perform(get("/img/ui-advisor-plus.svg"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("viewBox=\"0 0 22 22\"")))
+                .andExpect(content().string(containsString("width=\"22\"")))
+                .andExpect(content().string(containsString("height=\"22\"")));
+    }
 }
