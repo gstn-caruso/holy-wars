@@ -66,8 +66,16 @@ class ConstructionControllerTest {
         mockMvc.perform(get("/towns/1/plots/2/build-menu"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Parcela 2")))
+                .andExpect(content().string(containsString("href=\"/towns/1\"")))
+                .andExpect(content().string(containsString("Cerrar")))
+                .andExpect(content().string(containsString(
+                        "Un terreno vacío espera a tus ciudadanos. ¿Qué edificio van a levantar acá?")))
+                .andExpect(content().string(containsString("Construir edificio")))
+                .andExpect(content().string(containsString("/img/building-warehouse.svg")))
                 .andExpect(content().string(containsString("Almacén")))
+                .andExpect(content().string(containsString("/img/resource-wood.svg")))
                 .andExpect(content().string(containsString("40 madera")))
+                .andExpect(content().string(containsString("/img/ui-icon-time.svg")))
                 .andExpect(content().string(containsString("6 min")))
                 .andExpect(content().string(containsString("hx-post=\"/towns/1/plots/2/build\"")))
                 .andExpect(content().string(containsString("¡Construir!")));

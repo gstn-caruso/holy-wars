@@ -1,23 +1,52 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="buildMenu(menu)" class="build-menu">
-    <h2 th:text="${menu.title}"></h2>
-    <p class="error" th:if="${menu.error}" th:text="${menu.error}"></p>
-    <p class="build-menu-status" th:if="${menu.statusText}" th:text="${menu.statusText}"></p>
-    <form th:each="option : ${menu.options}" class="build-option"
-          th:attr="hx-post=@{/towns/{id}/plots/{position}/build(id=${menu.townId},position=${menu.position})}"
-          hx-target="#build-panel" hx-swap="innerHTML">
-        <input type="hidden" name="type" th:value="${option.type}"/>
-        <img th:src="${option.spriteHref}" alt=""/>
-        <span class="build-option-name" th:text="${option.name}"></span>
-        <span class="build-option-wood" th:text="${option.woodCost} + ' madera'"></span>
-        <span class="build-option-luxury" th:if="${option.luxuryCost} > 0"
-              th:text="${option.luxuryCost} + ' lujo'"></span>
-        <span class="build-option-minutes" th:text="${option.minutes} + ' min'"></span>
-        <button type="submit" class="button-bronze">¡Construir!</button>
-    </form>
-    <a class="build-menu-close" th:href="@{/towns/{id}(id=${menu.townId})}">Cerrar</a>
+<div th:fragment="buildMenu(menu)" class="build-window">
+    <div class="build-window-tab"></div>
+    <div class="build-window-header">
+        <h2 class="build-window-title" th:text="${menu.title}"></h2>
+        <a class="build-window-close" th:href="@{/towns/{id}(id=${menu.townId})}">
+            <span class="visually-hidden">Cerrar</span>
+        </a>
+    </div>
+    <div class="build-window-body">
+        <p class="build-window-intro">Un terreno vacío espera a tus ciudadanos. ¿Qué edificio van a levantar acá?</p>
+        <p class="build-window-error" th:if="${menu.error}" th:text="${menu.error}"></p>
+        <p class="build-window-status" th:if="${menu.statusText}" th:text="${menu.statusText}"></p>
+        <div class="build-list">
+            <div class="build-list-header">Construir edificio</div>
+            <div class="build-list-body">
+                <form th:each="option : ${menu.options}" class="build-option-row"
+                      th:attr="hx-post=@{/towns/{id}/plots/{position}/build(id=${menu.townId},position=${menu.position})}"
+                      hx-target="#build-panel" hx-swap="innerHTML">
+                    <div class="build-option-column"></div>
+                    <input type="hidden" name="type" th:value="${option.type}"/>
+                    <img class="build-option-sprite" th:src="${option.spriteHref}" alt=""/>
+                    <div class="build-option-info">
+                        <h4 th:text="${option.name}"></h4>
+                        <hr/>
+                        <ul class="build-option-costs">
+                            <li class="build-option-wood">
+                                <img src="/img/resource-wood.svg" alt=""/>
+                                <span th:text="${option.woodCost} + ' madera'"></span>
+                            </li>
+                            <li class="build-option-luxury" th:if="${option.luxuryCost} > 0">
+                                <img th:src="${option.luxuryIconPath}" alt=""/>
+                                <span th:text="${option.luxuryCost} + ' lujo'"></span>
+                            </li>
+                            <li class="build-option-minutes">
+                                <img src="/img/ui-icon-time.svg" alt=""/>
+                                <span th:text="${option.minutes} + ' min'"></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <button type="submit" class="build-option-build">¡Construir!</button>
+                </form>
+            </div>
+            <div class="build-list-footer"></div>
+        </div>
+    </div>
+    <div class="build-window-footer"></div>
 </div>
 </body>
 </html>

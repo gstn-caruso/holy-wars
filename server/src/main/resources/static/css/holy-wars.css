@@ -388,61 +388,187 @@ td.island > div {
 
 #build-panel {
     position: absolute;
-    top: 3vh;
-    right: 1vw;
-    width: 35vw;
-    max-height: 90vh;
-    overflow-y: auto;
+    top: 155px;
+    right: 70px;
+    width: 728px;
+    max-height: calc(100% - 155px);
+    box-shadow: 0 0 4px #000;
+    z-index: 5;
 }
 
 #build-panel:empty {
     display: none;
 }
 
-.build-menu {
-    background: #e9d8a6 url(/img/ui-panel-papyrus.svg) center / cover;
-    border-radius: 4px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
-    padding: 16px 20px;
-    color: #4a2f12;
-}
-
-.build-menu h2 {
-    margin: 0 0 10px;
-    font-size: 1.1rem;
-}
-
-.build-menu .error {
-    color: #7a1a1a;
-    font-weight: bold;
-}
-
-.build-menu-status {
-    font-weight: bold;
-}
-
-.build-option {
+.build-window {
+    position: relative;
     display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 0;
-    border-top: 1px solid #b39a5e;
+    flex-direction: column;
+    max-height: 100%;
 }
 
-.build-option img {
-    width: 64px;
-    height: 64px;
+.build-window-tab {
+    position: absolute;
+    top: -14px;
+    left: -6px;
+    width: 40px;
+    height: 40px;
+    background: url(/img/ui-window-tab-flag.svg) no-repeat;
 }
 
-.build-option-name {
+.build-window-header {
+    position: relative;
+    flex: none;
+    width: 728px;
+    height: 26px;
+    background: url(/img/ui-window-header.svg) no-repeat;
+}
+
+.build-window-title {
+    margin: 0;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    font: bold 12px Arial, sans-serif;
+    color: #542c0f;
+}
+
+.build-window-close {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    width: 18px;
+    height: 18px;
+    background: url(/img/ui-window-close.svg) no-repeat;
+}
+
+.build-window-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    background: #faf3d7;
+    padding: 12px;
+}
+
+.build-window-footer {
+    flex: none;
+    width: 728px;
+    height: 5px;
+    background: url(/img/ui-window-footer.svg) no-repeat;
+}
+
+.build-window-intro {
+    margin: 0 0 12px;
+    padding: 10px 14px;
+    border: 2px solid #d1a36f;
+    border-radius: 15px;
+    font-size: 12px;
+    color: #542c0f;
+}
+
+.build-window-error {
     font-weight: bold;
-    flex: 1;
+    color: #aa0303;
 }
 
-.build-menu-close {
-    display: inline-block;
-    margin-top: 12px;
-    color: #7a4a1f;
-    text-decoration: none;
+.build-window-status {
     font-weight: bold;
+    color: #542c0f;
+}
+
+.build-list {
+    width: 680px;
+    margin: 0 auto;
+}
+
+.build-list-header {
+    width: 680px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font: bold 12px Arial, sans-serif;
+    color: #542c0f;
+    background: url(/img/ui-box-header.svg) no-repeat;
+}
+
+.build-list-body {
+    background: #faf3d7;
+}
+
+.build-list-footer {
+    width: 680px;
+    height: 3px;
+    background: url(/img/ui-box-footer.svg) no-repeat;
+}
+
+.build-option-row {
+    position: relative;
+    width: 674px;
+    padding: 10px 0;
+    border-bottom: 1px solid #fae3ba;
+}
+
+.build-option-column {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 138px;
+    height: 100%;
+    background: url(/img/ui-row-column.svg) repeat-y right top;
+}
+
+.build-option-sprite {
+    display: block;
+    width: 172px;
+    height: 140px;
+}
+
+.build-option-info h4 {
+    margin: 0 0 0 180px;
+    font: bold 14px/22px Arial, sans-serif;
+    color: #542c0f;
+}
+
+.build-option-info hr {
+    margin: 4px 0 4px 185px;
+    width: 343px;
+    border: none;
+    border-top: 1px solid #d1a36f;
+}
+
+.build-option-costs {
+    margin: 0 0 0 185px;
+    padding: 0;
+    list-style: none;
+    width: 343px;
+}
+
+.build-option-costs li {
+    position: relative;
+    height: 26px;
+    line-height: 26px;
+    padding-left: 32px;
+    font-size: 12px;
+    color: #542c0f;
+}
+
+.build-option-costs img {
+    position: absolute;
+    left: 0;
+    top: 1px;
+    width: 24px;
+    height: 24px;
+}
+
+.build-option-build {
+    position: absolute;
+    top: 42px;
+    right: 19px;
+    width: 100px;
+    height: 22px;
+    border: 1px solid #8a5a1f;
+    background: url(/img/ui-button-build.svg) repeat-x;
+    font: bold 12px Arial, sans-serif;
+    color: #542c0f;
+    cursor: pointer;
 }
