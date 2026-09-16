@@ -172,17 +172,9 @@ class TownControllerTest {
 
     @Test
     void validTownRendersTheAdvisorsFriezeWithItsSixImagesAndFourLabels() throws Exception {
-        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
-        Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",
-                LuxuryResource.WINE, NOW);
-        World world = new World(List.of(island));
-        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
-        given(players.find()).willReturn(Optional.of(player));
-        given(worlds.find()).willReturn(Optional.of(world));
-        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
+        stubTownWithAdvisorsFrieze();
 
-        MvcResult result = mockMvc.perform(get("/towns/1"))
+        mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("/img/ui-frieze-advisors.svg")))
                 .andExpect(content().string(containsString("/img/ui-advisor-cities.svg")))
@@ -193,7 +185,15 @@ class TownControllerTest {
                 .andExpect(content().string(containsString("Ciudades")))
                 .andExpect(content().string(containsString("Milicia")))
                 .andExpect(content().string(containsString("Investigación")))
-                .andExpect(content().string(containsString("Diplomacia")))
+                .andExpect(content().string(containsString("Diplomacia")));
+    }
+
+    @Test
+    void advisorsFriezeOffersNoClickAction() throws Exception {
+        stubTownWithAdvisorsFrieze();
+
+        MvcResult result = mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
                 .andExpect(content().string(containsString(
                         "<img class=\"councillor-plus\" src=\"/img/ui-advisor-plus.svg\" "
                                 + "width=\"22\" height=\"22\" alt=\"\"/>")))
@@ -201,6 +201,18 @@ class TownControllerTest {
 
         String body = result.getResponse().getContentAsString();
         assertThat(countOccurrences(body, "title=\"Próximamente\"")).isEqualTo(4);
+    }
+
+    private void stubTownWithAdvisorsFrieze() {
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        World world = new World(List.of(island));
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
+        given(players.find()).willReturn(Optional.of(player));
+        given(worlds.find()).willReturn(Optional.of(world));
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
     }
 
     @Test
