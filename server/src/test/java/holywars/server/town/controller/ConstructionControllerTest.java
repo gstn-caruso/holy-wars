@@ -1,6 +1,7 @@
 package holywars.server.town.controller;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -79,6 +80,18 @@ class ConstructionControllerTest {
                 .andExpect(content().string(containsString("6 min")))
                 .andExpect(content().string(containsString("hx-post=\"/towns/1/plots/2/build\"")))
                 .andExpect(content().string(containsString("¡Construir!")));
+    }
+
+    @Test
+    void buildMenuEndpointShowsTheOccupiedPlotStatusWithoutAnyOptionRow() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
+
+        mockMvc.perform(get("/towns/1/plots/1/build-menu"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Ayuntamiento nivel 1")))
+                .andExpect(content().string(not(containsString("¡Construir!"))));
     }
 
     @Test
