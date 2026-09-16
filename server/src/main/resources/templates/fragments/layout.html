@@ -44,22 +44,33 @@
     <a class="crumb" th:each="crumb : ${breadcrumb.crumbs}" th:href="${crumb.href}" th:text="${crumb.label}"></a>
 </nav>
 <div class="councillor-frieze" th:fragment="frieze()">
-    <figure class="councillor">
-        <div class="councillor-portrait"></div>
-        <figcaption title="Próximamente">Ciudades</figcaption>
-    </figure>
-    <figure class="councillor">
-        <div class="councillor-portrait"></div>
-        <figcaption title="Próximamente">Milicia</figcaption>
-    </figure>
-    <figure class="councillor">
-        <div class="councillor-portrait"></div>
-        <figcaption title="Próximamente">Investigación</figcaption>
-    </figure>
-    <figure class="councillor">
-        <div class="councillor-portrait"></div>
-        <figcaption title="Próximamente">Diplomacia</figcaption>
-    </figure>
+    <img class="councillor-frieze-frame" src="/img/ui-frieze-advisors.svg" width="394" height="130" alt=""/>
+    <div class="councillor-list">
+        <figure class="councillor">
+            <img class="councillor-portrait" src="/img/ui-advisor-cities.svg" width="90" height="108"
+                 alt="Consejero de Ciudades"/>
+            <img class="councillor-plus" src="/img/ui-advisor-plus.svg" width="22" height="22" alt=""/>
+            <figcaption title="Próximamente">Ciudades</figcaption>
+        </figure>
+        <figure class="councillor">
+            <img class="councillor-portrait" src="/img/ui-advisor-military.svg" width="90" height="108"
+                 alt="Consejero de Milicia"/>
+            <img class="councillor-plus" src="/img/ui-advisor-plus.svg" width="22" height="22" alt=""/>
+            <figcaption title="Próximamente">Milicia</figcaption>
+        </figure>
+        <figure class="councillor">
+            <img class="councillor-portrait" src="/img/ui-advisor-research.svg" width="90" height="108"
+                 alt="Consejero de Investigación"/>
+            <img class="councillor-plus" src="/img/ui-advisor-plus.svg" width="22" height="22" alt=""/>
+            <figcaption title="Próximamente">Investigación</figcaption>
+        </figure>
+        <figure class="councillor">
+            <img class="councillor-portrait" src="/img/ui-advisor-diplomacy.svg" width="90" height="108"
+                 alt="Consejero de Diplomacia"/>
+            <img class="councillor-plus" src="/img/ui-advisor-plus.svg" width="22" height="22" alt=""/>
+            <figcaption title="Próximamente">Diplomacia</figcaption>
+        </figure>
+    </div>
 </div>
 <div class="shell-footer" th:fragment="compassFooter(header)">
     <div class="compass">
