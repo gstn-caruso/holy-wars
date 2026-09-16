@@ -33,6 +33,7 @@ class BuildMenuViewTest {
         assertThat(warehouse.woodCost()).isEqualTo(40);
         assertThat(warehouse.luxuryCost()).isEqualTo(0);
         assertThat(warehouse.minutes()).isEqualTo(6);
+        assertThat(warehouse.luxuryIconPath()).isNull();
     }
 
     @Test
