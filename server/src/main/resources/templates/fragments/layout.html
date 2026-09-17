@@ -17,14 +17,17 @@
                hx-swap='outerHTML'">
     <span class="resource resource-wood">
         <img src="/img/resource-wood.svg" alt=""/>
-        <span th:text="${bar.wood}"></span> Madera
+        <span class="visually-hidden">Madera</span>
+        <span class="resource-value" th:text="${bar.wood}"></span>
     </span>
     <span class="resource resource-luxury">
         <img th:src="${bar.luxuryIconPath}" alt=""/>
-        <span th:text="${bar.luxuryAmount}"></span> <span th:text="${bar.luxuryResourceName}"></span>
+        <span class="visually-hidden" th:text="${bar.luxuryResourceName}"></span>
+        <span class="resource-value" th:text="${bar.luxuryAmount}"></span>
     </span>
     <span class="resource-gold">
-        <img src="/img/ui-button-gold.svg" width="110" height="29" alt="Oro"/>
+        <img src="/img/ui-button-gold.svg" width="110" height="29" alt=""/>
+        <span class="visually-hidden">Oro</span>
         <span class="resource-gold-value" th:text="${bar.gold}"></span>
     </span>
 </div>

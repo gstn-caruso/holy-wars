@@ -197,7 +197,7 @@ body {
     height: 20px;
 }
 
-.resource span {
+.resource-value {
     position: absolute;
     top: 0;
     left: 32px;

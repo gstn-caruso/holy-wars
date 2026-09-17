@@ -67,8 +67,24 @@ class ResourceBarRenderingTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("id=\"resource-bar\"")))
                 .andExpect(content().string(containsString(
-                        "<img src=\"/img/ui-button-gold.svg\" width=\"110\" height=\"29\" alt=\"Oro\"/>")))
+                        "<img src=\"/img/ui-button-gold.svg\" width=\"110\" height=\"29\" alt=\"\"/>")))
                 .andExpect(content().string(containsString("<span class=\"resource-gold-value\">500</span>")));
+    }
+
+    @Test
+    void keepsEachResourceCellToAnIconAndAValue() throws Exception {
+        stubCapitalTown();
+
+        mockMvc.perform(get("/towns/1/resources"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("<img src=\"/img/resource-wood.svg\" alt=\"\"/>")))
+                .andExpect(content().string(containsString("<span class=\"visually-hidden\">Madera</span>")))
+                .andExpect(content().string(containsString("<span class=\"resource-value\">500</span>")))
+                .andExpect(content().string(containsString("<span class=\"visually-hidden\">Vino</span>")))
+                .andExpect(content().string(containsString("<span class=\"resource-value\">100</span>")))
+                .andExpect(content().string(containsString(
+                        "<img src=\"/img/ui-button-gold.svg\" width=\"110\" height=\"29\" alt=\"\"/>")))
+                .andExpect(content().string(containsString("<span class=\"visually-hidden\">Oro</span>")));
     }
 
     private void stubCapitalTown() {
