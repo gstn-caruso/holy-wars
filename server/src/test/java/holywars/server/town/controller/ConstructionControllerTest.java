@@ -78,6 +78,8 @@ class ConstructionControllerTest {
                 .andExpect(content().string(containsString("40 madera")))
                 .andExpect(content().string(containsString("/img/ui-icon-time.svg")))
                 .andExpect(content().string(containsString("6 min")))
+                .andExpect(content().string(containsString("/img/resource-wine.svg")))
+                .andExpect(content().string(containsString("10 lujo")))
                 .andExpect(content().string(containsString("hx-post=\"/towns/1/plots/2/build\"")))
                 .andExpect(content().string(containsString("¡Construir!")));
     }
