@@ -127,7 +127,8 @@ class ConstructionControllerTest {
 
         mockMvc.perform(post("/towns/1/plots/2/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("No alcanzan los recursos")));
+                .andExpect(content().string(containsString("No alcanzan los recursos")))
+                .andExpect(content().string(containsString("¡Construir!")));
     }
 
     @Test
