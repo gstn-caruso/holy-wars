@@ -39,9 +39,18 @@
     </div>
     <div th:replace="~{fragments/layout :: resourceBar(bar=${header.resourceBar}, oob=false)}"></div>
     <div class="view-switch">
-        <a class="view-button" href="/map">Mostrar mundo</a>
-        <a class="view-button" th:href="@{/islands/{id}(id=${header.islandId})}">Mostrar isla</a>
-        <a class="view-button" th:href="@{/towns/{id}(id=${header.townId})}">Mostrar ciudad</a>
+        <a class="view-button view-button-world" href="/map">
+            <img src="/img/ui-button-world.svg" width="84" height="54" alt=""/>
+            <span class="view-button-caption">Mostrar mundo</span>
+        </a>
+        <a class="view-button view-button-island" th:href="@{/islands/{id}(id=${header.islandId})}">
+            <img src="/img/ui-button-island.svg" width="84" height="54" alt=""/>
+            <span class="view-button-caption">Mostrar isla</span>
+        </a>
+        <a class="view-button view-button-city" th:href="@{/towns/{id}(id=${header.townId})}">
+            <img src="/img/ui-button-city.svg" width="84" height="58" alt=""/>
+            <span class="view-button-caption">Mostrar ciudad</span>
+        </a>
     </div>
 </div>
 <nav class="breadcrumb" th:fragment="breadcrumb(breadcrumb)">

@@ -66,6 +66,32 @@ class CapitalHeaderRenderingTest {
                                 + "width=\"177\" height=\"24\" alt=\"\"/>")));
     }
 
+    @Test
+    void drawsTheThreeViewButtonsWithTheirCaptions() throws Exception {
+        stubCapitalTown();
+
+        mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(
+                        "<a class=\"view-button view-button-world\" href=\"/map\">")))
+                .andExpect(content().string(containsString(
+                        "<img src=\"/img/ui-button-world.svg\" width=\"84\" height=\"54\" alt=\"\"/>")))
+                .andExpect(content().string(containsString(
+                        "<a class=\"view-button view-button-island\" href=\"/islands/3\">")))
+                .andExpect(content().string(containsString(
+                        "<img src=\"/img/ui-button-island.svg\" width=\"84\" height=\"54\" alt=\"\"/>")))
+                .andExpect(content().string(containsString(
+                        "<a class=\"view-button view-button-city\" href=\"/towns/1\">")))
+                .andExpect(content().string(containsString(
+                        "<img src=\"/img/ui-button-city.svg\" width=\"84\" height=\"58\" alt=\"\"/>")))
+                .andExpect(content().string(containsString(
+                        "<span class=\"view-button-caption\">Mostrar mundo</span>")))
+                .andExpect(content().string(containsString(
+                        "<span class=\"view-button-caption\">Mostrar isla</span>")))
+                .andExpect(content().string(containsString(
+                        "<span class=\"view-button-caption\">Mostrar ciudad</span>")));
+    }
+
     private void stubCapitalTown() {
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",
