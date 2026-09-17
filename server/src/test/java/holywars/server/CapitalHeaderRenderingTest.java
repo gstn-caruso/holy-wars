@@ -1,5 +1,6 @@
 package holywars.server;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -25,11 +26,14 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -104,6 +108,29 @@ class CapitalHeaderRenderingTest {
                 .andExpect(content().string(containsString(
                         "<img class=\"capital-header-chest\" src=\"/img/ui-chest.svg\" "
                                 + "width=\"41\" height=\"80\" alt=\"\"/>")));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"/map", "/islands/3", "/towns/1"})
+    void headerIsIdenticalAcrossTheThreeRoutes(String route) throws Exception {
+        stubCapitalTown();
+
+        MvcResult result = mockMvc.perform(get(route)).andExpect(status().isOk()).andReturn();
+
+        assertThat(capitalHeaderMarkupOf(result)).isEqualTo(capitalHeaderMarkupOfTown());
+    }
+
+    private String capitalHeaderMarkupOfTown() throws Exception {
+        stubCapitalTown();
+        MvcResult result = mockMvc.perform(get("/towns/1")).andExpect(status().isOk()).andReturn();
+        return capitalHeaderMarkupOf(result);
+    }
+
+    private String capitalHeaderMarkupOf(MvcResult result) throws Exception {
+        String body = result.getResponse().getContentAsString();
+        int start = body.indexOf("<div class=\"capital-header\">");
+        int end = body.indexOf("<nav class=\"breadcrumb\"");
+        return body.substring(start, end);
     }
 
     private void stubCapitalTown() {
