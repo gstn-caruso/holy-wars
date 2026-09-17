@@ -30,7 +30,12 @@ class ShellChromeAssetsTest {
         "ui-menu-trader.svg, 34, 34",
         "ui-menu-rearrange.svg, 34, 34",
         "ui-menu-friends.svg, 34, 34",
-        "ui-menu-info.svg, 34, 34"
+        "ui-menu-info.svg, 34, 34",
+        "ui-friends-panel.svg, 42, 295",
+        "ui-slot-right.svg, 53, 40",
+        "ui-button-edit.svg, 35, 13",
+        "ui-button-showhide.svg, 35, 13",
+        "ui-button-pagedown.svg, 35, 13"
     })
     void servesTheShellChromeSvgsAtTheirExactDimensions(String fileName, String width, String height)
             throws Exception {

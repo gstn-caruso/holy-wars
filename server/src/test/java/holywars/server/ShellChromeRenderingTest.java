@@ -101,6 +101,32 @@ class ShellChromeRenderingTest {
                 .doesNotContain("href=\"/img/ui-menu-info.svg\"");
     }
 
+    @Test
+    void friendsPanelDrawsItsBackgroundButtonsAndSixEmptySlots() throws Exception {
+        stubCapitalTown();
+
+        MvcResult result = mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("/img/ui-friends-panel.svg")))
+                .andExpect(content().string(containsString("/img/ui-button-edit.svg")))
+                .andExpect(content().string(containsString("/img/ui-button-showhide.svg")))
+                .andExpect(content().string(containsString("/img/ui-button-pagedown.svg")))
+                .andReturn();
+
+        String body = result.getResponse().getContentAsString();
+        assertThat(countOccurrences(body, "/img/ui-slot-right.svg")).isEqualTo(6);
+    }
+
+    private static int countOccurrences(String text, String token) {
+        int count = 0;
+        int index = 0;
+        while ((index = text.indexOf(token, index)) != -1) {
+            count++;
+            index += token.length();
+        }
+        return count;
+    }
+
     private void stubCapitalTown() {
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",

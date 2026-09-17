@@ -356,6 +356,65 @@ body {
     top: 3px;
 }
 
+.shell-friends-panel {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.shell-friends-panel-bg {
+    position: absolute;
+    right: 16px;
+    top: 260px;
+}
+
+.shell-friends-panel-edit {
+    position: absolute;
+    right: 19px;
+    top: 264px;
+}
+
+.shell-friends-panel-slot {
+    position: absolute;
+    right: 17px;
+}
+
+.shell-friends-panel-slot-1 {
+    top: 280px;
+}
+
+.shell-friends-panel-slot-2 {
+    top: 320px;
+}
+
+.shell-friends-panel-slot-3 {
+    top: 360px;
+}
+
+.shell-friends-panel-slot-4 {
+    top: 400px;
+}
+
+.shell-friends-panel-slot-5 {
+    top: 440px;
+}
+
+.shell-friends-panel-slot-6 {
+    top: 480px;
+}
+
+.shell-friends-panel-showhide {
+    position: absolute;
+    right: 19px;
+    top: 524px;
+}
+
+.shell-friends-panel-pagedown {
+    position: absolute;
+    right: 19px;
+    top: 539px;
+}
+
 .panel,
 .plot {
     background: linear-gradient(#f4e9c8, #e3d1a1);
