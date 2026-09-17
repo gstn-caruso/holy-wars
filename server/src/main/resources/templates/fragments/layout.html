@@ -94,13 +94,7 @@
         </figure>
     </div>
 </div>
-<div class="shell-chrome" th:fragment="shellChrome(header)">
-    <div class="compass">
-        <img class="compass-dial" src="/img/ui-compass.svg" width="135" height="135" alt=""/>
-        <a class="compass-globe" href="/map" title="Mostrar mundo"></a>
-        <a class="compass-island" th:href="@{/islands/{id}(id=${header.islandId})}" title="Mostrar isla"></a>
-        <a class="compass-town" th:href="@{/towns/{id}(id=${header.townId})}" title="Mostrar ciudad"></a>
-    </div>
+<div class="shell-chrome" th:fragment="shellChrome()">
     <div class="shell-menu-left">
         <img class="shell-menu-gift" src="/img/ui-gift.svg" width="53" height="40" alt="Regalo"
              title="Regalo (Próximamente)"/>

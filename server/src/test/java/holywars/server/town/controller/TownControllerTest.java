@@ -122,7 +122,7 @@ class TownControllerTest {
     }
 
     @Test
-    void rendersTheCapitalHeaderTheBreadcrumbAndTheExactViewButtonTexts() throws Exception {
+    void rendersTheCapitalHeaderTheBreadcrumbAndTheViewSwitchTextsAndLinks() throws Exception {
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",
                 LuxuryResource.WINE, NOW);
@@ -148,26 +148,13 @@ class TownControllerTest {
                 .andExpect(content().string(containsString("/towns/1")))
                 .andExpect(content().string(containsString("Mostrar mundo")))
                 .andExpect(content().string(containsString("Mostrar isla")))
-                .andExpect(content().string(containsString("Mostrar ciudad")));
-    }
-
-    @Test
-    void rendersTheCompassWithThreeDistinctLinks() throws Exception {
-        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
-        Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",
-                LuxuryResource.WINE, NOW);
-        World world = new World(List.of(island));
-        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
-        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
-        given(players.find()).willReturn(Optional.of(player));
-        given(worlds.find()).willReturn(Optional.of(world));
-        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
-
-        mockMvc.perform(get("/towns/1"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("class=\"compass-globe\" href=\"/map\"")))
-                .andExpect(content().string(containsString("class=\"compass-island\" href=\"/islands/3\"")))
-                .andExpect(content().string(containsString("class=\"compass-town\" href=\"/towns/1\"")));
+                .andExpect(content().string(containsString("Mostrar ciudad")))
+                .andExpect(content().string(
+                        containsString("class=\"view-button view-button-world\" href=\"/map\"")))
+                .andExpect(content().string(
+                        containsString("class=\"view-button view-button-island\" href=\"/islands/3\"")))
+                .andExpect(content().string(
+                        containsString("class=\"view-button view-button-city\" href=\"/towns/1\"")));
     }
 
     @Test
