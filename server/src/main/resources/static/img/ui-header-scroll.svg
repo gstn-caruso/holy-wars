@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 652 125" width="652" height="125">
+  <defs>
+    <linearGradient id="scrollBase" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#efe6c8"/>
+      <stop offset="1" stop-color="#e0d4a8"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="652" height="125" fill="url(#scrollBase)" stroke="#8c5a2b" stroke-width="3"/>
+  <rect x="4" y="4" width="644" height="10" fill="#c9b98a"/>
+  <rect x="4" y="111" width="644" height="10" fill="#c9b98a"/>
+</svg>

@@ -15,33 +15,55 @@
      th:attr="hx-swap-oob=${oob != null and oob} ? 'true' : null,
                hx-get='/towns/' + ${bar.townId} + '/resources',hx-trigger='resources from:body',
                hx-swap='outerHTML'">
-    <span class="resource">
+    <span class="resource resource-wood">
         <img src="/img/resource-wood.svg" alt=""/>
-        <span th:text="${bar.wood}"></span> Madera
+        <span class="visually-hidden">Madera</span>
+        <span class="resource-value" th:text="${bar.wood}"></span>
     </span>
-    <span class="resource">
+    <span class="resource resource-luxury">
         <img th:src="${bar.luxuryIconPath}" alt=""/>
-        <span th:text="${bar.luxuryAmount}"></span> <span th:text="${bar.luxuryResourceName}"></span>
+        <span class="visually-hidden" th:text="${bar.luxuryResourceName}"></span>
+        <span class="resource-value" th:text="${bar.luxuryAmount}"></span>
     </span>
-    <span class="resource">
-        <img src="/img/resource-gold.svg" alt=""/>
-        <span th:text="${bar.gold}"></span> Oro
+    <span class="resource-gold">
+        <img src="/img/ui-button-gold.svg" width="110" height="29" alt=""/>
+        <span class="visually-hidden">Oro</span>
+        <span class="resource-gold-value" th:text="${bar.gold}"></span>
     </span>
 </div>
 <div class="capital-header" th:fragment="capitalHeader(header)">
+    <img class="capital-header-scroll" src="/img/ui-header-scroll.svg" width="652" height="125" alt=""/>
+    <img class="capital-header-shop" src="/img/ui-shop-button.svg" width="168" height="68" alt=""/>
+    <img class="capital-header-chest" src="/img/ui-chest.svg" width="41" height="80" alt=""/>
     <div class="town-selector">
-        <span class="town-selector-coordinate" th:text="${header.islandCoordinateLabel}"></span>
-        <span th:text="${header.capitalName}"></span>
+        <img class="town-selector-background" src="/img/ui-city-select.svg" width="177" height="24" alt=""/>
+        <span class="town-selector-label">
+            <span class="town-selector-coordinate" th:text="${header.islandCoordinateLabel}"></span>
+            <span th:text="${header.capitalName}"></span>
+        </span>
     </div>
     <div th:replace="~{fragments/layout :: resourceBar(bar=${header.resourceBar}, oob=false)}"></div>
     <div class="view-switch">
-        <a class="view-button" href="/map">Mostrar mundo</a>
-        <a class="view-button" th:href="@{/islands/{id}(id=${header.islandId})}">Mostrar isla</a>
-        <a class="view-button" th:href="@{/towns/{id}(id=${header.townId})}">Mostrar ciudad</a>
+        <a class="view-button view-button-world" href="/map">
+            <img src="/img/ui-button-world.svg" width="84" height="54" alt=""/>
+            <span class="view-button-caption">Mostrar mundo</span>
+        </a>
+        <a class="view-button view-button-island" th:href="@{/islands/{id}(id=${header.islandId})}">
+            <img src="/img/ui-button-island.svg" width="84" height="54" alt=""/>
+            <span class="view-button-caption">Mostrar isla</span>
+        </a>
+        <a class="view-button view-button-city" th:href="@{/towns/{id}(id=${header.townId})}">
+            <img src="/img/ui-button-city.svg" width="84" height="58" alt=""/>
+            <span class="view-button-caption">Mostrar ciudad</span>
+        </a>
     </div>
 </div>
 <nav class="breadcrumb" th:fragment="breadcrumb(breadcrumb)">
-    <a class="crumb" th:each="crumb : ${breadcrumb.crumbs}" th:href="${crumb.href}" th:text="${crumb.label}"></a>
+    <a class="crumb" th:each="crumb : ${breadcrumb.crumbs}" th:href="${crumb.href}"
+       th:classappend="${crumb.current} ? 'crumb-current' : ''">
+        <img th:if="${crumb.icon != null}" th:src="${crumb.icon.path}" th:width="${crumb.icon.width}" th:height="${crumb.icon.height}" alt=""/>
+        <span th:text="${crumb.label}"></span>
+    </a>
 </nav>
 <div class="councillor-frieze" th:fragment="frieze()">
     <img class="councillor-frieze-frame" src="/img/ui-frieze-advisors.svg" width="394" height="130" alt=""/>

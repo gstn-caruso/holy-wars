@@ -98,85 +98,213 @@ body {
 
 .capital-header {
     position: absolute;
-    top: 3vh;
-    left: 1vw;
-    width: 42vw;
-    height: 20vh;
-    box-sizing: border-box;
-    padding: 14px 20px;
-    background: #e9d8a6 url(/img/ui-panel-papyrus.svg) center / cover;
-    border-radius: 4px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    top: 0;
+    left: 0;
+    width: 652px;
+    height: 155px;
+}
+
+.capital-header-scroll {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 652px;
+    height: 125px;
+}
+
+.capital-header-shop {
+    position: absolute;
+    top: 43px;
+    left: 13px;
+    width: 168px;
+    height: 68px;
+}
+
+.capital-header-chest {
+    position: absolute;
+    top: 78px;
+    left: 13px;
+    width: 41px;
+    height: 80px;
 }
 
 .town-selector {
+    position: absolute;
+    top: 46px;
+    left: 174px;
+    width: 185px;
+    height: 24px;
+}
+
+.town-selector-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 177px;
+    height: 24px;
+}
+
+.town-selector-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 177px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
     font-weight: bold;
     color: #4a2f12;
 }
 
 .town-selector-coordinate {
-    margin-right: 8px;
+    margin-right: 4px;
     color: #7a4a1f;
 }
 
 .resource-bar {
-    display: flex;
-    gap: 18px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
 }
 
 .resource {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.9rem;
-    color: #3a2a14;
+    position: absolute;
+    top: 114px;
+    width: 87px;
+    height: 26px;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #542c0f;
+}
+
+.resource-wood {
+    left: 170px;
+}
+
+.resource-luxury {
+    left: 259px;
 }
 
 .resource img {
+    position: absolute;
+    top: 2px;
+    left: 4px;
     width: 20px;
     height: 20px;
 }
 
+.resource-value {
+    position: absolute;
+    top: 0;
+    left: 32px;
+    line-height: 26px;
+}
+
+.resource-gold {
+    position: absolute;
+    top: 131px;
+    left: 59px;
+    width: 110px;
+    height: 29px;
+}
+
+.resource-gold img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 110px;
+    height: 29px;
+}
+
+.resource-gold-value {
+    position: absolute;
+    top: 0;
+    right: 8px;
+    width: 60px;
+    line-height: 29px;
+    text-align: right;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #3a2a14;
+}
+
 .view-switch {
-    display: flex;
-    gap: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
 }
 
 .view-button {
-    display: inline-flex;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 4px 12px;
-    background: #8a5a1f url(/img/ui-button-bronze.svg) center / cover;
-    color: #fff6e3;
     text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: bold;
-    border-radius: 4px;
+}
+
+.view-button-world {
+    top: 44px;
+    left: 356px;
+    width: 84px;
+    height: 54px;
+}
+
+.view-button-island {
+    top: 44px;
+    left: 440px;
+    width: 84px;
+    height: 54px;
+}
+
+.view-button-city {
+    top: 40px;
+    left: 524px;
+    width: 84px;
+    height: 58px;
+}
+
+.view-button-caption {
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    color: #fff6e3;
 }
 
 .breadcrumb {
     position: absolute;
-    top: 23vh;
-    left: 1vw;
-    height: 4vh;
+    top: 170px;
+    left: 75px;
+    width: 237px;
+    height: 30px;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     gap: 6px;
     padding: 0 14px;
-    background: #5c1a1a;
+    background: #5c1a1a url(/img/ui-breadcrumb-ribbon.svg) repeat-x left center;
     color: #f4e9c8;
-    border-radius: 2px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
 }
 
 .crumb {
-    color: #f4e9c8;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #e0bc4f;
     text-decoration: none;
-    font-size: 0.8rem;
+    font-size: 14px;
+}
+
+.crumb-current {
+    color: #ffffff;
 }
 
 .crumb:not(:last-child)::after {
