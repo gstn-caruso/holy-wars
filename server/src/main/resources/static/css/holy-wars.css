@@ -164,21 +164,44 @@ body {
 }
 
 .resource-bar {
-    display: flex;
-    gap: 18px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 652px;
+    height: 125px;
 }
 
 .resource {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.9rem;
-    color: #3a2a14;
+    position: absolute;
+    top: 114px;
+    width: 87px;
+    height: 26px;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #542c0f;
+}
+
+.resource-wood {
+    left: 170px;
+}
+
+.resource-luxury {
+    left: 259px;
 }
 
 .resource img {
+    position: absolute;
+    top: 2px;
+    left: 4px;
     width: 20px;
     height: 20px;
+}
+
+.resource span {
+    position: absolute;
+    top: 0;
+    left: 32px;
+    line-height: 26px;
 }
 
 .view-switch {

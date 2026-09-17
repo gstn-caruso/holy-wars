@@ -15,11 +15,11 @@
      th:attr="hx-swap-oob=${oob != null and oob} ? 'true' : null,
                hx-get='/towns/' + ${bar.townId} + '/resources',hx-trigger='resources from:body',
                hx-swap='outerHTML'">
-    <span class="resource">
+    <span class="resource resource-wood">
         <img src="/img/resource-wood.svg" alt=""/>
         <span th:text="${bar.wood}"></span> Madera
     </span>
-    <span class="resource">
+    <span class="resource resource-luxury">
         <img th:src="${bar.luxuryIconPath}" alt=""/>
         <span th:text="${bar.luxuryAmount}"></span> <span th:text="${bar.luxuryResourceName}"></span>
     </span>
