@@ -56,15 +56,13 @@ class ShellChromeRenderingTest {
     private CapitalHeaders capitalHeaders;
 
     @Test
-    void compassDrawsTheDialAndKeepsItsThreeExistingLinks() throws Exception {
+    void rendersNoCompass() throws Exception {
         stubCapitalTown();
 
         mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("/img/ui-compass.svg")))
-                .andExpect(content().string(containsString("class=\"compass-globe\" href=\"/map\"")))
-                .andExpect(content().string(containsString("class=\"compass-island\" href=\"/islands/3\"")))
-                .andExpect(content().string(containsString("class=\"compass-town\" href=\"/towns/1\"")));
+                .andExpect(content().string(not(containsString("/img/ui-compass.svg"))))
+                .andExpect(content().string(not(containsString("compass-"))));
     }
 
     @Test
@@ -74,8 +72,7 @@ class ShellChromeRenderingTest {
         mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(not(containsString("/img/ui-footer.svg"))))
-                .andExpect(content().string(not(containsString("shell-footer"))))
-                .andExpect(content().string(containsString("/img/ui-compass.svg")));
+                .andExpect(content().string(not(containsString("shell-footer"))));
     }
 
     @Test
@@ -125,7 +122,6 @@ class ShellChromeRenderingTest {
 
         mockMvc.perform(get("/map"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("/img/ui-compass.svg")))
                 .andExpect(content().string(containsString("/img/ui-menu-troops.svg")))
                 .andExpect(content().string(containsString("/img/ui-friends-panel.svg")));
     }
