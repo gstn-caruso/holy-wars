@@ -74,7 +74,8 @@ class WorldControllerTest {
                 .andExpect(content().string(containsString("/islands/3")))
                 .andExpect(content().string(containsString("Naxos")))
                 .andExpect(content().string(containsString("/img/resource-wine.svg")))
-                .andExpect(content().string(containsString("1 aldea")));
+                .andExpect(content().string(containsString("1 aldea")))
+                .andExpect(content().string(containsString("ui-frieze-advisors.svg")));
     }
 
     @Test
@@ -136,7 +137,8 @@ class WorldControllerTest {
                 .andExpect(content().string(containsString("Ocupada:")))
                 .andExpect(content().string(containsString("Atenas")))
                 .andExpect(content().string(containsString("Jugador")))
-                .andExpect(content().string(containsString("/towns/11")));
+                .andExpect(content().string(containsString("/towns/11")))
+                .andExpect(content().string(containsString("ui-frieze-advisors.svg")));
     }
 
     @Test
