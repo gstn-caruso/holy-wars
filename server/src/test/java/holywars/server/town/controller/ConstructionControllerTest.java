@@ -93,7 +93,10 @@ class ConstructionControllerTest {
         mockMvc.perform(get("/towns/1/plots/1/build-menu"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Ayuntamiento nivel 1")))
-                .andExpect(content().string(not(containsString("¡Construir!"))));
+                .andExpect(content().string(not(containsString("¡Construir!"))))
+                .andExpect(content().string(not(containsString(
+                        "Un terreno vacío espera a tus ciudadanos. ¿Qué edificio van a levantar acá?"))))
+                .andExpect(content().string(not(containsString("Construir edificio"))));
     }
 
     @Test

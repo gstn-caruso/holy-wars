@@ -10,10 +10,10 @@
         </a>
     </div>
     <div class="build-window-body">
-        <p class="build-window-intro">Un terreno vacío espera a tus ciudadanos. ¿Qué edificio van a levantar acá?</p>
+        <p class="build-window-intro" th:if="${!menu.options.empty}">Un terreno vacío espera a tus ciudadanos. ¿Qué edificio van a levantar acá?</p>
         <p class="build-window-error" th:if="${menu.error}" th:text="${menu.error}"></p>
         <p class="build-window-status" th:if="${menu.statusText}" th:text="${menu.statusText}"></p>
-        <div class="build-list">
+        <div class="build-list" th:if="${!menu.options.empty}">
             <div class="build-list-header">Construir edificio</div>
             <div class="build-list-body">
                 <form th:each="option : ${menu.options}" class="build-option-row"
