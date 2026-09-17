@@ -491,10 +491,6 @@ td.island > div {
     background: url(/img/ui-box-header.svg) no-repeat;
 }
 
-.build-list-body {
-    background: #faf3d7;
-}
-
 .build-list-footer {
     width: 680px;
     height: 3px;
