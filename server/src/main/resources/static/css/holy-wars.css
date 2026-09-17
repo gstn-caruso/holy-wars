@@ -191,12 +191,14 @@ body {
     top: 19px;
     left: 16px;
     display: flex;
+    height: 108px;
 }
 
 .councillor {
     position: relative;
     margin: 0;
     width: 90px;
+    height: 108px;
 }
 
 .councillor-portrait {
@@ -214,12 +216,14 @@ body {
 }
 
 .councillor figcaption {
-    font-size: 10px;
-    color: #f4e9c8;
+    position: absolute;
+    top: 90px;
+    left: 0;
+    width: 90px;
+    margin: 0;
+    font: 10px Arial, Helvetica, sans-serif;
+    color: #542c0f;
     text-align: center;
-    background: #1b140c;
-    padding: 2px 4px;
-    border-radius: 2px;
 }
 
 .shell-footer {
