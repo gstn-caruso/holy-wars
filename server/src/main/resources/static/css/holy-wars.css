@@ -239,10 +239,35 @@ body {
     text-align: center;
 }
 
+.shell-chrome {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
 .shell-footer {
-    position: relative;
-    background: #e9d8a6 url(/img/ui-panel-papyrus.svg) center / cover;
-    border-top: 1px solid #7a4a1f;
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 1024px;
+    height: 53px;
+}
+
+.shell-footer-bg {
+    display: block;
+    width: 1024px;
+    height: 53px;
+}
+
+.shell-footer-caption {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font: bold 10px Arial, Helvetica, sans-serif;
+    color: #2b2116;
 }
 
 .compass {
@@ -266,6 +291,7 @@ body {
     position: absolute;
     top: 0;
     bottom: 0;
+    pointer-events: auto;
 }
 
 .compass-globe {

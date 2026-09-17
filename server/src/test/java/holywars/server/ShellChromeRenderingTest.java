@@ -64,6 +64,16 @@ class ShellChromeRenderingTest {
                 .andExpect(content().string(containsString("class=\"compass-town\" href=\"/towns/1\"")));
     }
 
+    @Test
+    void footerDrawsTheFixedStripWithTheGameName() throws Exception {
+        stubCapitalTown();
+
+        mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("/img/ui-footer.svg")))
+                .andExpect(content().string(containsString("Holy Wars")));
+    }
+
     private void stubCapitalTown() {
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",
