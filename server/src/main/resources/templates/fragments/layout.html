@@ -61,7 +61,7 @@
 <nav class="breadcrumb" th:fragment="breadcrumb(breadcrumb)">
     <a class="crumb" th:each="crumb : ${breadcrumb.crumbs}" th:href="${crumb.href}"
        th:classappend="${crumb.current} ? 'crumb-current' : ''">
-        <img th:if="${crumb.iconPath != null}" th:src="${crumb.iconPath}" th:width="${crumb.iconWidth}" th:height="${crumb.iconHeight}" alt=""/>
+        <img th:if="${crumb.icon != null}" th:src="${crumb.icon.path}" th:width="${crumb.icon.width}" th:height="${crumb.icon.height}" alt=""/>
         <span th:text="${crumb.label}"></span>
     </a>
 </nav>
