@@ -58,7 +58,6 @@ body {
 }
 
 .town-scene {
-    display: block;
     position: absolute;
     left: 1660px;
     top: 0;
