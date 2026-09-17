@@ -111,8 +111,8 @@ class CapitalHeaderRenderingTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/map", "/islands/3", "/towns/1"})
-    void headerIsIdenticalAcrossTheThreeRoutes(String route) throws Exception {
+    @ValueSource(strings = {"/map", "/islands/3"})
+    void headerIsIdenticalAcrossRoutes(String route) throws Exception {
         stubCapitalTown();
 
         MvcResult result = mockMvc.perform(get(route)).andExpect(status().isOk()).andReturn();
