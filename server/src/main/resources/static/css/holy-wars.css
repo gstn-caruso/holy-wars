@@ -48,10 +48,25 @@ body {
     overflow: hidden;
 }
 
+.scene-plane {
+    position: absolute;
+    left: calc(50% - 2620px);
+    top: calc(50% - 600px);
+    width: 5240px;
+    height: 1800px;
+    background: url(/img/ui-forest-strip.svg) repeat-x;
+}
+
 .town-scene {
-    display: block;
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    left: 1660px;
+    top: 0;
+}
+
+.scene-water {
+    position: absolute;
+    left: 1660px;
+    top: 1200px;
 }
 
 .map-stage,
