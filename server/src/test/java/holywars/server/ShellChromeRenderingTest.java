@@ -73,7 +73,7 @@ class ShellChromeRenderingTest {
         mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("/img/ui-footer.svg")))
-                .andExpect(content().string(containsString("Holy Wars")));
+                .andExpect(content().string(containsString("<span class=\"shell-footer-caption\">Holy Wars</span>")));
     }
 
     @Test
