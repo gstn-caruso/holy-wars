@@ -57,15 +57,17 @@ body {
     background: url(/img/ui-forest-strip.svg) repeat-x;
 }
 
-.town-scene {
+.town-scene,
+.scene-water {
     position: absolute;
     left: 1660px;
+}
+
+.town-scene {
     top: 0;
 }
 
 .scene-water {
-    position: absolute;
-    left: 1660px;
     top: 1200px;
 }
 
