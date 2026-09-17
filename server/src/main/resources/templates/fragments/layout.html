@@ -23,9 +23,9 @@
         <img th:src="${bar.luxuryIconPath}" alt=""/>
         <span th:text="${bar.luxuryAmount}"></span> <span th:text="${bar.luxuryResourceName}"></span>
     </span>
-    <span class="resource">
-        <img src="/img/resource-gold.svg" alt=""/>
-        <span th:text="${bar.gold}"></span> Oro
+    <span class="resource-gold">
+        <img src="/img/ui-button-gold.svg" width="110" height="29" alt="Oro"/>
+        <span class="resource-gold-value" th:text="${bar.gold}"></span>
     </span>
 </div>
 <div class="capital-header" th:fragment="capitalHeader(header)">
