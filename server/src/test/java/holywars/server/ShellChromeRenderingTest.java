@@ -123,7 +123,10 @@ class ShellChromeRenderingTest {
 
         mockMvc.perform(get("/map"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("class=\"shell-chrome\"")));
+                .andExpect(content().string(containsString("/img/ui-footer.svg")))
+                .andExpect(content().string(containsString("/img/ui-compass.svg")))
+                .andExpect(content().string(containsString("/img/ui-menu-troops.svg")))
+                .andExpect(content().string(containsString("/img/ui-friends-panel.svg")));
     }
 
     private static int countOccurrences(String text, String token) {
