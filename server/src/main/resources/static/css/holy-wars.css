@@ -51,7 +51,7 @@ body {
 .scene-plane {
     position: absolute;
     left: calc(50% - 2620px);
-    top: calc(50% - 600px);
+    top: -78px;
     width: 5240px;
     height: 1800px;
     background: url(/img/ui-forest-strip.svg) repeat-x;
@@ -60,7 +60,7 @@ body {
 .town-scene,
 .scene-water {
     position: absolute;
-    left: 1660px;
+    left: 1652px;
 }
 
 .town-scene {
