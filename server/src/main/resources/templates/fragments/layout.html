@@ -41,7 +41,10 @@
     </div>
 </div>
 <nav class="breadcrumb" th:fragment="breadcrumb(breadcrumb)">
-    <a class="crumb" th:each="crumb : ${breadcrumb.crumbs}" th:href="${crumb.href}" th:text="${crumb.label}"></a>
+    <a class="crumb" th:each="crumb : ${breadcrumb.crumbs}" th:href="${crumb.href}">
+        <img th:if="${crumb.iconPath != null}" th:src="${crumb.iconPath}" th:width="${crumb.iconWidth}" th:height="${crumb.iconHeight}" alt=""/>
+        <span th:text="${crumb.label}"></span>
+    </a>
 </nav>
 <div class="councillor-frieze" th:fragment="frieze()">
     <img class="councillor-frieze-frame" src="/img/ui-frieze-advisors.svg" width="394" height="130" alt=""/>
