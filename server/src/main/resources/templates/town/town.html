@@ -5,7 +5,10 @@
 <div class="shell">
     <header th:replace="~{fragments/layout :: topBar()}"></header>
     <div class="shell-stage" th:attr="data-town-events='/towns/' + ${town.id} + '/events'">
-        <svg th:replace="~{town/fragments/townScene :: townScene(scene=${scene}, oob=false)}"></svg>
+        <div class="scene-plane">
+            <svg th:replace="~{town/fragments/townScene :: townScene(scene=${scene}, oob=false)}"></svg>
+            <img class="scene-water" src="/img/ui-water-strip.svg" width="1920" height="600" alt=""/>
+        </div>
         <div th:replace="~{fragments/layout :: capitalHeader(header=${header})}"></div>
         <nav th:replace="~{fragments/layout :: breadcrumb(breadcrumb=${breadcrumb})}"></nav>
         <div th:replace="~{fragments/layout :: frieze()}"></div>
