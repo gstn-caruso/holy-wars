@@ -92,6 +92,20 @@ class CapitalHeaderRenderingTest {
                         "<span class=\"view-button-caption\">Mostrar ciudad</span>")));
     }
 
+    @Test
+    void drawsTheDecorativeShopAndChest() throws Exception {
+        stubCapitalTown();
+
+        mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(
+                        "<img class=\"capital-header-shop\" src=\"/img/ui-shop-button.svg\" "
+                                + "width=\"168\" height=\"68\" alt=\"\"/>")))
+                .andExpect(content().string(containsString(
+                        "<img class=\"capital-header-chest\" src=\"/img/ui-chest.svg\" "
+                                + "width=\"41\" height=\"80\" alt=\"\"/>")));
+    }
+
     private void stubCapitalTown() {
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",

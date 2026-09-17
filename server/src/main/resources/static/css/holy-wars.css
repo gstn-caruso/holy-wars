@@ -112,6 +112,22 @@ body {
     height: 125px;
 }
 
+.capital-header-shop {
+    position: absolute;
+    top: 43px;
+    left: 13px;
+    width: 168px;
+    height: 68px;
+}
+
+.capital-header-chest {
+    position: absolute;
+    top: 78px;
+    left: 13px;
+    width: 41px;
+    height: 80px;
+}
+
 .town-selector {
     position: absolute;
     top: 46px;
