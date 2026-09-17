@@ -309,6 +309,53 @@ body {
     right: 0;
 }
 
+.shell-menu-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.shell-menu-gift {
+    position: absolute;
+    left: -5px;
+    top: 175px;
+}
+
+.shell-menu-slot {
+    position: absolute;
+    left: -1px;
+}
+
+.shell-menu-slot-troops {
+    top: 220px;
+}
+
+.shell-menu-slot-resource-shop {
+    top: 263px;
+}
+
+.shell-menu-slot-trader {
+    top: 306px;
+}
+
+.shell-menu-slot-rearrange {
+    top: 349px;
+}
+
+.shell-menu-slot-friends {
+    top: 392px;
+}
+
+.shell-menu-slot-info {
+    top: 435px;
+}
+
+.shell-menu-icon {
+    position: absolute;
+    left: 3px;
+    top: 3px;
+}
+
 .panel,
 .plot {
     background: linear-gradient(#f4e9c8, #e3d1a1);

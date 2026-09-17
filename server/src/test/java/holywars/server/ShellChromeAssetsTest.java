@@ -22,7 +22,15 @@ class ShellChromeAssetsTest {
     @ParameterizedTest
     @CsvSource({
         "ui-compass.svg, 135, 135",
-        "ui-footer.svg, 1024, 53"
+        "ui-footer.svg, 1024, 53",
+        "ui-slot-left.svg, 53, 40",
+        "ui-gift.svg, 53, 40",
+        "ui-menu-troops.svg, 34, 34",
+        "ui-menu-resource-shop.svg, 34, 34",
+        "ui-menu-trader.svg, 34, 34",
+        "ui-menu-rearrange.svg, 34, 34",
+        "ui-menu-friends.svg, 34, 34",
+        "ui-menu-info.svg, 34, 34"
     })
     void servesTheShellChromeSvgsAtTheirExactDimensions(String fileName, String width, String height)
             throws Exception {

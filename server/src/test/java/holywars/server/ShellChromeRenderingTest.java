@@ -1,5 +1,6 @@
 package holywars.server;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,6 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -72,6 +74,31 @@ class ShellChromeRenderingTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("/img/ui-footer.svg")))
                 .andExpect(content().string(containsString("Holy Wars")));
+    }
+
+    @Test
+    void leftMenuDrawsItsSevenDecorativePlatesWithoutAnyLink() throws Exception {
+        stubCapitalTown();
+
+        MvcResult result = mockMvc.perform(get("/towns/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("/img/ui-gift.svg")))
+                .andExpect(content().string(containsString("/img/ui-menu-troops.svg")))
+                .andExpect(content().string(containsString("/img/ui-menu-resource-shop.svg")))
+                .andExpect(content().string(containsString("/img/ui-menu-trader.svg")))
+                .andExpect(content().string(containsString("/img/ui-menu-rearrange.svg")))
+                .andExpect(content().string(containsString("/img/ui-menu-friends.svg")))
+                .andExpect(content().string(containsString("/img/ui-menu-info.svg")))
+                .andReturn();
+
+        String body = result.getResponse().getContentAsString();
+        assertThat(body).doesNotContain("href=\"/img/ui-gift.svg\"")
+                .doesNotContain("href=\"/img/ui-menu-troops.svg\"")
+                .doesNotContain("href=\"/img/ui-menu-resource-shop.svg\"")
+                .doesNotContain("href=\"/img/ui-menu-trader.svg\"")
+                .doesNotContain("href=\"/img/ui-menu-rearrange.svg\"")
+                .doesNotContain("href=\"/img/ui-menu-friends.svg\"")
+                .doesNotContain("href=\"/img/ui-menu-info.svg\"");
     }
 
     private void stubCapitalTown() {
