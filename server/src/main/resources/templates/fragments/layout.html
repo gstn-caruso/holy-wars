@@ -29,9 +29,13 @@
     </span>
 </div>
 <div class="capital-header" th:fragment="capitalHeader(header)">
+    <img class="capital-header-scroll" src="/img/ui-header-scroll.svg" width="652" height="125" alt=""/>
     <div class="town-selector">
-        <span class="town-selector-coordinate" th:text="${header.islandCoordinateLabel}"></span>
-        <span th:text="${header.capitalName}"></span>
+        <img class="town-selector-background" src="/img/ui-city-select.svg" width="177" height="24" alt=""/>
+        <span class="town-selector-label">
+            <span class="town-selector-coordinate" th:text="${header.islandCoordinateLabel}"></span>
+            <span th:text="${header.capitalName}"></span>
+        </span>
     </div>
     <div th:replace="~{fragments/layout :: resourceBar(bar=${header.resourceBar}, oob=false)}"></div>
     <div class="view-switch">

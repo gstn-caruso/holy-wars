@@ -98,27 +98,52 @@ body {
 
 .capital-header {
     position: absolute;
-    top: 3vh;
-    left: 1vw;
-    width: 42vw;
-    height: 20vh;
-    box-sizing: border-box;
-    padding: 14px 20px;
-    background: #e9d8a6 url(/img/ui-panel-papyrus.svg) center / cover;
-    border-radius: 4px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    top: 0;
+    left: 0;
+    width: 652px;
+    height: 125px;
+}
+
+.capital-header-scroll {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 652px;
+    height: 125px;
 }
 
 .town-selector {
+    position: absolute;
+    top: 46px;
+    left: 174px;
+    width: 177px;
+    height: 24px;
+}
+
+.town-selector-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 177px;
+    height: 24px;
+}
+
+.town-selector-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 177px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
     font-weight: bold;
     color: #4a2f12;
 }
 
 .town-selector-coordinate {
-    margin-right: 8px;
+    margin-right: 4px;
     color: #7a4a1f;
 }
 
