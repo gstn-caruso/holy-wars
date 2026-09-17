@@ -48,6 +48,16 @@ class PlotSceneViewTest {
     }
 
     @Test
+    void freeCoastPlotShowsTheFreePlotCoastSprite() {
+        TownPlot plot = new TownPlot(13, TownPlotKind.COAST, 1);
+        PlotAnchor anchor = new PlotAnchor(600, 180, 172);
+
+        PlotSceneView view = PlotSceneView.of(plot, 1, anchor, NOW);
+
+        assertThat(view.spriteHref()).isEqualTo("/img/plot-free-coast.svg");
+    }
+
+    @Test
     void lockedPlotShowsTheLockedPlotSpriteAndRequiredLevel() {
         TownPlot plot = new TownPlot(5, TownPlotKind.LAND, 2);
         PlotAnchor anchor = new PlotAnchor(400, 250, 140);

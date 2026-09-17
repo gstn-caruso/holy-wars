@@ -19,7 +19,7 @@ record PlotSceneView(int position, String spriteHref, String label, int x, int y
     private static String spriteFor(TownPlot plot, TownPlotState state) {
         return switch (state) {
             case OCCUPIED -> BuildingTypeIcon.pathFor(plot.building().orElseThrow().type());
-            case FREE -> "/img/plot-free.svg";
+            case FREE -> FreePlotSprite.pathFor(plot.kind());
             case LOCKED -> "/img/plot-locked.svg";
             case UNDER_CONSTRUCTION -> "/img/plot-under-construction.svg";
         };
