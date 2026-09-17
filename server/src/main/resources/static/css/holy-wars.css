@@ -281,21 +281,21 @@ body {
 
 .breadcrumb {
     position: absolute;
-    top: 23vh;
-    left: 1vw;
-    height: 4vh;
+    top: 170px;
+    left: 75px;
+    width: 237px;
+    height: 30px;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     gap: 6px;
     padding: 0 14px;
-    background: #5c1a1a;
+    background: #5c1a1a url(/img/ui-breadcrumb-ribbon.svg) repeat-x left center;
     color: #f4e9c8;
-    border-radius: 2px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
 }
 
 .crumb {
-    color: #f4e9c8;
+    color: #e0bc4f;
     text-decoration: none;
     font-size: 0.8rem;
 }
