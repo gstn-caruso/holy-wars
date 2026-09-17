@@ -72,11 +72,71 @@
         </figure>
     </div>
 </div>
-<div class="shell-footer" th:fragment="compassFooter(header)">
-    <div class="compass">
-        <a class="compass-globe" href="/map" title="Mostrar mundo"></a>
-        <a class="compass-island" th:href="@{/islands/{id}(id=${header.islandId})}" title="Mostrar isla"></a>
-        <a class="compass-town" th:href="@{/towns/{id}(id=${header.townId})}" title="Mostrar ciudad"></a>
+<div class="shell-chrome" th:fragment="compassFooter(header)">
+    <div class="shell-footer">
+        <img class="shell-footer-bg" src="/img/ui-footer.svg" width="1024" height="53" alt=""/>
+        <span class="shell-footer-caption">Holy Wars</span>
+        <div class="compass">
+            <img class="compass-dial" src="/img/ui-compass.svg" width="135" height="135" alt=""/>
+            <a class="compass-globe" href="/map" title="Mostrar mundo"></a>
+            <a class="compass-island" th:href="@{/islands/{id}(id=${header.islandId})}" title="Mostrar isla"></a>
+            <a class="compass-town" th:href="@{/towns/{id}(id=${header.townId})}" title="Mostrar ciudad"></a>
+        </div>
+    </div>
+    <div class="shell-menu-left">
+        <img class="shell-menu-gift" src="/img/ui-gift.svg" width="53" height="40" alt="Regalo"
+             title="Regalo (Próximamente)"/>
+        <div class="shell-menu-slot shell-menu-slot-troops">
+            <img src="/img/ui-slot-left.svg" width="53" height="40" alt=""/>
+            <img class="shell-menu-icon" src="/img/ui-menu-troops.svg" width="34" height="34" alt="Tropas"
+                 title="Tropas (Próximamente)"/>
+        </div>
+        <div class="shell-menu-slot shell-menu-slot-resource-shop">
+            <img src="/img/ui-slot-left.svg" width="53" height="40" alt=""/>
+            <img class="shell-menu-icon" src="/img/ui-menu-resource-shop.svg" width="34" height="34"
+                 alt="Tienda de recursos" title="Tienda de recursos (Próximamente)"/>
+        </div>
+        <div class="shell-menu-slot shell-menu-slot-trader">
+            <img src="/img/ui-slot-left.svg" width="53" height="40" alt=""/>
+            <img class="shell-menu-icon" src="/img/ui-menu-trader.svg" width="34" height="34" alt="Comerciante"
+                 title="Comerciante (Próximamente)"/>
+        </div>
+        <div class="shell-menu-slot shell-menu-slot-rearrange">
+            <img src="/img/ui-slot-left.svg" width="53" height="40" alt=""/>
+            <img class="shell-menu-icon" src="/img/ui-menu-rearrange.svg" width="34" height="34" alt="Reordenar"
+                 title="Reordenar (Próximamente)"/>
+        </div>
+        <div class="shell-menu-slot shell-menu-slot-friends">
+            <img src="/img/ui-slot-left.svg" width="53" height="40" alt=""/>
+            <img class="shell-menu-icon" src="/img/ui-menu-friends.svg" width="34" height="34" alt="Amigos"
+                 title="Amigos (Próximamente)"/>
+        </div>
+        <div class="shell-menu-slot shell-menu-slot-info">
+            <img src="/img/ui-slot-left.svg" width="53" height="40" alt=""/>
+            <img class="shell-menu-icon" src="/img/ui-menu-info.svg" width="34" height="34" alt="Información"
+                 title="Información (Próximamente)"/>
+        </div>
+    </div>
+    <div class="shell-friends-panel">
+        <img class="shell-friends-panel-bg" src="/img/ui-friends-panel.svg" width="42" height="295" alt=""/>
+        <img class="shell-friends-panel-edit" src="/img/ui-button-edit.svg" width="35" height="13" alt=""
+             title="Editar (Próximamente)"/>
+        <img class="shell-friends-panel-slot shell-friends-panel-slot-1" src="/img/ui-slot-right.svg" width="53"
+             height="40" alt=""/>
+        <img class="shell-friends-panel-slot shell-friends-panel-slot-2" src="/img/ui-slot-right.svg" width="53"
+             height="40" alt=""/>
+        <img class="shell-friends-panel-slot shell-friends-panel-slot-3" src="/img/ui-slot-right.svg" width="53"
+             height="40" alt=""/>
+        <img class="shell-friends-panel-slot shell-friends-panel-slot-4" src="/img/ui-slot-right.svg" width="53"
+             height="40" alt=""/>
+        <img class="shell-friends-panel-slot shell-friends-panel-slot-5" src="/img/ui-slot-right.svg" width="53"
+             height="40" alt=""/>
+        <img class="shell-friends-panel-slot shell-friends-panel-slot-6" src="/img/ui-slot-right.svg" width="53"
+             height="40" alt=""/>
+        <img class="shell-friends-panel-showhide" src="/img/ui-button-showhide.svg" width="35" height="13" alt=""
+             title="Mostrar u ocultar (Próximamente)"/>
+        <img class="shell-friends-panel-pagedown" src="/img/ui-button-pagedown.svg" width="35" height="13" alt=""
+             title="Página siguiente (Próximamente)"/>
     </div>
 </div>
 </body>
