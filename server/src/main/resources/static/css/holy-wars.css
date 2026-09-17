@@ -20,12 +20,8 @@ body {
     width: 100vw;
     overflow: hidden;
     display: grid;
-    grid-template-rows: 2.5vh 1fr 8vh;
-    background: linear-gradient(#274a1f, #3f6b30);
-}
-
-.shell-no-footer {
     grid-template-rows: 2.5vh 1fr;
+    background: linear-gradient(#274a1f, #3f6b30);
 }
 
 .shell-top-bar {
