@@ -92,13 +92,8 @@ class ShellChromeRenderingTest {
                 .andReturn();
 
         String body = result.getResponse().getContentAsString();
-        assertThat(body).doesNotContain("href=\"/img/ui-gift.svg\"")
-                .doesNotContain("href=\"/img/ui-menu-troops.svg\"")
-                .doesNotContain("href=\"/img/ui-menu-resource-shop.svg\"")
-                .doesNotContain("href=\"/img/ui-menu-trader.svg\"")
-                .doesNotContain("href=\"/img/ui-menu-rearrange.svg\"")
-                .doesNotContain("href=\"/img/ui-menu-friends.svg\"")
-                .doesNotContain("href=\"/img/ui-menu-info.svg\"");
+        String leftMenu = body.substring(body.indexOf("shell-menu-left"), body.indexOf("shell-friends-panel"));
+        assertThat(leftMenu).doesNotContain("<a ");
     }
 
     @Test
