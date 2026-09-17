@@ -101,7 +101,7 @@ body {
     top: 0;
     left: 0;
     width: 652px;
-    height: 125px;
+    height: 155px;
 }
 
 .capital-header-scroll {
@@ -167,8 +167,8 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 652px;
-    height: 125px;
+    width: 0;
+    height: 0;
 }
 
 .resource {
@@ -236,8 +236,8 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 652px;
-    height: 125px;
+    width: 0;
+    height: 0;
 }
 
 .view-button {
