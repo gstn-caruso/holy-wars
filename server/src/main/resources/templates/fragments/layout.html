@@ -74,6 +74,7 @@
 </div>
 <div class="shell-footer" th:fragment="compassFooter(header)">
     <div class="compass">
+        <img class="compass-dial" src="/img/ui-compass.svg" width="135" height="135" alt=""/>
         <a class="compass-globe" href="/map" title="Mostrar mundo"></a>
         <a class="compass-island" th:href="@{/islands/{id}(id=${header.islandId})}" title="Mostrar isla"></a>
         <a class="compass-town" th:href="@{/towns/{id}(id=${header.townId})}" title="Mostrar ciudad"></a>

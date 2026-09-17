@@ -248,13 +248,16 @@ body {
 .compass {
     position: absolute;
     left: 50%;
-    top: 0;
-    transform: translate(-50%, -50%);
-    width: 6vh;
-    height: 6vh;
-    border-radius: 50%;
-    background: radial-gradient(circle, #e0c060, #8a5a1f);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+    top: -90px;
+    transform: translateX(-50%);
+    width: 135px;
+    height: 135px;
+}
+
+.compass-dial {
+    display: block;
+    width: 135px;
+    height: 135px;
 }
 
 .compass-globe,
