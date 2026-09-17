@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <svg th:fragment="townScene(scene, oob)" xmlns="http://www.w3.org/2000/svg" class="town-scene" id="town-scene"
-     preserveAspectRatio="xMidYMid slice"
      th:attr="viewBox='0 0 ' + ${scene.width} + ' ' + ${scene.height},
+               width=${scene.width},height=${scene.height},
                hx-swap-oob=${oob != null and oob} ? 'true' : null,
                hx-get='/towns/' + ${scene.townId} + '/scene',hx-trigger='town from:body',
                hx-swap='outerHTML'">
