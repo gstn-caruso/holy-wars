@@ -502,6 +502,7 @@ td.island > div {
 .build-option-row {
     position: relative;
     width: 674px;
+    min-height: 140px;
     padding: 10px 0;
     border-bottom: 1px solid #fae3ba;
 }
@@ -516,7 +517,9 @@ td.island > div {
 }
 
 .build-option-sprite {
-    display: block;
+    position: absolute;
+    top: 10px;
+    left: 0;
     width: 172px;
     height: 140px;
 }
@@ -539,6 +542,8 @@ td.island > div {
     padding: 0;
     list-style: none;
     width: 343px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .build-option-costs li {
@@ -546,6 +551,7 @@ td.island > div {
     height: 26px;
     line-height: 26px;
     padding-left: 32px;
+    padding-right: 15px;
     font-size: 12px;
     color: #542c0f;
 }
