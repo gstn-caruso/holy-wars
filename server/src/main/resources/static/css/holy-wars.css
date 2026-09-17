@@ -51,21 +51,23 @@ body {
 .scene-plane {
     position: absolute;
     left: calc(50% - 2620px);
-    top: calc(50% - 600px);
+    top: -78px;
     width: 5240px;
     height: 1800px;
     background: url(/img/ui-forest-strip.svg) repeat-x;
 }
 
-.town-scene {
+.town-scene,
+.scene-water {
     position: absolute;
-    left: 1660px;
+    left: 1652px;
+}
+
+.town-scene {
     top: 0;
 }
 
 .scene-water {
-    position: absolute;
-    left: 1660px;
     top: 1200px;
 }
 
@@ -114,15 +116,15 @@ body {
 
 .capital-header-shop {
     position: absolute;
-    top: 43px;
-    left: 13px;
+    top: 0;
+    left: 0;
     width: 168px;
     height: 68px;
 }
 
 .capital-header-chest {
     position: absolute;
-    top: 78px;
+    top: 60px;
     left: 13px;
     width: 41px;
     height: 80px;
@@ -130,7 +132,7 @@ body {
 
 .town-selector {
     position: absolute;
-    top: 46px;
+    top: 28px;
     left: 174px;
     width: 185px;
     height: 24px;
@@ -152,7 +154,9 @@ body {
     height: 24px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-left: 8px;
+    box-sizing: border-box;
     font-size: 12px;
     font-weight: bold;
     color: #4a2f12;
@@ -173,7 +177,7 @@ body {
 
 .resource {
     position: absolute;
-    top: 114px;
+    top: 96px;
     width: 87px;
     height: 26px;
     font-family: Arial, sans-serif;
@@ -206,7 +210,7 @@ body {
 
 .resource-gold {
     position: absolute;
-    top: 131px;
+    top: 113px;
     left: 59px;
     width: 110px;
     height: 29px;
@@ -249,21 +253,21 @@ body {
 }
 
 .view-button-world {
-    top: 44px;
+    top: 26px;
     left: 356px;
     width: 84px;
     height: 54px;
 }
 
 .view-button-island {
-    top: 44px;
+    top: 26px;
     left: 440px;
     width: 84px;
     height: 54px;
 }
 
 .view-button-city {
-    top: 40px;
+    top: 22px;
     left: 524px;
     width: 84px;
     height: 58px;
@@ -275,21 +279,23 @@ body {
     left: 0;
     width: 100%;
     text-align: center;
-    font-size: 10px;
-    color: #fff6e3;
+    font-size: 11px;
+    color: #542c0f;
 }
 
 .breadcrumb {
     position: absolute;
-    top: 170px;
+    top: 152px;
     left: 75px;
-    width: 237px;
+    width: auto;
+    min-width: 237px;
     height: 30px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 0 14px;
+    white-space: nowrap;
+    padding: 0 10px;
     background: #5c1a1a url(/img/ui-breadcrumb-ribbon.svg) repeat-x left center;
     color: #f4e9c8;
 }
@@ -298,9 +304,9 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    color: #e0bc4f;
+    color: #ffdc26;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .crumb-current {
@@ -310,7 +316,7 @@ body {
 .crumb:not(:last-child)::after {
     content: " \203A";
     margin-left: 6px;
-    color: #c9a227;
+    color: #ffffff;
 }
 
 .councillor-frieze {
