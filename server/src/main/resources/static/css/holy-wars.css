@@ -114,15 +114,15 @@ body {
 
 .capital-header-shop {
     position: absolute;
-    top: 43px;
-    left: 13px;
+    top: 0;
+    left: 0;
     width: 168px;
     height: 68px;
 }
 
 .capital-header-chest {
     position: absolute;
-    top: 78px;
+    top: 60px;
     left: 13px;
     width: 41px;
     height: 80px;
@@ -130,7 +130,7 @@ body {
 
 .town-selector {
     position: absolute;
-    top: 46px;
+    top: 28px;
     left: 174px;
     width: 185px;
     height: 24px;
@@ -152,7 +152,9 @@ body {
     height: 24px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-left: 8px;
+    box-sizing: border-box;
     font-size: 12px;
     font-weight: bold;
     color: #4a2f12;
@@ -173,7 +175,7 @@ body {
 
 .resource {
     position: absolute;
-    top: 114px;
+    top: 96px;
     width: 87px;
     height: 26px;
     font-family: Arial, sans-serif;
@@ -206,7 +208,7 @@ body {
 
 .resource-gold {
     position: absolute;
-    top: 131px;
+    top: 113px;
     left: 59px;
     width: 110px;
     height: 29px;
@@ -249,21 +251,21 @@ body {
 }
 
 .view-button-world {
-    top: 44px;
+    top: 26px;
     left: 356px;
     width: 84px;
     height: 54px;
 }
 
 .view-button-island {
-    top: 44px;
+    top: 26px;
     left: 440px;
     width: 84px;
     height: 54px;
 }
 
 .view-button-city {
-    top: 40px;
+    top: 22px;
     left: 524px;
     width: 84px;
     height: 58px;
@@ -275,8 +277,8 @@ body {
     left: 0;
     width: 100%;
     text-align: center;
-    font-size: 10px;
-    color: #fff6e3;
+    font-size: 11px;
+    color: #542c0f;
 }
 
 .breadcrumb {
