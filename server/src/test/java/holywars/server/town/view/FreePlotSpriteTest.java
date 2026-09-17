@@ -16,4 +16,9 @@ class FreePlotSpriteTest {
     void coastKindResolvesToThePlotFreeCoastSprite() {
         assertThat(FreePlotSprite.pathFor(TownPlotKind.COAST)).isEqualTo("/img/plot-free-coast.svg");
     }
+
+    @Test
+    void wallKindResolvesToThePlotFreeWallSprite() {
+        assertThat(FreePlotSprite.pathFor(TownPlotKind.WALL)).isEqualTo("/img/plot-free-wall.svg");
+    }
 }

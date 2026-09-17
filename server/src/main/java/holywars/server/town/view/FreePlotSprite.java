@@ -10,6 +10,7 @@ final class FreePlotSprite {
     static String pathFor(TownPlotKind kind) {
         return switch (kind) {
             case COAST -> "/img/plot-free-coast.svg";
+            case WALL -> "/img/plot-free-wall.svg";
             default -> "/img/plot-free.svg";
         };
     }
