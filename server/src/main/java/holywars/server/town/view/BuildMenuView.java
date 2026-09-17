@@ -3,6 +3,7 @@ package holywars.server.town.view;
 import holywars.town.TownPlot;
 import holywars.town.TownPlotState;
 import holywars.town.Town;
+import holywars.world.LuxuryResource;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -31,8 +32,11 @@ public record BuildMenuView(long townId, int position, String title, List<BuildO
         }
         int townHallLevel = advanced.townHallLevel();
         TownPlotState state = plot.get().state(townHallLevel);
+        LuxuryResource luxuryResource = advanced.resources().luxuryResource();
         List<BuildOptionView> options = state == TownPlotState.FREE
-                ? plot.get().allowedTypes(townHallLevel).stream().map(BuildOptionView::of).toList()
+                ? plot.get().allowedTypes(townHallLevel).stream()
+                        .map(type -> BuildOptionView.of(type, luxuryResource))
+                        .toList()
                 : List.of();
         return new BuildMenuView(advanced.id().value(), position, "Parcela " + position, options,
                 statusTextFor(plot.get(), state, now), error);

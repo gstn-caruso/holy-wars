@@ -33,6 +33,22 @@ class BuildMenuViewTest {
         assertThat(warehouse.woodCost()).isEqualTo(40);
         assertThat(warehouse.luxuryCost()).isEqualTo(0);
         assertThat(warehouse.minutes()).isEqualTo(6);
+        assertThat(warehouse.luxuryIconPath()).isNull();
+    }
+
+    @Test
+    void freePlotOptionWithALuxuryCostCarriesTheTownsLuxuryResourceIcon() {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(1), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+
+        BuildMenuView menu = BuildMenuView.of(town, 2, NOW);
+
+        BuildOptionView tavern = menu.options().stream()
+                .filter(option -> option.type().equals("TAVERN"))
+                .findFirst()
+                .orElseThrow();
+        assertThat(tavern.luxuryCost()).isEqualTo(10);
+        assertThat(tavern.luxuryIconPath()).isEqualTo("/img/resource-wine.svg");
     }
 
     @Test

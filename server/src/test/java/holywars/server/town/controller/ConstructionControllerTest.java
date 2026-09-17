@@ -1,6 +1,7 @@
 package holywars.server.town.controller;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -66,11 +67,36 @@ class ConstructionControllerTest {
         mockMvc.perform(get("/towns/1/plots/2/build-menu"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Parcela 2")))
+                .andExpect(content().string(containsString("href=\"/towns/1\"")))
+                .andExpect(content().string(containsString("Cerrar")))
+                .andExpect(content().string(containsString(
+                        "Un terreno vacío espera a tus ciudadanos. ¿Qué edificio van a levantar acá?")))
+                .andExpect(content().string(containsString("Construir edificio")))
+                .andExpect(content().string(containsString("/img/building-warehouse.svg")))
                 .andExpect(content().string(containsString("Almacén")))
+                .andExpect(content().string(containsString("/img/resource-wood.svg")))
                 .andExpect(content().string(containsString("40 madera")))
+                .andExpect(content().string(containsString("/img/ui-icon-time.svg")))
                 .andExpect(content().string(containsString("6 min")))
+                .andExpect(content().string(containsString("/img/resource-wine.svg")))
+                .andExpect(content().string(containsString("10 lujo")))
                 .andExpect(content().string(containsString("hx-post=\"/towns/1/plots/2/build\"")))
                 .andExpect(content().string(containsString("¡Construir!")));
+    }
+
+    @Test
+    void buildMenuEndpointShowsTheOccupiedPlotStatusWithoutAnyOptionRow() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1, "Atenas",
+                LuxuryResource.WINE, NOW);
+        given(towns.find(new TownId(1))).willReturn(Optional.of(town));
+
+        mockMvc.perform(get("/towns/1/plots/1/build-menu"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Ayuntamiento nivel 1")))
+                .andExpect(content().string(not(containsString("¡Construir!"))))
+                .andExpect(content().string(not(containsString(
+                        "Un terreno vacío espera a tus ciudadanos. ¿Qué edificio van a levantar acá?"))))
+                .andExpect(content().string(not(containsString("Construir edificio"))));
     }
 
     @Test
@@ -101,7 +127,8 @@ class ConstructionControllerTest {
 
         mockMvc.perform(post("/towns/1/plots/2/build").param("type", "WAREHOUSE"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("No alcanzan los recursos")));
+                .andExpect(content().string(containsString("No alcanzan los recursos")))
+                .andExpect(content().string(containsString("¡Construir!")));
     }
 
     @Test
