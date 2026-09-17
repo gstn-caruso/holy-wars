@@ -2,6 +2,7 @@ package holywars.server.town.controller;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -86,9 +87,10 @@ class TownSceneWorldRenderingTest {
 
         mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("class=\"scene-plane\"")))
-                .andExpect(content().string(containsString(
-                        "src=\"/img/ui-water-strip.svg\" width=\"1920\" height=\"600\"")));
+                .andExpect(content().string(stringContainsInOrder(List.of(
+                        "class=\"scene-plane\"",
+                        "id=\"town-scene\"",
+                        "src=\"/img/ui-water-strip.svg\" width=\"1920\" height=\"600\""))));
     }
 
     @Test
