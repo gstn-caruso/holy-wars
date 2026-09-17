@@ -66,6 +66,22 @@ class BreadcrumbRenderingTest {
                 .andExpect(content().string(containsString("Mundo")));
     }
 
+    @Test
+    void islandCrumbCarriesItsOwnIcon() throws Exception {
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        World world = new World(List.of(island));
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        given(worlds.find()).willReturn(Optional.of(world));
+        given(players.find()).willReturn(Optional.of(player));
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
+
+        mockMvc.perform(get("/islands/3"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(
+                        "<img src=\"/img/breadcrumb-island.svg\" width=\"32\" height=\"20\" alt=\"\"/>")))
+                .andExpect(content().string(containsString("Naxos [2:2]")));
+    }
+
     private static CapitalHeaderView aCapitalHeader() {
         ResourceBarView resourceBar = new ResourceBarView(9L, 500, 100, "Vino", "/img/resource-wine.svg", 500);
         return new CapitalHeaderView("Atenas", "[2:2]", resourceBar, 3L, 9L);
