@@ -61,8 +61,7 @@ class ShellChromeRenderingTest {
 
         mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(not(containsString("/img/ui-compass.svg"))))
-                .andExpect(content().string(not(containsString("compass-"))));
+                .andExpect(content().string(not(containsString("compass"))));
     }
 
     @Test
