@@ -117,6 +117,20 @@ class ShellChromeRenderingTest {
         assertThat(countOccurrences(body, "/img/ui-slot-right.svg")).isEqualTo(6);
     }
 
+    @Test
+    void mapRendersTheSameShellChrome() throws Exception {
+        Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
+        World world = new World(List.of(island));
+        Player player = Player.starting(new PlayerId(1), "Jugador", NOW);
+        given(worlds.find()).willReturn(Optional.of(world));
+        given(players.find()).willReturn(Optional.of(player));
+        given(capitalHeaders.forPlayer(world, player)).willReturn(Optional.of(aCapitalHeader()));
+
+        mockMvc.perform(get("/map"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("class=\"shell-chrome\"")));
+    }
+
     private static int countOccurrences(String text, String token) {
         int count = 0;
         int index = 0;
