@@ -89,7 +89,12 @@ class TownSceneWorldRenderingTest {
                 .andExpect(content().string(containsString("class=\"scene-plane\"")))
                 .andExpect(content().string(containsString(
                         "src=\"/img/ui-water-strip.svg\" width=\"1920\" height=\"600\"")));
+    }
 
+    @Test
+    void sceneFragmentIsNotWrappedInTheWorldPlane() throws Exception {
+        Town town = Town.founded(new TownId(1), new PlayerId(1), new IslandId(3), 1,
+                "Atenas", LuxuryResource.WINE, NOW);
         given(towns.find(new TownId(1))).willReturn(Optional.of(town));
 
         mockMvc.perform(get("/towns/1/scene"))
