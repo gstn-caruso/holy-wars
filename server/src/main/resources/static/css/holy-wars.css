@@ -20,12 +20,8 @@ body {
     width: 100vw;
     overflow: hidden;
     display: grid;
-    grid-template-rows: 2.5vh 1fr 8vh;
-    background: linear-gradient(#274a1f, #3f6b30);
-}
-
-.shell-no-footer {
     grid-template-rows: 2.5vh 1fr;
+    background: linear-gradient(#274a1f, #3f6b30);
 }
 
 .shell-top-bar {
@@ -380,34 +376,10 @@ body {
     z-index: 1;
 }
 
-.shell-footer {
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    transform: translateX(-50%);
-    width: 1024px;
-    height: 53px;
-}
-
-.shell-footer-bg {
-    display: block;
-    width: 1024px;
-    height: 53px;
-}
-
-.shell-footer-caption {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font: bold 10px Arial, Helvetica, sans-serif;
-    color: #2b2116;
-}
-
 .compass {
     position: absolute;
     left: 50%;
-    top: -90px;
+    bottom: 8px;
     transform: translateX(-50%);
     width: 135px;
     height: 135px;

@@ -152,7 +152,7 @@ class TownControllerTest {
     }
 
     @Test
-    void rendersTheCompassFooterWithThreeDistinctLinks() throws Exception {
+    void rendersTheCompassWithThreeDistinctLinks() throws Exception {
         Island island = Island.withFreePlots(new IslandId(3), new Coordinate(2, 2), "Naxos", LuxuryResource.WINE);
         Town town = Town.founded(new TownId(1), new PlayerId(1), island.id(), 1, "Atenas",
                 LuxuryResource.WINE, NOW);

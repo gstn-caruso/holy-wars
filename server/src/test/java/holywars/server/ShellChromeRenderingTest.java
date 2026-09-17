@@ -2,6 +2,7 @@ package holywars.server;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -67,13 +68,14 @@ class ShellChromeRenderingTest {
     }
 
     @Test
-    void footerDrawsTheFixedStripWithTheGameName() throws Exception {
+    void rendersNoFooterStrip() throws Exception {
         stubCapitalTown();
 
         mockMvc.perform(get("/towns/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("/img/ui-footer.svg")))
-                .andExpect(content().string(containsString("<span class=\"shell-footer-caption\">Holy Wars</span>")));
+                .andExpect(content().string(not(containsString("/img/ui-footer.svg"))))
+                .andExpect(content().string(not(containsString("shell-footer"))))
+                .andExpect(content().string(containsString("/img/ui-compass.svg")));
     }
 
     @Test
@@ -123,7 +125,6 @@ class ShellChromeRenderingTest {
 
         mockMvc.perform(get("/map"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("/img/ui-footer.svg")))
                 .andExpect(content().string(containsString("/img/ui-compass.svg")))
                 .andExpect(content().string(containsString("/img/ui-menu-troops.svg")))
                 .andExpect(content().string(containsString("/img/ui-friends-panel.svg")));
