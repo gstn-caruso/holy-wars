@@ -6,10 +6,11 @@ import java.util.List;
 
 public record BreadcrumbView(List<Crumb> crumbs) {
 
-    record Crumb(String label, String href, String iconPath, int iconWidth, int iconHeight) {
+    record Crumb(String label, String href, String iconPath, int iconWidth, int iconHeight, boolean current) {
     }
 
-    private static final Crumb WORLD_CRUMB = new Crumb("Mundo", "/map", "/img/breadcrumb-world.svg", 20, 20);
+    private static final Crumb WORLD_CRUMB =
+            new Crumb("Mundo", "/map", "/img/breadcrumb-world.svg", 20, 20, false);
 
     public static BreadcrumbView worldOnly() {
         return new BreadcrumbView(List.of(WORLD_CRUMB));
@@ -25,10 +26,10 @@ public record BreadcrumbView(List<Crumb> crumbs) {
 
     private static Crumb islandCrumb(Island island) {
         String label = island.name() + " " + island.coordinate().label();
-        return new Crumb(label, "/islands/" + island.id().value(), "/img/breadcrumb-island.svg", 32, 20);
+        return new Crumb(label, "/islands/" + island.id().value(), "/img/breadcrumb-island.svg", 32, 20, false);
     }
 
     private static Crumb townCrumb(Town town) {
-        return new Crumb(town.name(), "/towns/" + town.id().value(), null, 0, 0);
+        return new Crumb(town.name(), "/towns/" + town.id().value(), null, 0, 0, true);
     }
 }

@@ -179,6 +179,10 @@ body {
     font-size: 0.8rem;
 }
 
+.crumb-current {
+    color: #ffffff;
+}
+
 .crumb:not(:last-child)::after {
     content: " \203A";
     margin-left: 6px;
