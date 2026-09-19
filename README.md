@@ -15,11 +15,12 @@ mvn -pl server spring-boot:run
 
 El `install` deja `holy-wars-domain` en el repositorio local, así el segundo comando puede correr el
 módulo `server` solo. `spring-boot:run` levanta un PostgreSQL 18.6 (usa el `compose.yaml` de la raíz).
-Abrí `http://localhost:8080` en el navegador. Si ya tenías el volumen `holywars-pgdata` de antes del
-reset, hoy arranca igual: Flyway ignora las migraciones `V1`–`V4` aplicadas porque ya no las encuentra en
-el repo y las trata como `future`, solo loguea un aviso. Lo que va a fallar es la primera migración
-nueva, con un error de checksum contra ese historial viejo. Por eso conviene vaciar ese volumen antes de
-que llegue: `docker compose down -v`.
+Verificá que arrancó con `curl http://localhost:8080/actuator/health`, que tiene que responder
+`"status":"UP"`. Si ya tenías el volumen `holywars-pgdata` de antes del reset, hoy arranca igual: Flyway
+ignora las migraciones `V1`–`V4` aplicadas porque ya no las encuentra en el repo y las trata como
+`future`, solo loguea un aviso. Lo que va a fallar es la primera migración nueva, con un error de
+checksum contra ese historial viejo. Por eso conviene vaciar ese volumen antes de que llegue:
+`docker compose down -v`.
 
 ## Base de datos (prod)
 
