@@ -2,12 +2,15 @@ package holywars.town;
 
 import holywars.world.IslandId;
 
+import java.util.List;
+
 class TownBuilder {
 
     private TownId id = new TownId(10L);
     private String name = "Sparta";
     private IslandId islandId = new IslandId(1L);
     private ResourceStock resourceStock = ResourceStock.empty();
+    private List<TownPlot> plots = List.of();
 
     static TownBuilder aTown() {
         return new TownBuilder();
@@ -34,6 +37,6 @@ class TownBuilder {
     }
 
     Town build() {
-        return new Town(id, name, islandId, resourceStock);
+        return new Town(id, name, islandId, resourceStock, plots);
     }
 }

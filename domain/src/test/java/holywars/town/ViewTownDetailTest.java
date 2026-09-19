@@ -8,6 +8,7 @@ import holywars.world.Resource;
 import holywars.world.SpecialResource;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +36,21 @@ class ViewTownDetailTest {
         ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(secondTownId));
 
         assertThat(response).isEqualTo(new ViewTownDetailResponse(
-                "Corinth", "Thira", new Coordinates(20, 45), Resource.MARBLE, zeroStock()));
+                "Corinth", "Thira", new Coordinates(20, 45), Resource.MARBLE, zeroStock(), List.of()));
+    }
+
+    @Test
+    void showsNoPlotsWhenTheTownHasNone() {
+        IslandId islandId = new IslandId(1L);
+        Island island = argosIsland(islandId);
+        TownId townId = new TownId(10L);
+        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId).build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.plots()).isEmpty();
     }
 
     @Test
