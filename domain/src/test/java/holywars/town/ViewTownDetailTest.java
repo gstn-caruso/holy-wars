@@ -45,7 +45,7 @@ class ViewTownDetailTest {
         IslandId islandId = new IslandId(1L);
         Island island = argosIsland(islandId);
         TownId townId = new TownId(10L);
-        Town town = TownBuilder.aTown(townId, "Sparta", islandId).withPlots().build();
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId).withNoPlots().build();
 
         ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
 
