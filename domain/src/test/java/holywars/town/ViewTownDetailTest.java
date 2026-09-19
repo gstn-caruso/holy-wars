@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class ViewTownDetailTest {
 
     @Test
-    void returnsTheRequestedTownsNameAndItsIslandsNameCoordinatesAndSpecialResource() {
+    void returnsTheDetailOfTheRequestedTownAndNotAnother() {
         IslandId firstIslandId = new IslandId(1L);
         Island firstIsland = argosIsland(firstIslandId);
         IslandId secondIslandId = new IslandId(2L);
