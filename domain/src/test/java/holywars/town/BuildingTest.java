@@ -51,4 +51,11 @@ class BuildingTest {
 
         assertThat(building.level()).isZero();
     }
+
+    @Test
+    void rejectsABuildingUnderConstructionWithoutAnEnd() {
+        assertThatThrownBy(() -> Building.underConstruction(BuildingType.ACADEMY, 0, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("ACADEMY");
+    }
 }

@@ -27,6 +27,9 @@ public final class Building {
     }
 
     public static Building underConstruction(BuildingType type, int level, Instant constructionEndsAt) {
+        if (constructionEndsAt == null) {
+            throw new IllegalArgumentException("A building under construction needs an end: " + type);
+        }
         return new Building(type, level, constructionEndsAt);
     }
 
