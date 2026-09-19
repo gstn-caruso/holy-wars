@@ -28,7 +28,10 @@ class ViewTownDetailTest {
         TownId firstTownId = new TownId(10L);
         Town firstTown = TownBuilder.aTown(firstTownId, "Sparta", firstIslandId).build();
         TownId secondTownId = new TownId(20L);
-        Town secondTown = TownBuilder.aTown(secondTownId, "Corinth", secondIslandId).build();
+        Town secondTown = TownBuilder.aTown(secondTownId, "Corinth", secondIslandId)
+                .stocking(ResourceStock.empty())
+                .withNoPlots()
+                .build();
 
         ViewTownDetail viewTownDetail = viewTownDetailFor(
                 Map.of(firstTownId, firstTown, secondTownId, secondTown),
