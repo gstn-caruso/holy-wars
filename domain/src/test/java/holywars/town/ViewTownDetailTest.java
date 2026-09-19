@@ -45,7 +45,7 @@ class ViewTownDetailTest {
         IslandId islandId = new IslandId(1L);
         Island island = argosIsland(islandId);
         TownId townId = new TownId(10L);
-        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId).build();
+        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId).withPlots().build();
 
         ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
 
@@ -113,7 +113,9 @@ class ViewTownDetailTest {
         IslandId islandId = new IslandId(1L);
         Island island = argosIsland(islandId);
         TownId townId = new TownId(10L);
-        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId).build();
+        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId)
+                .stocking(ResourceStock.empty())
+                .build();
 
         ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
 
