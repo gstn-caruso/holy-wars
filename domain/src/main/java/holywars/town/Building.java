@@ -20,6 +20,9 @@ public final class Building {
     }
 
     public static Building standing(BuildingType type, int level) {
+        if (level < 1) {
+            throw new IllegalArgumentException("Standing building level must be at least 1: " + level);
+        }
         return new Building(type, level, null);
     }
 

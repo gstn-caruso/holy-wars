@@ -35,4 +35,20 @@ class BuildingTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("-1");
     }
+
+    @Test
+    void rejectsAStandingBuildingAtLevelZero() {
+        assertThatThrownBy(() -> Building.standing(BuildingType.ACADEMY, 0))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("0");
+    }
+
+    @Test
+    void acceptsABrandNewBuildingUnderConstructionAtLevelZero() {
+        Instant constructionEndsAt = Instant.parse("2026-09-19T12:00:00Z");
+
+        Building building = Building.underConstruction(BuildingType.ACADEMY, 0, constructionEndsAt);
+
+        assertThat(building.level()).isZero();
+    }
 }
