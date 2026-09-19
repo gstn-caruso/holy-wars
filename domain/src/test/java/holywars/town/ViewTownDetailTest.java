@@ -8,6 +8,7 @@ import holywars.world.Resource;
 import holywars.world.SpecialResource;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +72,28 @@ class ViewTownDetailTest {
 
         assertThat(response.plots()).containsExactly(
                 TownPlotView.occupiedBy(0, BuildingView.standing(BuildingType.TOWN_HALL, 3)));
+    }
+
+    @Test
+    void showsWhenTheConstructionOnAPlotEnds() {
+        IslandId islandId = new IslandId(1L);
+        Island island = argosIsland(islandId);
+        TownId townId = new TownId(10L);
+        Instant constructionEndsAt = Instant.parse("2026-09-19T12:00:00Z");
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId)
+                .withPlots(
+                        TownPlot.occupiedBy(0, Building.underConstruction(BuildingType.ACADEMY, 2, constructionEndsAt)),
+                        TownPlot.occupiedBy(1, Building.standing(BuildingType.WAREHOUSE, 1)))
+                .build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.plots()).containsExactly(
+                TownPlotView.occupiedBy(
+                        0, BuildingView.underConstruction(BuildingType.ACADEMY, 2, constructionEndsAt)),
+                TownPlotView.occupiedBy(1, BuildingView.standing(BuildingType.WAREHOUSE, 1)));
     }
 
     @Test
