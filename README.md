@@ -1,14 +1,10 @@
 # Holy Wars
 
-Clon de Ikariam single-player: server Spring Boot que sirve el juego en el browser, Java 25.
+Clon de Ikariam single-player: server Spring Boot que sirve el juego en el browser, Java 25. Se está
+rehaciendo desde un esqueleto vacío: por ahora no hay ningún contenido jugable, solo el stack que
+arranca y buildea el jar.
 
-Empezás una partida nueva en un mapa de 10x10 con 20 islas; cada isla tiene 16 parcelas y tu aldea,
-14 parcelas de edificio. Los recursos (madera, lujo, oro) se producen en tiempo real. Desde cualquier
-parcela libre abrís un panel htmx para construir, y la escena y los recursos se actualizan solos por SSE,
-sin recargar la página. El look de las pantallas sigue el estilo de Ikariam: recursos, breadcrumb y
-brújula enmarcando cada vista de la ciudad capital.
-
-## Jugar
+## Correr en dev
 
 Con Docker corriendo, desde la raíz del repo:
 
@@ -18,14 +14,11 @@ mvn -pl server spring-boot:run
 ```
 
 El `install` deja `holy-wars-domain` en el repositorio local, así el segundo comando puede correr el
-módulo `server` solo. `spring-boot:run` levanta un PostgreSQL 18.6 (usa el `compose.yaml` de la raíz) y las
-migraciones de Flyway arman el esquema al arrancar. Abrí `http://localhost:8080` en el navegador. Los
-datos quedan en el volumen `holywars-pgdata` entre reinicios: al cortar el server, Spring frena el
-contenedor sin borrarlo. `docker compose down -v` los borra. Si ya tenías el volumen `holywars-postgres`
-de una corrida con Postgres 17, borralo con `docker volume rm holy-wars_holywars-postgres`: PostgreSQL 18
-no abre esos datos.
+módulo `server` solo. `spring-boot:run` levanta un PostgreSQL 18.6 (usa el `compose.yaml` de la raíz).
+Verificá que arrancó con `curl http://localhost:8080/actuator/health`, que tiene que responder
+`"status":"UP"`.
 
-## Base de datos
+## Base de datos (prod)
 
 PostgreSQL es la única base con la que corre la app, en producción con la misma versión mayor, 18; ahí
 no hay compose, así que el server se conecta por variables de entorno:
@@ -39,18 +32,9 @@ java -jar server/target/holy-wars-server-0.0.0-SNAPSHOT.jar
 ```
 
 Sin esas tres variables el server no arranca. El esquema lo crean y actualizan las migraciones de
-`server/src/main/resources/db/migration` al arrancar; un cambio de esquema entra como una migración
-nueva numerada arriba de la última, nunca editando una ya aplicada.
-
-## Perfil de desarrollo
-
-```
-mvn -pl server spring-boot:run -Dspring-boot.run.profiles=dev
-```
-
-Con el perfil `dev` el server sirve los assets estáticos que encuentre en
-`~/.local/share/holy-wars/dev-assets` antes que los del classpath, si ese directorio existe. Sirve para
-probar assets locales (por ejemplo, imágenes de referencia) sin empaquetarlos en el repo.
+`server/src/main/resources/db/migration`, un directorio que todavía no existe: lo crea la primera
+migración nueva. Un cambio de esquema entra como una migración numerada arriba de la última, nunca
+editando una ya aplicada.
 
 ## Testear
 
@@ -58,8 +42,7 @@ probar assets locales (por ejemplo, imágenes de referencia) sin empaquetarlos e
 mvn -B verify
 ```
 
-Corre sin Docker: los tests de integración usan H2 en memoria en modo de compatibilidad PostgreSQL,
-con las mismas migraciones que corren en dev y en producción.
+Corre sin Docker: los tests de integración usan H2 en memoria en modo de compatibilidad PostgreSQL.
 
 ## Releases
 
