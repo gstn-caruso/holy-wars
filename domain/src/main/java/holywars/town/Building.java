@@ -1,6 +1,7 @@
 package holywars.town;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 public final class Building {
@@ -39,5 +40,23 @@ public final class Building {
         return constructionEndsAt == null
                 ? BuildingView.standing(type, level)
                 : BuildingView.underConstruction(type, level, constructionEndsAt);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof Building otherBuilding)) {
+            return false;
+        }
+        return level == otherBuilding.level
+                && type == otherBuilding.type
+                && Objects.equals(constructionEndsAt, otherBuilding.constructionEndsAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, level, constructionEndsAt);
     }
 }
