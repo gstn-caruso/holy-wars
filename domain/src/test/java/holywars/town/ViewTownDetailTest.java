@@ -57,19 +57,20 @@ class ViewTownDetailTest {
     }
 
     @Test
-    void showsTheBuildingStandingOnAnOccupiedPlot() {
+    void showsTheTypeAndLevelOfTheBuildingOnAnOccupiedPlot() {
         IslandId islandId = new IslandId(1L);
         Island island = argosIsland(islandId);
         TownId townId = new TownId(10L);
         Town town = TownBuilder.aTown(townId, "Sparta", islandId)
-                .withPlots(TownPlot.occupiedBy(0, BuildingType.TOWN_HALL))
+                .withPlots(TownPlot.occupiedBy(0, Building.standing(BuildingType.TOWN_HALL, 3)))
                 .build();
 
         ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
 
         ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
 
-        assertThat(response.plots()).containsExactly(TownPlotView.occupiedBy(0, BuildingType.TOWN_HALL));
+        assertThat(response.plots()).containsExactly(
+                TownPlotView.occupiedBy(0, BuildingView.standing(BuildingType.TOWN_HALL, 3)));
     }
 
     @Test
@@ -95,9 +96,9 @@ class ViewTownDetailTest {
         TownId townId = new TownId(10L);
         Town town = TownBuilder.aTown(townId, "Sparta", islandId)
                 .withPlots(
-                        TownPlot.occupiedBy(5, BuildingType.WAREHOUSE),
+                        TownPlot.occupiedBy(5, Building.standing(BuildingType.WAREHOUSE, 1)),
                         TownPlot.empty(0),
-                        TownPlot.occupiedBy(3, BuildingType.WAREHOUSE))
+                        TownPlot.occupiedBy(3, Building.standing(BuildingType.WAREHOUSE, 1)))
                 .build();
 
         ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
@@ -106,8 +107,8 @@ class ViewTownDetailTest {
 
         assertThat(response.plots()).containsExactly(
                 TownPlotView.empty(0),
-                TownPlotView.occupiedBy(3, BuildingType.WAREHOUSE),
-                TownPlotView.occupiedBy(5, BuildingType.WAREHOUSE));
+                TownPlotView.occupiedBy(3, BuildingView.standing(BuildingType.WAREHOUSE, 1)),
+                TownPlotView.occupiedBy(5, BuildingView.standing(BuildingType.WAREHOUSE, 1)));
     }
 
     @Test
@@ -117,8 +118,8 @@ class ViewTownDetailTest {
         TownId townId = new TownId(10L);
         Town town = TownBuilder.aTown(townId, "Sparta", islandId)
                 .withPlots(
-                        TownPlot.occupiedBy(0, BuildingType.WAREHOUSE),
-                        TownPlot.occupiedBy(1, BuildingType.WAREHOUSE))
+                        TownPlot.occupiedBy(0, Building.standing(BuildingType.WAREHOUSE, 1)),
+                        TownPlot.occupiedBy(1, Building.standing(BuildingType.WAREHOUSE, 1)))
                 .build();
 
         ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
@@ -126,8 +127,8 @@ class ViewTownDetailTest {
         ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
 
         assertThat(response.plots()).containsExactly(
-                TownPlotView.occupiedBy(0, BuildingType.WAREHOUSE),
-                TownPlotView.occupiedBy(1, BuildingType.WAREHOUSE));
+                TownPlotView.occupiedBy(0, BuildingView.standing(BuildingType.WAREHOUSE, 1)),
+                TownPlotView.occupiedBy(1, BuildingView.standing(BuildingType.WAREHOUSE, 1)));
     }
 
     @Test
