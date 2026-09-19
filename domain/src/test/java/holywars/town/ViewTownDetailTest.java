@@ -87,6 +87,28 @@ class ViewTownDetailTest {
     }
 
     @Test
+    void showsThePlotsOrderedByPositionHoweverTheTownGotThem() {
+        IslandId islandId = new IslandId(1L);
+        Island island = argosIsland(islandId);
+        TownId townId = new TownId(10L);
+        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId)
+                .withPlots(
+                        TownPlot.occupiedBy(5, Building.WAREHOUSE),
+                        TownPlot.empty(0),
+                        TownPlot.occupiedBy(3, Building.WAREHOUSE))
+                .build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.plots()).containsExactly(
+                new TownPlotView(0, Optional.empty()),
+                new TownPlotView(3, Optional.of(Building.WAREHOUSE)),
+                new TownPlotView(5, Optional.of(Building.WAREHOUSE)));
+    }
+
+    @Test
     void reportsEveryResourceAtZeroWhenTheTownHasNothingStocked() {
         IslandId islandId = new IslandId(1L);
         Island island = argosIsland(islandId);
