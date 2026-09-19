@@ -5,15 +5,14 @@ import holywars.world.Resource;
 import java.util.EnumMap;
 import java.util.Map;
 
-public final class ResourceStock {
+public record ResourceStock(Map<Resource, ResourceAmount> amounts) {
 
-    private final Map<Resource, ResourceAmount> amounts;
-
-    public ResourceStock(Map<Resource, ResourceAmount> amounts) {
-        this.amounts = new EnumMap<>(Resource.class);
+    public ResourceStock {
+        Map<Resource, ResourceAmount> normalized = new EnumMap<>(Resource.class);
         for (Resource resource : Resource.values()) {
-            this.amounts.put(resource, amounts.getOrDefault(resource, ResourceAmount.zero()));
+            normalized.put(resource, amounts.getOrDefault(resource, ResourceAmount.zero()));
         }
+        amounts = Map.copyOf(normalized);
     }
 
     public static ResourceStock empty() {
@@ -25,6 +24,6 @@ public final class ResourceStock {
     }
 
     public Map<Resource, ResourceAmount> asMap() {
-        return Map.copyOf(amounts);
+        return amounts;
     }
 }
