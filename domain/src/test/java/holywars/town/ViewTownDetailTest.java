@@ -18,20 +18,19 @@ class ViewTownDetailTest {
     @Test
     void returnsTheRequestedTownsNameAndItsIslandsNameCoordinatesAndSpecialResource() {
         IslandId firstIslandId = new IslandId(1L);
-        Island firstIsland = new Island(
-                firstIslandId, "Argos", new Coordinates(3, 7), SpecialResource.WINE);
+        Island firstIsland = argosIsland(firstIslandId);
         IslandId secondIslandId = new IslandId(2L);
         Island secondIsland = new Island(
                 secondIslandId, "Thira", new Coordinates(20, 45), SpecialResource.MARBLE);
 
         TownId firstTownId = new TownId(10L);
-        Town firstTown = new Town(firstTownId, "Sparta", firstIslandId, ResourceStock.empty());
+        Town firstTown = TownBuilder.aTown().withId(firstTownId).withName("Sparta").onIsland(firstIslandId).build();
         TownId secondTownId = new TownId(20L);
-        Town secondTown = new Town(secondTownId, "Corinth", secondIslandId, ResourceStock.empty());
+        Town secondTown = TownBuilder.aTown().withId(secondTownId).withName("Corinth").onIsland(secondIslandId).build();
 
-        InMemoryTowns towns = new InMemoryTowns(Map.of(firstTownId, firstTown, secondTownId, secondTown));
-        InMemoryIslands islands = new InMemoryIslands(Map.of(firstIslandId, firstIsland, secondIslandId, secondIsland));
-        ViewTownDetail viewTownDetail = new ViewTownDetail(towns, islands);
+        ViewTownDetail viewTownDetail = viewTownDetailFor(
+                Map.of(firstTownId, firstTown, secondTownId, secondTown),
+                Map.of(firstIslandId, firstIsland, secondIslandId, secondIsland));
 
         ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(secondTownId));
 
@@ -42,13 +41,11 @@ class ViewTownDetailTest {
     @Test
     void reportsEveryResourceAtZeroWhenTheTownHasNothingStocked() {
         IslandId islandId = new IslandId(1L);
-        Island island = new Island(islandId, "Argos", new Coordinates(3, 7), SpecialResource.WINE);
+        Island island = argosIsland(islandId);
         TownId townId = new TownId(10L);
-        Town town = new Town(townId, "Sparta", islandId, ResourceStock.empty());
+        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId).build();
 
-        InMemoryTowns towns = new InMemoryTowns(Map.of(townId, town));
-        InMemoryIslands islands = new InMemoryIslands(Map.of(islandId, island));
-        ViewTownDetail viewTownDetail = new ViewTownDetail(towns, islands);
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
 
         ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
 
@@ -58,16 +55,14 @@ class ViewTownDetailTest {
     @Test
     void reportsTheStockedAmountOfEachResourceKeepingTheRestAtZero() {
         IslandId islandId = new IslandId(1L);
-        Island island = new Island(islandId, "Argos", new Coordinates(3, 7), SpecialResource.WINE);
+        Island island = argosIsland(islandId);
         TownId townId = new TownId(10L);
         ResourceStock stock = new ResourceStock(Map.of(
                 Resource.WINE, new ResourceAmount(120L),
                 Resource.MARBLE, new ResourceAmount(45L)));
-        Town town = new Town(townId, "Sparta", islandId, stock);
+        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId).stocking(stock).build();
 
-        InMemoryTowns towns = new InMemoryTowns(Map.of(townId, town));
-        InMemoryIslands islands = new InMemoryIslands(Map.of(islandId, island));
-        ViewTownDetail viewTownDetail = new ViewTownDetail(towns, islands);
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
 
         ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
 
@@ -81,14 +76,20 @@ class ViewTownDetailTest {
 
     @Test
     void failsWithUnknownTownExceptionWhenTheTownDoesNotExist() {
-        InMemoryTowns towns = new InMemoryTowns(Map.of());
-        InMemoryIslands islands = new InMemoryIslands(Map.of());
-        ViewTownDetail viewTownDetail = new ViewTownDetail(towns, islands);
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(), Map.of());
         TownId unknownTownId = new TownId(999L);
 
         assertThatThrownBy(() -> viewTownDetail.run(new ViewTownDetailRequest(unknownTownId)))
                 .isInstanceOf(UnknownTownException.class)
                 .hasMessageContaining(unknownTownId.toString());
+    }
+
+    private static Island argosIsland(IslandId id) {
+        return new Island(id, "Argos", new Coordinates(3, 7), SpecialResource.WINE);
+    }
+
+    private static ViewTownDetail viewTownDetailFor(Map<TownId, Town> towns, Map<IslandId, Island> islands) {
+        return new ViewTownDetail(new InMemoryTowns(towns), new InMemoryIslands(islands));
     }
 
     private static Map<Resource, Long> zeroStock() {
