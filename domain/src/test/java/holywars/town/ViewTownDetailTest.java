@@ -54,6 +54,30 @@ class ViewTownDetailTest {
         assertThat(response.resourceStock()).isEqualTo(zeroStock());
     }
 
+    @Test
+    void reportsTheStockedAmountOfEachResourceKeepingTheRestAtZero() {
+        IslandId islandId = new IslandId(1L);
+        Island island = new Island(islandId, "Argos", new Coordinates(3, 7), SpecialResource.WINE);
+        TownId townId = new TownId(10L);
+        ResourceStock stock = new ResourceStock(Map.of(
+                Resource.WINE, new ResourceAmount(120L),
+                Resource.MARBLE, new ResourceAmount(45L)));
+        Town town = new Town(townId, "Sparta", islandId, stock);
+
+        InMemoryTowns towns = new InMemoryTowns(Map.of(townId, town));
+        InMemoryIslands islands = new InMemoryIslands(Map.of(islandId, island));
+        ViewTownDetail viewTownDetail = new ViewTownDetail(towns, islands);
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.resourceStock()).isEqualTo(Map.of(
+                Resource.WOOD, 0L,
+                Resource.WINE, 120L,
+                Resource.MARBLE, 45L,
+                Resource.CRYSTAL, 0L,
+                Resource.SULFUR, 0L));
+    }
+
     private static Map<Resource, Long> zeroStock() {
         return Map.of(
                 Resource.WOOD, 0L,
