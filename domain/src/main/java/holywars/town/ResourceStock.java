@@ -4,6 +4,7 @@ import holywars.world.Resource;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public record ResourceStock(Map<Resource, ResourceAmount> amounts) {
 
@@ -23,7 +24,8 @@ public record ResourceStock(Map<Resource, ResourceAmount> amounts) {
         return amounts.get(resource);
     }
 
-    public Map<Resource, ResourceAmount> asMap() {
-        return amounts;
+    public Map<Resource, Long> amountsByResource() {
+        return amounts.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().value()));
     }
 }

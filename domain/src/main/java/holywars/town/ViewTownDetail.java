@@ -3,10 +3,6 @@ package holywars.town;
 import holywars.UseCase;
 import holywars.world.Island;
 import holywars.world.Islands;
-import holywars.world.Resource;
-
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ViewTownDetail implements UseCase<ViewTownDetailRequest, ViewTownDetailResponse> {
 
@@ -23,14 +19,11 @@ public class ViewTownDetail implements UseCase<ViewTownDetailRequest, ViewTownDe
         Town town = towns.getById(input.townId());
         Island island = islands.findById(town.islandId()).orElseThrow();
 
-        Map<Resource, Long> resourceStock = town.resourceStock().asMap().entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().value()));
-
         return new ViewTownDetailResponse(
                 town.name(),
                 island.name(),
                 island.coordinates(),
                 island.specialResource().resource(),
-                resourceStock);
+                town.resourceStock().amountsByResource());
     }
 }
