@@ -7,10 +7,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SpecialResourceTest {
 
     @Test
-    void mapsEachSpecialResourceToTheGeneralResourceOfTheSameName() {
-        for (SpecialResource specialResource : SpecialResource.values()) {
-            assertThat(specialResource.resource().name()).isEqualTo(specialResource.name());
-        }
+    void mapsEachSpecialResourceToItsGeneralResource() {
+        assertThat(SpecialResource.WINE.resource()).isEqualTo(Resource.WINE);
+        assertThat(SpecialResource.MARBLE.resource()).isEqualTo(Resource.MARBLE);
+        assertThat(SpecialResource.CRYSTAL.resource()).isEqualTo(Resource.CRYSTAL);
+        assertThat(SpecialResource.SULFUR.resource()).isEqualTo(Resource.SULFUR);
     }
 
     @Test
