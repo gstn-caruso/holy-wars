@@ -6,29 +6,20 @@ import java.util.List;
 
 class TownBuilder {
 
-    private TownId id = new TownId(10L);
-    private String name = "Sparta";
-    private IslandId islandId = new IslandId(1L);
+    private final TownId id;
+    private final String name;
+    private final IslandId islandId;
     private ResourceStock resourceStock = ResourceStock.empty();
     private List<TownPlot> plots = List.of();
 
-    static TownBuilder aTown() {
-        return new TownBuilder();
-    }
-
-    TownBuilder withId(TownId id) {
+    private TownBuilder(TownId id, String name, IslandId islandId) {
         this.id = id;
-        return this;
-    }
-
-    TownBuilder withName(String name) {
         this.name = name;
-        return this;
+        this.islandId = islandId;
     }
 
-    TownBuilder onIsland(IslandId islandId) {
-        this.islandId = islandId;
-        return this;
+    static TownBuilder aTown(TownId id, String name, IslandId islandId) {
+        return new TownBuilder(id, name, islandId);
     }
 
     TownBuilder stocking(ResourceStock resourceStock) {

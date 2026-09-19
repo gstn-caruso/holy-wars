@@ -26,9 +26,9 @@ class ViewTownDetailTest {
                 secondIslandId, "Thira", new Coordinates(20, 45), SpecialResource.MARBLE);
 
         TownId firstTownId = new TownId(10L);
-        Town firstTown = TownBuilder.aTown().withId(firstTownId).withName("Sparta").onIsland(firstIslandId).build();
+        Town firstTown = TownBuilder.aTown(firstTownId, "Sparta", firstIslandId).build();
         TownId secondTownId = new TownId(20L);
-        Town secondTown = TownBuilder.aTown().withId(secondTownId).withName("Corinth").onIsland(secondIslandId).build();
+        Town secondTown = TownBuilder.aTown(secondTownId, "Corinth", secondIslandId).build();
 
         ViewTownDetail viewTownDetail = viewTownDetailFor(
                 Map.of(firstTownId, firstTown, secondTownId, secondTown),
@@ -45,7 +45,7 @@ class ViewTownDetailTest {
         IslandId islandId = new IslandId(1L);
         Island island = argosIsland(islandId);
         TownId townId = new TownId(10L);
-        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId).withPlots().build();
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId).withPlots().build();
 
         ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
 
@@ -59,7 +59,7 @@ class ViewTownDetailTest {
         IslandId islandId = new IslandId(1L);
         Island island = argosIsland(islandId);
         TownId townId = new TownId(10L);
-        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId)
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId)
                 .withPlots(TownPlot.occupiedBy(0, Building.TOWN_HALL))
                 .build();
 
@@ -75,7 +75,7 @@ class ViewTownDetailTest {
         IslandId islandId = new IslandId(1L);
         Island island = argosIsland(islandId);
         TownId townId = new TownId(10L);
-        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId)
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId)
                 .withPlots(TownPlot.empty(3))
                 .build();
 
@@ -91,7 +91,7 @@ class ViewTownDetailTest {
         IslandId islandId = new IslandId(1L);
         Island island = argosIsland(islandId);
         TownId townId = new TownId(10L);
-        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId)
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId)
                 .withPlots(
                         TownPlot.occupiedBy(5, Building.WAREHOUSE),
                         TownPlot.empty(0),
@@ -113,7 +113,7 @@ class ViewTownDetailTest {
         IslandId islandId = new IslandId(1L);
         Island island = argosIsland(islandId);
         TownId townId = new TownId(10L);
-        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId)
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId)
                 .stocking(ResourceStock.empty())
                 .build();
 
@@ -132,7 +132,7 @@ class ViewTownDetailTest {
         ResourceStock stock = new ResourceStock(Map.of(
                 Resource.WINE, new ResourceAmount(120L),
                 Resource.MARBLE, new ResourceAmount(45L)));
-        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId).stocking(stock).build();
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId).stocking(stock).build();
 
         ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
 
