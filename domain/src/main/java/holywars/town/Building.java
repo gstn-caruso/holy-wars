@@ -11,6 +11,9 @@ public final class Building {
     private final Instant constructionEndsAt;
 
     private Building(BuildingType type, int level, Instant constructionEndsAt) {
+        if (level < 0) {
+            throw new IllegalArgumentException("Building level cannot be negative: " + level);
+        }
         this.type = type;
         this.level = level;
         this.constructionEndsAt = constructionEndsAt;
