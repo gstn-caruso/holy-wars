@@ -60,14 +60,14 @@ class ViewTownDetailTest {
         Island island = argosIsland(islandId);
         TownId townId = new TownId(10L);
         Town town = TownBuilder.aTown(townId, "Sparta", islandId)
-                .withPlots(TownPlot.occupiedBy(0, Building.TOWN_HALL))
+                .withPlots(TownPlot.occupiedBy(0, BuildingType.TOWN_HALL))
                 .build();
 
         ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
 
         ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
 
-        assertThat(response.plots()).containsExactly(new TownPlotView(0, Optional.of(Building.TOWN_HALL)));
+        assertThat(response.plots()).containsExactly(new TownPlotView(0, Optional.of(BuildingType.TOWN_HALL)));
     }
 
     @Test
@@ -93,9 +93,9 @@ class ViewTownDetailTest {
         TownId townId = new TownId(10L);
         Town town = TownBuilder.aTown(townId, "Sparta", islandId)
                 .withPlots(
-                        TownPlot.occupiedBy(5, Building.WAREHOUSE),
+                        TownPlot.occupiedBy(5, BuildingType.WAREHOUSE),
                         TownPlot.empty(0),
-                        TownPlot.occupiedBy(3, Building.WAREHOUSE))
+                        TownPlot.occupiedBy(3, BuildingType.WAREHOUSE))
                 .build();
 
         ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
@@ -104,8 +104,8 @@ class ViewTownDetailTest {
 
         assertThat(response.plots()).containsExactly(
                 new TownPlotView(0, Optional.empty()),
-                new TownPlotView(3, Optional.of(Building.WAREHOUSE)),
-                new TownPlotView(5, Optional.of(Building.WAREHOUSE)));
+                new TownPlotView(3, Optional.of(BuildingType.WAREHOUSE)),
+                new TownPlotView(5, Optional.of(BuildingType.WAREHOUSE)));
     }
 
     @Test
@@ -115,8 +115,8 @@ class ViewTownDetailTest {
         TownId townId = new TownId(10L);
         Town town = TownBuilder.aTown(townId, "Sparta", islandId)
                 .withPlots(
-                        TownPlot.occupiedBy(0, Building.WAREHOUSE),
-                        TownPlot.occupiedBy(1, Building.WAREHOUSE))
+                        TownPlot.occupiedBy(0, BuildingType.WAREHOUSE),
+                        TownPlot.occupiedBy(1, BuildingType.WAREHOUSE))
                 .build();
 
         ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
@@ -124,8 +124,8 @@ class ViewTownDetailTest {
         ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
 
         assertThat(response.plots()).containsExactly(
-                new TownPlotView(0, Optional.of(Building.WAREHOUSE)),
-                new TownPlotView(1, Optional.of(Building.WAREHOUSE)));
+                new TownPlotView(0, Optional.of(BuildingType.WAREHOUSE)),
+                new TownPlotView(1, Optional.of(BuildingType.WAREHOUSE)));
     }
 
     @Test
