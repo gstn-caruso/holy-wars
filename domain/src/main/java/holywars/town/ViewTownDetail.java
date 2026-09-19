@@ -20,7 +20,7 @@ public class ViewTownDetail implements UseCase<ViewTownDetailRequest, ViewTownDe
 
     @Override
     public ViewTownDetailResponse run(ViewTownDetailRequest input) {
-        Town town = towns.findById(input.townId()).orElseThrow();
+        Town town = towns.getById(input.townId());
         Island island = islands.findById(town.islandId()).orElseThrow();
 
         Map<Resource, Long> resourceStock = town.resourceStock().asMap().entrySet().stream()

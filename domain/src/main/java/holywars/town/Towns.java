@@ -12,4 +12,8 @@ public interface Towns {
      * @return the town, or empty if no town has that id
      */
     Optional<Town> findById(TownId id);
+
+    default Town getById(TownId id) {
+        return findById(id).orElseThrow(() -> new UnknownTownException(id));
+    }
 }

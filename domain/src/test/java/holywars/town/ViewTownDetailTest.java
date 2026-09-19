@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ViewTownDetailTest {
 
@@ -76,6 +77,18 @@ class ViewTownDetailTest {
                 Resource.MARBLE, 45L,
                 Resource.CRYSTAL, 0L,
                 Resource.SULFUR, 0L));
+    }
+
+    @Test
+    void failsWithUnknownTownExceptionWhenTheTownDoesNotExist() {
+        InMemoryTowns towns = new InMemoryTowns(Map.of());
+        InMemoryIslands islands = new InMemoryIslands(Map.of());
+        ViewTownDetail viewTownDetail = new ViewTownDetail(towns, islands);
+        TownId unknownTownId = new TownId(999L);
+
+        assertThatThrownBy(() -> viewTownDetail.run(new ViewTownDetailRequest(unknownTownId)))
+                .isInstanceOf(UnknownTownException.class)
+                .hasMessageContaining(unknownTownId.toString());
     }
 
     private static Map<Resource, Long> zeroStock() {
