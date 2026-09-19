@@ -71,6 +71,22 @@ class ViewTownDetailTest {
     }
 
     @Test
+    void showsAnEmptyPlotWithNoBuilding() {
+        IslandId islandId = new IslandId(1L);
+        Island island = argosIsland(islandId);
+        TownId townId = new TownId(10L);
+        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId)
+                .withPlots(TownPlot.empty(3))
+                .build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.plots()).containsExactly(new TownPlotView(3, Optional.empty()));
+    }
+
+    @Test
     void reportsEveryResourceAtZeroWhenTheTownHasNothingStocked() {
         IslandId islandId = new IslandId(1L);
         Island island = argosIsland(islandId);
