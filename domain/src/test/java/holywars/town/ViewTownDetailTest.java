@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -70,7 +69,7 @@ class ViewTownDetailTest {
 
         ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
 
-        assertThat(response.plots()).containsExactly(new TownPlotView(0, Optional.of(BuildingType.TOWN_HALL)));
+        assertThat(response.plots()).containsExactly(TownPlotView.occupiedBy(0, BuildingType.TOWN_HALL));
     }
 
     @Test
@@ -86,7 +85,7 @@ class ViewTownDetailTest {
 
         ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
 
-        assertThat(response.plots()).containsExactly(new TownPlotView(3, Optional.empty()));
+        assertThat(response.plots()).containsExactly(TownPlotView.empty(3));
     }
 
     @Test
@@ -106,9 +105,9 @@ class ViewTownDetailTest {
         ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
 
         assertThat(response.plots()).containsExactly(
-                new TownPlotView(0, Optional.empty()),
-                new TownPlotView(3, Optional.of(BuildingType.WAREHOUSE)),
-                new TownPlotView(5, Optional.of(BuildingType.WAREHOUSE)));
+                TownPlotView.empty(0),
+                TownPlotView.occupiedBy(3, BuildingType.WAREHOUSE),
+                TownPlotView.occupiedBy(5, BuildingType.WAREHOUSE));
     }
 
     @Test
@@ -127,8 +126,8 @@ class ViewTownDetailTest {
         ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
 
         assertThat(response.plots()).containsExactly(
-                new TownPlotView(0, Optional.of(BuildingType.WAREHOUSE)),
-                new TownPlotView(1, Optional.of(BuildingType.WAREHOUSE)));
+                TownPlotView.occupiedBy(0, BuildingType.WAREHOUSE),
+                TownPlotView.occupiedBy(1, BuildingType.WAREHOUSE));
     }
 
     @Test
