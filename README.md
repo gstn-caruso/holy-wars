@@ -16,8 +16,10 @@ mvn -pl server spring-boot:run
 El `install` deja `holy-wars-domain` en el repositorio local, así el segundo comando puede correr el
 módulo `server` solo. `spring-boot:run` levanta un PostgreSQL 18.6 (usa el `compose.yaml` de la raíz).
 Abrí `http://localhost:8080` en el navegador. Si ya tenías el volumen `holywars-pgdata` de antes del
-reset, tiene aplicadas migraciones que ya no están en el repo y Flyway no arranca: borralo una vez con
-`docker compose down -v`.
+reset, hoy arranca igual: Flyway ignora las migraciones `V1`–`V4` aplicadas porque ya no las encuentra en
+el repo y las trata como `future`, solo loguea un aviso. Lo que va a fallar es la primera migración
+nueva, con un error de checksum contra ese historial viejo. Por eso conviene vaciar ese volumen antes de
+que llegue: `docker compose down -v`.
 
 ## Base de datos (prod)
 
@@ -33,9 +35,12 @@ java -jar server/target/holy-wars-server-0.0.0-SNAPSHOT.jar
 ```
 
 Sin esas tres variables el server no arranca. El esquema lo crean y actualizan las migraciones de
-`server/src/main/resources/db/migration` al arrancar; un cambio de esquema entra como una migración
-nueva numerada arriba de la última, nunca editando una ya aplicada. Si la base ya tiene el historial de
-Flyway de antes del reset, esas migraciones ya no están en el repo y Flyway no arranca.
+`server/src/main/resources/db/migration`, un directorio que todavía no existe: lo crea la primera
+migración nueva. Un cambio de esquema entra como una migración numerada arriba de la última, nunca
+editando una ya aplicada. Si la base ya tiene el historial de Flyway de antes del reset, hoy arranca
+igual: Flyway ignora esas migraciones viejas como `future` y solo loguea un aviso. Lo que va a fallar es
+la primera migración nueva, con un error de checksum contra ese historial. Por eso esa base se recrea
+antes de que llegue esa primera migración.
 
 ## Testear
 
