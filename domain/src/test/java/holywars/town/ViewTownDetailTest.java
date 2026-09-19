@@ -1,0 +1,221 @@
+package holywars.town;
+
+import holywars.world.Coordinates;
+import holywars.world.Island;
+import holywars.world.IslandId;
+import holywars.world.InMemoryIslands;
+import holywars.world.Resource;
+import holywars.world.SpecialResource;
+import org.junit.jupiter.api.Test;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+class ViewTownDetailTest {
+
+    @Test
+    void returnsTheDetailOfTheRequestedTownAndNotAnother() {
+        IslandId firstIslandId = new IslandId(1L);
+        Island firstIsland = argosIsland(firstIslandId);
+        IslandId secondIslandId = new IslandId(2L);
+        Island secondIsland = new Island(
+                secondIslandId, "Thira", new Coordinates(20, 45), SpecialResource.MARBLE);
+
+        TownId firstTownId = new TownId(10L);
+        Town firstTown = TownBuilder.aTown(firstTownId, "Sparta", firstIslandId).build();
+        TownId secondTownId = new TownId(20L);
+        Town secondTown = TownBuilder.aTown(secondTownId, "Corinth", secondIslandId)
+                .stocking(ResourceStock.empty())
+                .withNoPlots()
+                .build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(
+                Map.of(firstTownId, firstTown, secondTownId, secondTown),
+                Map.of(firstIslandId, firstIsland, secondIslandId, secondIsland));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(secondTownId));
+
+        assertThat(response).isEqualTo(new ViewTownDetailResponse(
+                "Corinth", "Thira", new Coordinates(20, 45), Resource.MARBLE, zeroStock(), List.of()));
+    }
+
+    @Test
+    void showsNoPlotsWhenTheTownHasNone() {
+        IslandId islandId = new IslandId(1L);
+        Island island = argosIsland(islandId);
+        TownId townId = new TownId(10L);
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId).withNoPlots().build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.plots()).isEmpty();
+    }
+
+    @Test
+    void showsTheTypeAndLevelOfTheBuildingOnAnOccupiedPlot() {
+        IslandId islandId = new IslandId(1L);
+        Island island = argosIsland(islandId);
+        TownId townId = new TownId(10L);
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId)
+                .withPlots(TownPlot.occupiedBy(0, Building.standing(BuildingType.TOWN_HALL, 3)))
+                .build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.plots()).containsExactly(
+                TownPlotView.occupiedBy(0, BuildingView.standing(BuildingType.TOWN_HALL, 3)));
+    }
+
+    @Test
+    void showsWhenTheConstructionOnAPlotEnds() {
+        IslandId islandId = new IslandId(1L);
+        Island island = argosIsland(islandId);
+        TownId townId = new TownId(10L);
+        Instant constructionEndsAt = Instant.parse("2026-09-19T12:00:00Z");
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId)
+                .withPlots(
+                        TownPlot.occupiedBy(0, Building.underConstruction(BuildingType.ACADEMY, 2, constructionEndsAt)),
+                        TownPlot.occupiedBy(1, Building.standing(BuildingType.WAREHOUSE, 1)))
+                .build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.plots()).containsExactly(
+                TownPlotView.occupiedBy(
+                        0, BuildingView.underConstruction(BuildingType.ACADEMY, 2, constructionEndsAt)),
+                TownPlotView.occupiedBy(1, BuildingView.standing(BuildingType.WAREHOUSE, 1)));
+    }
+
+    @Test
+    void showsAnEmptyPlotWithNoBuilding() {
+        IslandId islandId = new IslandId(1L);
+        Island island = argosIsland(islandId);
+        TownId townId = new TownId(10L);
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId)
+                .withPlots(TownPlot.empty(3))
+                .build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.plots()).containsExactly(TownPlotView.empty(3));
+    }
+
+    @Test
+    void showsThePlotsOrderedByPositionHoweverTheTownGotThem() {
+        IslandId islandId = new IslandId(1L);
+        Island island = argosIsland(islandId);
+        TownId townId = new TownId(10L);
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId)
+                .withPlots(
+                        TownPlot.occupiedBy(5, Building.standing(BuildingType.WAREHOUSE, 1)),
+                        TownPlot.empty(0),
+                        TownPlot.occupiedBy(3, Building.standing(BuildingType.WAREHOUSE, 1)))
+                .build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.plots()).containsExactly(
+                TownPlotView.empty(0),
+                TownPlotView.occupiedBy(3, BuildingView.standing(BuildingType.WAREHOUSE, 1)),
+                TownPlotView.occupiedBy(5, BuildingView.standing(BuildingType.WAREHOUSE, 1)));
+    }
+
+    @Test
+    void keepsTwoPlotsHoldingTheSameBuildingApart() {
+        IslandId islandId = new IslandId(1L);
+        Island island = argosIsland(islandId);
+        TownId townId = new TownId(10L);
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId)
+                .withPlots(
+                        TownPlot.occupiedBy(0, Building.standing(BuildingType.WAREHOUSE, 1)),
+                        TownPlot.occupiedBy(1, Building.standing(BuildingType.WAREHOUSE, 1)))
+                .build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.plots()).containsExactly(
+                TownPlotView.occupiedBy(0, BuildingView.standing(BuildingType.WAREHOUSE, 1)),
+                TownPlotView.occupiedBy(1, BuildingView.standing(BuildingType.WAREHOUSE, 1)));
+    }
+
+    @Test
+    void reportsEveryResourceAtZeroWhenTheTownHasNothingStocked() {
+        IslandId islandId = new IslandId(1L);
+        Island island = argosIsland(islandId);
+        TownId townId = new TownId(10L);
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId)
+                .stocking(ResourceStock.empty())
+                .build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.resourceStock()).isEqualTo(zeroStock());
+    }
+
+    @Test
+    void reportsTheStockedAmountOfEachResourceKeepingTheRestAtZero() {
+        IslandId islandId = new IslandId(1L);
+        Island island = argosIsland(islandId);
+        TownId townId = new TownId(10L);
+        ResourceStock stock = new ResourceStock(Map.of(
+                Resource.WINE, new ResourceAmount(120L),
+                Resource.MARBLE, new ResourceAmount(45L)));
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId).stocking(stock).build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.resourceStock()).isEqualTo(Map.of(
+                Resource.WOOD, 0L,
+                Resource.WINE, 120L,
+                Resource.MARBLE, 45L,
+                Resource.CRYSTAL, 0L,
+                Resource.SULFUR, 0L));
+    }
+
+    @Test
+    void failsWithUnknownTownExceptionWhenTheTownDoesNotExist() {
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(), Map.of());
+        TownId unknownTownId = new TownId(999L);
+
+        assertThatThrownBy(() -> viewTownDetail.run(new ViewTownDetailRequest(unknownTownId)))
+                .isInstanceOf(UnknownTownException.class)
+                .hasMessageContaining(unknownTownId.toString());
+    }
+
+    private static Island argosIsland(IslandId id) {
+        return new Island(id, "Argos", new Coordinates(3, 7), SpecialResource.WINE);
+    }
+
+    private static ViewTownDetail viewTownDetailFor(Map<TownId, Town> towns, Map<IslandId, Island> islands) {
+        return new ViewTownDetail(new InMemoryTowns(towns), new InMemoryIslands(islands));
+    }
+
+    private static Map<Resource, Long> zeroStock() {
+        return Map.of(
+                Resource.WOOD, 0L,
+                Resource.WINE, 0L,
+                Resource.MARBLE, 0L,
+                Resource.CRYSTAL, 0L,
+                Resource.SULFUR, 0L);
+    }
+}
