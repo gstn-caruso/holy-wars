@@ -2,5 +2,5 @@ package holywars.town;
 
 import holywars.world.IslandId;
 
-public record Town(TownId id, String name, IslandId islandId) {
+public record Town(TownId id, String name, IslandId islandId, ResourceStock resourceStock) {
 }

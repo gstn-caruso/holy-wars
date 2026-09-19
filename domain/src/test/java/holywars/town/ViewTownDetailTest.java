@@ -24,9 +24,9 @@ class ViewTownDetailTest {
                 secondIslandId, "Thira", new Coordinates(20, 45), SpecialResource.MARBLE);
 
         TownId firstTownId = new TownId(10L);
-        Town firstTown = new Town(firstTownId, "Sparta", firstIslandId);
+        Town firstTown = new Town(firstTownId, "Sparta", firstIslandId, ResourceStock.empty());
         TownId secondTownId = new TownId(20L);
-        Town secondTown = new Town(secondTownId, "Corinth", secondIslandId);
+        Town secondTown = new Town(secondTownId, "Corinth", secondIslandId, ResourceStock.empty());
 
         InMemoryTowns towns = new InMemoryTowns(Map.of(firstTownId, firstTown, secondTownId, secondTown));
         InMemoryIslands islands = new InMemoryIslands(Map.of(firstIslandId, firstIsland, secondIslandId, secondIsland));
@@ -35,6 +35,31 @@ class ViewTownDetailTest {
         ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(secondTownId));
 
         assertThat(response).isEqualTo(new ViewTownDetailResponse(
-                "Corinth", "Thira", new Coordinates(20, 45), Resource.MARBLE));
+                "Corinth", "Thira", new Coordinates(20, 45), Resource.MARBLE, zeroStock()));
+    }
+
+    @Test
+    void reportsEveryResourceAtZeroWhenTheTownHasNothingStocked() {
+        IslandId islandId = new IslandId(1L);
+        Island island = new Island(islandId, "Argos", new Coordinates(3, 7), SpecialResource.WINE);
+        TownId townId = new TownId(10L);
+        Town town = new Town(townId, "Sparta", islandId, ResourceStock.empty());
+
+        InMemoryTowns towns = new InMemoryTowns(Map.of(townId, town));
+        InMemoryIslands islands = new InMemoryIslands(Map.of(islandId, island));
+        ViewTownDetail viewTownDetail = new ViewTownDetail(towns, islands);
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.resourceStock()).isEqualTo(zeroStock());
+    }
+
+    private static Map<Resource, Long> zeroStock() {
+        return Map.of(
+                Resource.WOOD, 0L,
+                Resource.WINE, 0L,
+                Resource.MARBLE, 0L,
+                Resource.CRYSTAL, 0L,
+                Resource.SULFUR, 0L);
     }
 }
