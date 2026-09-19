@@ -20,10 +20,6 @@ public record ResourceStock(Map<Resource, ResourceAmount> amounts) {
         return new ResourceStock(Map.of());
     }
 
-    public ResourceAmount amountOf(Resource resource) {
-        return amounts.get(resource);
-    }
-
     public Map<Resource, Long> amountsByResource() {
         return amounts.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().value()));
