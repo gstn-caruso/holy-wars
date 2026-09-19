@@ -109,6 +109,26 @@ class ViewTownDetailTest {
     }
 
     @Test
+    void keepsTwoPlotsHoldingTheSameBuildingApart() {
+        IslandId islandId = new IslandId(1L);
+        Island island = argosIsland(islandId);
+        TownId townId = new TownId(10L);
+        Town town = TownBuilder.aTown(townId, "Sparta", islandId)
+                .withPlots(
+                        TownPlot.occupiedBy(0, Building.WAREHOUSE),
+                        TownPlot.occupiedBy(1, Building.WAREHOUSE))
+                .build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.plots()).containsExactly(
+                new TownPlotView(0, Optional.of(Building.WAREHOUSE)),
+                new TownPlotView(1, Optional.of(Building.WAREHOUSE)));
+    }
+
+    @Test
     void reportsEveryResourceAtZeroWhenTheTownHasNothingStocked() {
         IslandId islandId = new IslandId(1L);
         Island island = argosIsland(islandId);
