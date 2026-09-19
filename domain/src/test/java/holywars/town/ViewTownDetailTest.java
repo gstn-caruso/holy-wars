@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -51,6 +52,22 @@ class ViewTownDetailTest {
         ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
 
         assertThat(response.plots()).isEmpty();
+    }
+
+    @Test
+    void showsTheBuildingStandingOnAnOccupiedPlot() {
+        IslandId islandId = new IslandId(1L);
+        Island island = argosIsland(islandId);
+        TownId townId = new TownId(10L);
+        Town town = TownBuilder.aTown().withId(townId).withName("Sparta").onIsland(islandId)
+                .withPlots(TownPlot.occupiedBy(0, Building.TOWN_HALL))
+                .build();
+
+        ViewTownDetail viewTownDetail = viewTownDetailFor(Map.of(townId, town), Map.of(islandId, island));
+
+        ViewTownDetailResponse response = viewTownDetail.run(new ViewTownDetailRequest(townId));
+
+        assertThat(response.plots()).containsExactly(new TownPlotView(0, Optional.of(Building.TOWN_HALL)));
     }
 
     @Test

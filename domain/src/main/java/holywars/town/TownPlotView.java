@@ -1,4 +1,6 @@
 package holywars.town;
 
-public record TownPlotView() {
+import java.util.Optional;
+
+public record TownPlotView(int position, Optional<Building> building) {
 }

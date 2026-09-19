@@ -1,4 +1,10 @@
 package holywars.town;
 
-public record TownPlot() {
+import java.util.Optional;
+
+public record TownPlot(int position, Optional<Building> building) {
+
+    public static TownPlot occupiedBy(int position, Building building) {
+        return new TownPlot(position, Optional.of(building));
+    }
 }

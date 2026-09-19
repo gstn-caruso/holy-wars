@@ -36,6 +36,11 @@ class TownBuilder {
         return this;
     }
 
+    TownBuilder withPlots(TownPlot... plots) {
+        this.plots = List.of(plots);
+        return this;
+    }
+
     Town build() {
         return new Town(id, name, islandId, resourceStock, plots);
     }

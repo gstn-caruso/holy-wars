@@ -32,7 +32,7 @@ public class ViewTownDetail implements UseCase<ViewTownDetailRequest, ViewTownDe
 
     private static List<TownPlotView> viewPlotsOf(Town town) {
         return town.plots().stream()
-                .map(plot -> new TownPlotView())
+                .map(plot -> new TownPlotView(plot.position(), plot.building()))
                 .toList();
     }
 }
